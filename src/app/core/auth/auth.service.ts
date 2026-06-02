@@ -20,7 +20,7 @@ export class AuthService {
   }
 
   setToken(token: string): void {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && window.localStorage) {
       window.localStorage.setItem(this.storageKey, token);
     }
 
@@ -28,7 +28,7 @@ export class AuthService {
   }
 
   clearToken(): void {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && window.localStorage) {
       window.localStorage.removeItem(this.storageKey);
     }
 
@@ -36,7 +36,7 @@ export class AuthService {
   }
 
   private readStoredToken(): string | null {
-    if (typeof window === 'undefined') {
+    if (typeof window === 'undefined' || !window.localStorage) {
       return null;
     }
 
