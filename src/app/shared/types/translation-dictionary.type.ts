@@ -16,4 +16,20 @@ export interface TranslationDictionary {
   readonly emailInvalid: string;
   readonly passwordRequired: string;
   readonly loginError: string;
+  readonly registrationTitle: string;
+  readonly registrationSubtitle: string;
+  readonly fullNameLabel: string;
+  readonly fullNamePlaceholder: string;
+  readonly fullNameRequired: string;
+  readonly registrationPasswordPlaceholder: string;
+  readonly confirmPasswordLabel: string;
+  readonly confirmPasswordPlaceholder: string;
+  readonly confirmPasswordRequired: string;
+  readonly passwordMinLength: string;
+  readonly passwordsMismatch: string;
+  readonly registrationSubmitLabel: string;
+  readonly registrationLoadingLabel: string;
+  readonly signInPrompt: string;
+  readonly signInInstead: string;
+  readonly registrationError: string;
 }
