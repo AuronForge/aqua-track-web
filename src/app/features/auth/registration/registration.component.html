@@ -1,0 +1,173 @@
+<main class="login-page">
+  <div class="login-page__glow login-page__glow--top"></div>
+  <div class="login-page__glow login-page__glow--left"></div>
+  <div class="login-page__glow login-page__glow--bottom"></div>
+
+  <header class="login-page__header">
+    <app-language-switcher
+      [label]="translation().languageSelectorLabel"
+      [selectedLanguage]="selectedLanguage()"
+      (languageChange)="changeLanguage($event)"
+    />
+  </header>
+
+  <section class="login-page__content">
+    <article class="login-card login-card--compact">
+      <div class="login-card__brand" aria-hidden="true">
+        <img class="login-card__brand-image" src="/app-icon.svg" alt="" />
+      </div>
+
+      <h1 class="login-card__title">{{ translation().registrationTitle }}</h1>
+      <p class="login-card__subtitle">{{ translation().registrationSubtitle }}</p>
+
+      @if (apiError()) {
+        <div class="login-card__api-error" role="alert">
+          {{ apiError() }}
+        </div>
+      }
+
+      <form class="login-card__form" [formGroup]="registrationForm" (ngSubmit)="submit()">
+        <div class="login-card__field">
+          <label class="login-card__label" for="full-name">{{ translation().fullNameLabel }}</label>
+          <input
+            id="full-name"
+            type="text"
+            class="login-card__input"
+            [class.login-card__input--error]="
+              registrationForm.controls.fullName.invalid &&
+              registrationForm.controls.fullName.touched
+            "
+            formControlName="fullName"
+            [placeholder]="translation().fullNamePlaceholder"
+            autocomplete="name"
+            [attr.aria-invalid]="
+              registrationForm.controls.fullName.invalid &&
+              registrationForm.controls.fullName.touched
+            "
+          />
+          @if (
+            registrationForm.controls.fullName.invalid && registrationForm.controls.fullName.touched
+          ) {
+            <span class="login-card__error" role="alert">{{ translation().fullNameRequired }}</span>
+          }
+        </div>
+
+        <div class="login-card__field">
+          <label class="login-card__label" for="email">{{ translation().emailLabel }}</label>
+          <input
+            id="email"
+            type="email"
+            class="login-card__input"
+            [class.login-card__input--error]="
+              registrationForm.controls.email.invalid && registrationForm.controls.email.touched
+            "
+            formControlName="email"
+            [placeholder]="translation().emailPlaceholder"
+            autocomplete="email"
+            [attr.aria-invalid]="
+              registrationForm.controls.email.invalid && registrationForm.controls.email.touched
+            "
+          />
+          @if (registrationForm.controls.email.invalid && registrationForm.controls.email.touched) {
+            <span class="login-card__error" role="alert">
+              @if (registrationForm.controls.email.hasError('required')) {
+                {{ translation().emailRequired }}
+              } @else if (registrationForm.controls.email.hasError('email')) {
+                {{ translation().emailInvalid }}
+              }
+            </span>
+          }
+        </div>
+
+        <div class="login-card__field">
+          <label class="login-card__label" for="password">{{ translation().passwordLabel }}</label>
+          <input
+            id="password"
+            type="password"
+            class="login-card__input"
+            [class.login-card__input--error]="
+              registrationForm.controls.password.invalid &&
+              registrationForm.controls.password.touched
+            "
+            formControlName="password"
+            [placeholder]="translation().registrationPasswordPlaceholder"
+            autocomplete="new-password"
+            [attr.aria-invalid]="
+              registrationForm.controls.password.invalid &&
+              registrationForm.controls.password.touched
+            "
+          />
+          @if (
+            registrationForm.controls.password.invalid && registrationForm.controls.password.touched
+          ) {
+            <span class="login-card__error" role="alert">
+              @if (registrationForm.controls.password.hasError('required')) {
+                {{ translation().passwordRequired }}
+              } @else if (registrationForm.controls.password.hasError('minlength')) {
+                {{ translation().passwordMinLength }}
+              }
+            </span>
+          }
+        </div>
+
+        <div class="login-card__field">
+          <label class="login-card__label" for="confirm-password">{{
+            translation().confirmPasswordLabel
+          }}</label>
+          <input
+            id="confirm-password"
+            type="password"
+            class="login-card__input"
+            [class.login-card__input--error]="
+              (registrationForm.controls.confirmPassword.invalid &&
+                registrationForm.controls.confirmPassword.touched) ||
+              (registrationForm.hasError('passwordsMismatch') &&
+                registrationForm.controls.confirmPassword.touched)
+            "
+            formControlName="confirmPassword"
+            [placeholder]="translation().confirmPasswordPlaceholder"
+            autocomplete="new-password"
+            [attr.aria-invalid]="
+              (registrationForm.controls.confirmPassword.invalid &&
+                registrationForm.controls.confirmPassword.touched) ||
+              (registrationForm.hasError('passwordsMismatch') &&
+                registrationForm.controls.confirmPassword.touched)
+            "
+          />
+          @if (registrationForm.controls.confirmPassword.touched) {
+            @if (registrationForm.controls.confirmPassword.hasError('required')) {
+              <span class="login-card__error" role="alert">{{
+                translation().confirmPasswordRequired
+              }}</span>
+            } @else if (registrationForm.hasError('passwordsMismatch')) {
+              <span class="login-card__error" role="alert">{{
+                translation().passwordsMismatch
+              }}</span>
+            }
+          }
+        </div>
+
+        <button type="submit" class="login-card__submit-button" [disabled]="isLoading()">
+          {{
+            isLoading()
+              ? translation().registrationLoadingLabel
+              : translation().registrationSubmitLabel
+          }}
+        </button>
+      </form>
+
+      <div class="login-card__divider">
+        <span class="login-card__divider-text">{{ translation().signInPrompt }}</span>
+      </div>
+
+      <a class="login-card__registration-link" routerLink="/login">
+        <span aria-hidden="true">&larr;</span>
+        {{ translation().signInInstead }}
+      </a>
+    </article>
+  </section>
+
+  <footer class="login-page__footer">
+    &copy; {{ currentYear }} AquaTrack. {{ translation().footer }}
+  </footer>
+</main>
