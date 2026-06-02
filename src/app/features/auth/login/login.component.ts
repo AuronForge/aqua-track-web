@@ -1,56 +1,84 @@
-import { Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+
+import { AuthApiService } from '../../../core/auth/auth-api.service';
+import { AuthService } from '../../../core/auth/auth.service';
+import { getInitialLanguage } from '../../../shared/utils/get-initial-language.util';
+import { LANGUAGE_STORAGE_KEY } from '../../../shared/constants/language-storage-key.constant';
+import { LanguageCode } from '../../../shared/types/language-code.type';
+import { TRANSLATIONS } from '../../../shared/constants/translations.constant';
+import { LanguageSwitcherComponent } from '../../../shared/components/language-switcher/language-switcher.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  template: `
-    <main class="auth-page">
-      <section class="auth-page__panel">
-        <span class="auth-page__eyebrow">Acesso</span>
-        <h1 class="auth-page__title">Login</h1>
-        <p class="auth-page__subtitle">
-          Base de autenticacao pronta para conectar com o fluxo real de login.
-        </p>
-      </section>
-    </main>
-  `,
-  styles: `
-    .auth-page {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 2rem;
-    }
-
-    .auth-page__panel {
-      width: min(100%, 28rem);
-      padding: 2rem;
-      border-radius: 1.5rem;
-      background: #ffffff;
-      box-shadow: 0 1rem 3rem rgb(15 23 42 / 0.12);
-    }
-
-    .auth-page__eyebrow {
-      display: inline-block;
-      margin-bottom: 0.75rem;
-      color: #0f766e;
-      font-size: 0.875rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .auth-page__title {
-      margin: 0;
-      color: #0f172a;
-      font-size: 2rem;
-    }
-
-    .auth-page__subtitle {
-      margin: 1rem 0 0;
-      color: #475569;
-      line-height: 1.6;
-    }
-  `,
+  imports: [ReactiveFormsModule, RouterLink, LanguageSwitcherComponent],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent {}
+export class LoginComponent {
+  private readonly authApiService = inject(AuthApiService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+
+  readonly currentYear = new Date().getFullYear();
+  readonly loginForm = new FormGroup({
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email],
+    }),
+    password: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+  });
+  readonly selectedLanguage = signal<LanguageCode>(getInitialLanguage());
+  readonly translation = computed(() => TRANSLATIONS[this.selectedLanguage()]);
+  readonly isLoading = signal(false);
+  readonly apiError = signal<string | null>(null);
+
+  changeLanguage(language: LanguageCode): void {
+    this.selectedLanguage.set(language);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+    }
+  }
+
+  submit(): void {
+    if (this.isLoading()) return;
+
+    this.loginForm.markAllAsTouched();
+
+    if (this.loginForm.invalid) return;
+
+    const { email, password } = this.loginForm.getRawValue();
+
+    this.isLoading.set(true);
+    this.apiError.set(null);
+
+    this.authApiService
+      .login({ email, password })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.authService.setToken(response.accessToken);
+          this.router.navigate(['/']);
+        },
+        error: () => {
+          this.isLoading.set(false);
+          this.apiError.set(this.translation().loginError);
+        },
+      });
+  }
+}
