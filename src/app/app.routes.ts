@@ -47,6 +47,13 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'components',
+    loadComponent: () =>
+      import('./features/components-showcase/components-showcase.component').then(
+        (m) => m.ComponentsShowcaseComponent,
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'error/404',
   },

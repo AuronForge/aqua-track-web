@@ -1,0 +1,145 @@
+<div class="showcase">
+  <header class="showcase__header">
+    <h1 class="showcase__title">Components</h1>
+    <p class="showcase__subtitle">Shared UI component library</p>
+  </header>
+
+  <main class="showcase__content">
+    <!-- ── Dropdown Menu ───────────────────────────────────────────── -->
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">Dropdown Menu</h2>
+      <p class="showcase__section-desc">
+        Generic dropdown triggered by any projected content. Supports an optional header slot, a
+        list of menu items with optional icons, dividers, and destructive styles. The
+        <code>placement</code> input controls where the panel opens relative to the trigger.
+      </p>
+
+      <!-- Variants: showChevron -->
+      <h3 class="showcase__group-title">Variantes</h3>
+      <div class="showcase__row">
+        <!-- With chevron (default) -->
+        <div class="showcase__card">
+          <p class="showcase__card-label">Com chevron (default)</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <app-dropdown-menu [items]="userMenuItems" (itemClick)="onMenuItemClick($event)">
+              <ng-container slot="trigger">
+                <div class="demo-avatar">JD</div>
+                <div class="demo-user-info">
+                  <span class="demo-user-name">John Doe</span>
+                  <span class="demo-user-email">teste&#64;gmail.com</span>
+                </div>
+              </ng-container>
+
+              <div slot="header" class="demo-user-card">
+                <div class="demo-user-card__avatar">JD</div>
+                <div class="demo-user-card__info">
+                  <span class="demo-user-card__name">John Doe</span>
+                  <span class="demo-user-card__email">teste&#64;gmail.com</span>
+                </div>
+                <span class="demo-user-card__badge">Pro Plan</span>
+              </div>
+            </app-dropdown-menu>
+          </div>
+        </div>
+
+        <!-- Button only (no chevron) -->
+        <div class="showcase__card">
+          <p class="showcase__card-label">Somente botão</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <app-dropdown-menu
+              [items]="tableRowItems"
+              [showChevron]="false"
+              placement="bottom-left"
+              (itemClick)="onMenuItemClick($event)"
+            >
+              <ng-container slot="trigger">
+                <p>Click Me</p>
+                <span class="demo-icon-btn" [innerHTML]="icons.dots"></span>
+              </ng-container>
+            </app-dropdown-menu>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variants: placement -->
+      <h3 class="showcase__group-title">Placement</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">bottom-right</p>
+          <div
+            class="showcase__card-stage showcase__card-stage--padded showcase__card-stage--justify-end"
+          >
+            <app-dropdown-menu
+              [items]="tableRowItems"
+              placement="bottom-right"
+              [showChevron]="false"
+              (itemClick)="onMenuItemClick($event)"
+            >
+              <ng-container slot="trigger">
+                <span class="demo-icon-btn" [innerHTML]="icons.dots"></span>
+              </ng-container>
+            </app-dropdown-menu>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">bottom-left</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <app-dropdown-menu
+              [items]="tableRowItems"
+              placement="bottom-left"
+              [showChevron]="false"
+              (itemClick)="onMenuItemClick($event)"
+            >
+              <ng-container slot="trigger">
+                <span class="demo-icon-btn" [innerHTML]="icons.dots"></span>
+              </ng-container>
+            </app-dropdown-menu>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">top-right</p>
+          <div
+            class="showcase__card-stage showcase__card-stage--padded showcase__card-stage--align-bottom showcase__card-stage--justify-end"
+          >
+            <app-dropdown-menu
+              [items]="tableRowItems"
+              placement="top-right"
+              [showChevron]="false"
+              (itemClick)="onMenuItemClick($event)"
+            >
+              <ng-container slot="trigger">
+                <span class="demo-icon-btn" [innerHTML]="icons.dots"></span>
+              </ng-container>
+            </app-dropdown-menu>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">top-left</p>
+          <div
+            class="showcase__card-stage showcase__card-stage--padded showcase__card-stage--align-bottom"
+          >
+            <app-dropdown-menu
+              [items]="tableRowItems"
+              placement="top-left"
+              [showChevron]="false"
+              (itemClick)="onMenuItemClick($event)"
+            >
+              <ng-container slot="trigger">
+                <span class="demo-icon-btn" [innerHTML]="icons.dots"></span>
+              </ng-container>
+            </app-dropdown-menu>
+          </div>
+        </div>
+      </div>
+
+      @if (lastClicked()) {
+        <p class="showcase__event-log">
+          Last clicked: <strong>{{ lastClicked() }}</strong>
+        </p>
+      }
+    </section>
+  </main>
+</div>
