@@ -3,7 +3,8 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 
 import { AuthApiService } from './auth-api.service';
-import { LoginResponse } from './models/login-response.model';
+import { ForgotPasswordResponse } from '../models/forgot-password-response.model';
+import { LoginResponse } from '../models/login-response.model';
 
 const mockResponse: LoginResponse = {
   user: {
@@ -66,5 +67,24 @@ describe('AuthApiService', () => {
       password: 'password123',
     });
     req.flush(mockResponse);
+  });
+
+  it('should POST to /auth/forgot-password with the given data and return the new password', () => {
+    const mockForgotResponse: ForgotPasswordResponse = { newPassword: 'newPass123' };
+
+    service
+      .forgotPassword({ email: 'test@example.com', name: 'Test User', birthDate: '1990-01-15' })
+      .subscribe((res) => {
+        expect(res).toEqual(mockForgotResponse);
+      });
+
+    const req = httpMock.expectOne('http://localhost:3000/auth/forgot-password');
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({
+      email: 'test@example.com',
+      name: 'Test User',
+      birthDate: '1990-01-15',
+    });
+    req.flush(mockForgotResponse);
   });
 });

@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { NEVER, Observable, of, throwError } from 'rxjs';
 
-import { AuthApiService } from '../../../core/auth/auth-api.service';
-import { AuthService } from '../../../core/auth/auth.service';
+import { AuthApiService } from '../../../core/auth/services/auth-api.service';
+import { AuthService } from '../../../core/auth/services/auth.service';
 import { LoginResponse } from '../../../core/auth/models/login-response.model';
 import { LoginComponent } from './login.component';
 
@@ -67,7 +67,7 @@ describe('LoginComponent', () => {
     const element: HTMLElement = fixture.nativeElement;
 
     expect(element.querySelector('.login-card__title')?.textContent?.trim()).toBe(
-      'Bem-vindo de volta ao AquaTrack',
+      'Bem-vindo ao AquaTrack',
     );
   });
 
@@ -80,7 +80,7 @@ describe('LoginComponent', () => {
     const element: HTMLElement = fixture.nativeElement;
 
     expect(element.querySelector('.login-card__title')?.textContent?.trim()).toBe(
-      'Welcome back to AquaTrack',
+      'Welcome to AquaTrack',
     );
   });
 
@@ -124,7 +124,7 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('.login-card__title')?.textContent?.trim()).toBe(
-      'Welcome back to AquaTrack',
+      'Welcome to AquaTrack',
     );
   });
 

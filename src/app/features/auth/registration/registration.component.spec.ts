@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { NEVER, Observable, of, throwError } from 'rxjs';
 
-import { AuthApiService } from '../../../core/auth/auth-api.service';
-import { AuthService } from '../../../core/auth/auth.service';
+import { AuthApiService } from '../../../core/auth/services/auth-api.service';
+import { AuthService } from '../../../core/auth/services/auth.service';
 import { LoginResponse } from '../../../core/auth/models/login-response.model';
 import { RegistrationComponent } from './registration.component';
 
@@ -25,6 +25,7 @@ const mockRegisterResponse: LoginResponse = {
 const VALID_FORM_VALUES = {
   fullName: 'Test User',
   email: 'test@example.com',
+  birthDate: '1990-01-15',
   password: 'password123',
   confirmPassword: 'password123',
 };
@@ -249,6 +250,7 @@ describe('RegistrationComponent', () => {
       expect(registerSpy).toHaveBeenCalledWith({
         name: 'Test User',
         email: 'test@example.com',
+        birthDate: '1990-01-15',
         password: 'password123',
       });
     });

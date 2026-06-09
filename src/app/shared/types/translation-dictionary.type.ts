@@ -32,4 +32,19 @@ export interface TranslationDictionary {
   readonly signInPrompt: string;
   readonly signInInstead: string;
   readonly registrationError: string;
+  readonly forgotPasswordTitle: string;
+  readonly forgotPasswordSubtitle: string;
+  readonly usernameLabel: string;
+  readonly usernamePlaceholder: string;
+  readonly birthdateLabel: string;
+  readonly forgotPasswordSubmitLabel: string;
+  readonly forgotPasswordLoadingLabel: string;
+  readonly backToLogin: string;
+  readonly usernameRequired: string;
+  readonly birthdateRequired: string;
+  readonly forgotPasswordError: string;
+  readonly forgotPasswordSuccessTitle: string;
+  readonly forgotPasswordNewPasswordLabel: string;
+  readonly copyPassword: string;
+  readonly passwordCopied: string;
 }

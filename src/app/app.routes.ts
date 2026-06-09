@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authCanActivateChildGuard, authCanMatchGuard } from './core/auth/auth.guard';
+import { authCanActivateChildGuard, authCanMatchGuard } from './core/auth/guards/auth.guard';
 
 export const routes: Routes = [
   {

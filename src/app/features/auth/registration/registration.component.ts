@@ -1,4 +1,13 @@
 import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
   AbstractControl,
   FormControl,
   FormGroup,
@@ -6,23 +15,15 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 
-import { AuthApiService } from '../../../core/auth/auth-api.service';
-import { AuthService } from '../../../core/auth/auth.service';
+import { AuthApiService } from '../../../core/auth/services/auth-api.service';
+import { AuthService } from '../../../core/auth/services/auth.service';
+import { DatepickerComponent } from '../../../shared/components/datepicker/datepicker.component';
+import { LanguageSwitcherComponent } from '../../../shared/components/language-switcher/language-switcher.component';
 import { LANGUAGE_STORAGE_KEY } from '../../../shared/constants/language-storage-key.constant';
 import { TRANSLATIONS } from '../../../shared/constants/translations.constant';
 import { LanguageCode } from '../../../shared/types/language-code.type';
-import { LanguageSwitcherComponent } from '../../../shared/components/language-switcher/language-switcher.component';
 import { getInitialLanguage } from '../../../shared/utils/get-initial-language.util';
 
 function passwordsMatchValidator(group: AbstractControl): ValidationErrors | null {
@@ -35,7 +36,7 @@ function passwordsMatchValidator(group: AbstractControl): ValidationErrors | nul
 @Component({
   selector: 'app-registration',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, LanguageSwitcherComponent],
+  imports: [ReactiveFormsModule, RouterLink, LanguageSwitcherComponent, DatepickerComponent],
   templateUrl: './registration.component.html',
   styleUrl: './registration.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,6 +57,10 @@ export class RegistrationComponent {
       email: new FormControl('', {
         nonNullable: true,
         validators: [Validators.required, Validators.email],
+      }),
+      birthDate: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
       }),
       password: new FormControl('', {
         nonNullable: true,
@@ -88,13 +93,13 @@ export class RegistrationComponent {
 
     if (this.registrationForm.invalid) return;
 
-    const { fullName, email, password } = this.registrationForm.getRawValue();
+    const { fullName, email, birthDate, password } = this.registrationForm.getRawValue();
 
     this.isLoading.set(true);
     this.apiError.set(null);
 
     this.authApiService
-      .register({ name: fullName, email, password })
+      .register({ name: fullName, email, birthDate, password })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
