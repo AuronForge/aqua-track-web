@@ -80,6 +80,29 @@
         </div>
 
         <div class="login-card__field">
+          <label class="login-card__label" for="birthdate">{{
+            translation().birthdateLabel
+          }}</label>
+          <app-datepicker
+            inputId="birthdate"
+            formControlName="birthDate"
+            [locale]="selectedLanguage()"
+            [hasError]="
+              registrationForm.controls.birthDate.invalid &&
+              registrationForm.controls.birthDate.touched
+            "
+          />
+          @if (
+            registrationForm.controls.birthDate.invalid &&
+            registrationForm.controls.birthDate.touched
+          ) {
+            <span class="login-card__error" role="alert">{{
+              translation().birthdateRequired
+            }}</span>
+          }
+        </div>
+
+        <div class="login-card__field">
           <label class="login-card__label" for="password">{{ translation().passwordLabel }}</label>
           <input
             id="password"

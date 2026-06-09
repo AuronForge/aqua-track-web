@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateChildFn, CanMatchFn, Router, UrlTree } from '@angular/router';
-import { AuthService } from './auth.service';
+import { AuthService } from '../services/auth.service';
 
 function redirectToLogin(): UrlTree {
   return inject(Router).createUrlTree(['/login']);

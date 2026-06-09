@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { AuthService } from './auth.service';
+import { AuthService } from '../services/auth.service';
 import { authCanActivateChildGuard, authCanMatchGuard } from './auth.guard';
 
 describe('auth guards', () => {

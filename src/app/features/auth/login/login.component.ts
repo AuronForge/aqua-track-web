@@ -10,8 +10,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import { AuthApiService } from '../../../core/auth/auth-api.service';
-import { AuthService } from '../../../core/auth/auth.service';
+import { AuthApiService } from '../../../core/auth/services/auth-api.service';
+import { AuthService } from '../../../core/auth/services/auth.service';
 import { getInitialLanguage } from '../../../shared/utils/get-initial-language.util';
 import { LANGUAGE_STORAGE_KEY } from '../../../shared/constants/language-storage-key.constant';
 import { LanguageCode } from '../../../shared/types/language-code.type';
