@@ -1,0 +1,104 @@
+@use '../../theme' as theme;
+
+:host {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+// ── Block ─────────────────────────────────────────────────────────────────
+
+.avatar {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  overflow: hidden;
+  user-select: none;
+}
+
+// ── Sizes ─────────────────────────────────────────────────────────────────
+
+.avatar--small {
+  width: 2rem;
+  height: 2rem;
+}
+
+.avatar--normal {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.avatar--large {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+// ── Colors ────────────────────────────────────────────────────────────────
+
+.avatar--primary {
+  background: theme.$aq-color-primary;
+  color: theme.$aq-color-surface;
+}
+
+.avatar--secondary {
+  background: theme.$aq-color-accent;
+  color: theme.$aq-color-surface;
+}
+
+.avatar--tertiary {
+  background: theme.$aq-color-success;
+  color: theme.$aq-color-surface;
+}
+
+// ── Circular ──────────────────────────────────────────────────────────────
+
+.avatar--circular {
+  background: theme.$aq-color-border;
+}
+
+// ── Initials ──────────────────────────────────────────────────────────────
+
+.avatar__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+// ── Initials ──────────────────────────────────────────────────────────────
+
+.avatar__initials {
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  font-family: theme.$aq-font-family-base;
+}
+
+.avatar--small .avatar__initials {
+  font-size: 0.65rem;
+}
+
+.avatar--normal .avatar__initials {
+  font-size: 0.82rem;
+}
+
+.avatar--large .avatar__initials {
+  font-size: 1.15rem;
+}
+
+// ── Icon ──────────────────────────────────────────────────────────────────
+
+// SVG is injected via [innerHTML] and doesn't receive the ng scoping attribute,
+// so the child selector must pierce encapsulation to apply dimensions.
+.avatar__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60%;
+  height: 60%;
+
+  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+  ::ng-deep svg {
+    width: 100%;
+    height: 100%;
+  }
+}

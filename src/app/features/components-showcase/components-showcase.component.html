@@ -141,5 +141,124 @@
         </p>
       }
     </section>
+    <!-- ── Avatar ───────────────────────────────────────────────────── -->
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">Avatar</h2>
+      <p class="showcase__section-desc">
+        Componente de avatar em três variantes: iniciais (padrão), circular com imagem e ícone.
+        Suporta três cores (primary, secondary, tertiary) e três tamanhos (small, normal, large).
+      </p>
+
+      <!-- Variants -->
+      <h3 class="showcase__group-title">Variantes</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Iniciais (default)</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <app-avatar initials="JD" />
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Iniciais (3 letras)</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <app-avatar initials="JEM" />
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Circular (imagem)</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <app-avatar
+              variant="circular"
+              src="https://i.pravatar.cc/150?img=3"
+              alt="Foto de perfil"
+            />
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Ícone</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <app-avatar variant="icon" [icon]="icons.user" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Colors -->
+      <h3 class="showcase__group-title">Cores</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Primary (default)</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <app-avatar initials="JD" color="primary" />
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Secondary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <app-avatar initials="JD" color="secondary" />
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Tertiary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <app-avatar initials="JD" color="tertiary" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Sizes -->
+      <h3 class="showcase__group-title">Tamanhos</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Small</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <app-avatar initials="JD" size="small" />
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Normal (default)</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <app-avatar initials="JD" size="normal" />
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Large</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <app-avatar initials="JD" size="large" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Sizes x Icon -->
+      <h3 class="showcase__group-title">Tamanhos — Ícone</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Small</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <app-avatar variant="icon" [icon]="icons.bell" size="small" color="secondary" />
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Normal (default)</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <app-avatar variant="icon" [icon]="icons.bell" size="normal" color="secondary" />
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Large</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <app-avatar variant="icon" [icon]="icons.bell" size="large" color="secondary" />
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 </div>

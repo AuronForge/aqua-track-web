@@ -1,0 +1,17 @@
+<div
+  [class]="avatarClass()"
+  role="img"
+  [attr.aria-label]="alt() || truncatedInitials() || 'avatar'"
+>
+  @switch (variant()) {
+    @case ('circular') {
+      <img class="avatar__image" [src]="src()" [alt]="alt()" />
+    }
+    @case ('initials') {
+      <span class="avatar__initials" aria-hidden="true">{{ truncatedInitials() }}</span>
+    }
+    @case ('icon') {
+      <span class="avatar__icon" [innerHTML]="safeIcon()" aria-hidden="true"></span>
+    }
+  }
+</div>
