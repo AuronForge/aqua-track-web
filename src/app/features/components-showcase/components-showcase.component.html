@@ -54,7 +54,7 @@
             >
               <ng-container slot="trigger">
                 <p>Click Me</p>
-                <span class="demo-icon-btn" [innerHTML]="icons.dots"></span>
+                <span class="material-icons">more_vert</span>
               </ng-container>
             </app-dropdown-menu>
           </div>
@@ -76,7 +76,7 @@
               (itemClick)="onMenuItemClick($event)"
             >
               <ng-container slot="trigger">
-                <span class="demo-icon-btn" [innerHTML]="icons.dots"></span>
+                <span class="material-icons">more_vert</span>
               </ng-container>
             </app-dropdown-menu>
           </div>
@@ -92,7 +92,7 @@
               (itemClick)="onMenuItemClick($event)"
             >
               <ng-container slot="trigger">
-                <span class="demo-icon-btn" [innerHTML]="icons.dots"></span>
+                <span class="material-icons">more_vert</span>
               </ng-container>
             </app-dropdown-menu>
           </div>
@@ -110,7 +110,7 @@
               (itemClick)="onMenuItemClick($event)"
             >
               <ng-container slot="trigger">
-                <span class="demo-icon-btn" [innerHTML]="icons.dots"></span>
+                <span class="material-icons">more_vert</span>
               </ng-container>
             </app-dropdown-menu>
           </div>
@@ -128,7 +128,7 @@
               (itemClick)="onMenuItemClick($event)"
             >
               <ng-container slot="trigger">
-                <span class="demo-icon-btn" [innerHTML]="icons.dots"></span>
+                <span class="material-icons">more_vert</span>
               </ng-container>
             </app-dropdown-menu>
           </div>
@@ -141,6 +141,230 @@
         </p>
       }
     </section>
+    <!-- ── Button ───────────────────────────────────────────────────── -->
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">Button</h2>
+      <p class="showcase__section-desc">
+        Componente de botão aplicado como diretiva em elementos nativos
+        <code>button</code> ou <code>a</code>. Suporta quatro variantes (flat, stroked, basic,
+        icon), seis cores e três tamanhos. O conteúdo é projetado via <code>ng-content</code>,
+        permitindo combinar ícone e texto livremente.
+      </p>
+
+      <!-- Variantes -->
+      <h3 class="showcase__group-title">Variantes</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Flat (default)</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="flat" color="primary" size="medium">Salvar</button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Stroked</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="stroked" color="primary" size="medium">Cancelar</button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Basic</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="basic" color="primary" size="medium">Ver mais</button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Icon</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="icon" color="primary" size="medium">
+              <span class="material-icons">add</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cores -->
+      <h3 class="showcase__group-title">Cores — Flat</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Primary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="flat" color="primary" size="medium">Primary</button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Secondary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="flat" color="secondary" size="medium">Secondary</button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Tertiary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="flat" color="tertiary" size="medium">Tertiary</button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Success</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="flat" color="success" size="medium">Success</button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Error</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="flat" color="error" size="medium">Error</button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Warning</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="flat" color="warning" size="medium">Warning</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cores — Stroked -->
+      <h3 class="showcase__group-title">Cores — Stroked</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Primary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="stroked" color="primary" size="medium">Primary</button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Secondary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="stroked" color="secondary" size="medium">Secondary</button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Tertiary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="stroked" color="tertiary" size="medium">Tertiary</button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Success</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="stroked" color="success" size="medium">Success</button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Error</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="stroked" color="error" size="medium">Error</button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Warning</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="stroked" color="warning" size="medium">Warning</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tamanhos -->
+      <h3 class="showcase__group-title">Tamanhos</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Small</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="flat" color="primary" size="small">Small</button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Medium (default)</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="flat" color="primary" size="medium">Medium</button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Large</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="flat" color="primary" size="large">Large</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ícone + Texto -->
+      <h3 class="showcase__group-title">Com ícone</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Ícone à esquerda</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="flat" color="primary" size="medium">
+              <span class="material-icons">add</span>
+              Novo item
+            </button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Ícone à direita</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="stroked" color="secondary" size="medium">
+              Exportar
+              <span class="material-icons">download</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Icon button — Error</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="icon" color="error" size="medium">
+              <span class="material-icons">delete</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desabilitado -->
+      <h3 class="showcase__group-title">Estado desabilitado</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Flat disabled</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="flat" color="primary" size="medium" disabled>Salvar</button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Stroked disabled</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="stroked" color="primary" size="medium" disabled>
+              Cancelar
+            </button>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Icon disabled</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <button aqButton variant="icon" color="primary" size="medium" disabled>
+              <span class="material-icons">add</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ── Avatar ───────────────────────────────────────────────────── -->
     <section class="showcase__section">
       <h2 class="showcase__section-title">Avatar</h2>
@@ -180,7 +404,7 @@
         <div class="showcase__card">
           <p class="showcase__card-label">Ícone</p>
           <div class="showcase__card-stage showcase__card-stage--padded">
-            <app-avatar variant="icon" [icon]="icons.user" />
+            <app-avatar variant="icon" icon="person" />
           </div>
         </div>
       </div>
@@ -241,21 +465,21 @@
         <div class="showcase__card">
           <p class="showcase__card-label">Small</p>
           <div class="showcase__card-stage showcase__card-stage--padded">
-            <app-avatar variant="icon" [icon]="icons.bell" size="small" color="secondary" />
+            <app-avatar variant="icon" icon="notifications" size="small" color="secondary" />
           </div>
         </div>
 
         <div class="showcase__card">
           <p class="showcase__card-label">Normal (default)</p>
           <div class="showcase__card-stage showcase__card-stage--padded">
-            <app-avatar variant="icon" [icon]="icons.bell" size="normal" color="secondary" />
+            <app-avatar variant="icon" icon="notifications" size="normal" color="secondary" />
           </div>
         </div>
 
         <div class="showcase__card">
           <p class="showcase__card-label">Large</p>
           <div class="showcase__card-stage showcase__card-stage--padded">
-            <app-avatar variant="icon" [icon]="icons.bell" size="large" color="secondary" />
+            <app-avatar variant="icon" icon="notifications" size="large" color="secondary" />
           </div>
         </div>
       </div>

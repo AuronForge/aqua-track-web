@@ -87,18 +87,19 @@
 
 // ── Icon ──────────────────────────────────────────────────────────────────
 
-// SVG is injected via [innerHTML] and doesn't receive the ng scoping attribute,
-// so the child selector must pierce encapsulation to apply dimensions.
 .avatar__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 60%;
-  height: 60%;
+  line-height: 1;
+  user-select: none;
+}
 
-  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
-  ::ng-deep svg {
-    width: 100%;
-    height: 100%;
-  }
+.avatar--small .avatar__icon {
+  font-size: 1.2rem;
+}
+
+.avatar--normal .avatar__icon {
+  font-size: 1.5rem;
+}
+
+.avatar--large .avatar__icon {
+  font-size: 2.1rem;
 }

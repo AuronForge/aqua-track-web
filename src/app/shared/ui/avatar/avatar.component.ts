@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 import { AvatarColor } from './avatar-color.type';
 import { AvatarSize } from './avatar-size.type';
@@ -13,8 +12,6 @@ import { AvatarVariant } from './avatar-variant.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AvatarComponent {
-  private readonly sanitizer = inject(DomSanitizer);
-
   readonly variant = input<AvatarVariant>('initials');
   readonly color = input<AvatarColor>('primary');
   readonly size = input<AvatarSize>('normal');
@@ -28,8 +25,4 @@ export class AvatarComponent {
   );
 
   readonly truncatedInitials = computed(() => this.initials().slice(0, 3).toUpperCase());
-
-  readonly safeIcon = computed<SafeHtml | null>(() =>
-    this.icon() ? this.sanitizer.bypassSecurityTrustHtml(this.icon()) : null,
-  );
 }

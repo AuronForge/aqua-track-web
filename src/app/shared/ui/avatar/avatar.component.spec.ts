@@ -6,7 +6,7 @@ import { AvatarSize } from './avatar-size.type';
 import { AvatarVariant } from './avatar-variant.type';
 import { AvatarComponent } from './avatar.component';
 
-const STUB_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+const STUB_ICON = 'person';
 const STUB_SRC = 'https://example.com/avatar.jpg';
 
 @Component({
@@ -126,18 +126,14 @@ describe('AvatarComponent', () => {
     expect(getAvatar().classList).toContain('avatar--circular');
   });
 
-  // ── safeIcon ──────────────────────────────────────────────────────────────
+  // ── Icon ──────────────────────────────────────────────────────────────────
 
-  it('should return a SafeHtml value when icon is provided', () => {
+  it('should render the icon name inside the icon element', () => {
+    hostFixture.componentInstance.variant.set('icon');
     hostFixture.componentInstance.icon.set(STUB_ICON);
     hostFixture.detectChanges();
 
-    expect(getComponent().safeIcon()).not.toBeNull();
-  });
-
-  it('should return null from safeIcon when icon is not provided', () => {
-    // icon defaults to '' — falsy branch must be covered
-    expect(getComponent().safeIcon()).toBeNull();
+    expect(getIconEl()?.textContent?.trim()).toBe(STUB_ICON);
   });
 
   // ── Initials ──────────────────────────────────────────────────────────────

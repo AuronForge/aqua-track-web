@@ -11,7 +11,7 @@
       <span class="avatar__initials" aria-hidden="true">{{ truncatedInitials() }}</span>
     }
     @case ('icon') {
-      <span class="avatar__icon" [innerHTML]="safeIcon()" aria-hidden="true"></span>
+      <span class="material-icons avatar__icon" aria-hidden="true">{{ icon() }}</span>
     }
   }
 </div>

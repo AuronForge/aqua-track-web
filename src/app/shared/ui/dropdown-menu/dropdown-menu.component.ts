@@ -9,7 +9,6 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { DropdownMenuItem } from './dropdown-menu-item.model';
 import { DropdownMenuPlacement } from './dropdown-menu-placement.type';
@@ -23,7 +22,6 @@ import { DropdownMenuPlacement } from './dropdown-menu-placement.type';
 })
 export class DropdownMenuComponent {
   private readonly elementRef = inject(ElementRef<HTMLElement>);
-  private readonly sanitizer = inject(DomSanitizer);
 
   readonly items = input.required<DropdownMenuItem[]>();
   readonly placement = input<DropdownMenuPlacement>('bottom-right');
@@ -63,9 +61,5 @@ export class DropdownMenuComponent {
     event.stopPropagation();
     this.itemClick.emit(item);
     this.isOpen.set(false);
-  }
-
-  safeIcon(icon: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(icon);
   }
 }

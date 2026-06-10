@@ -12,18 +12,7 @@
   >
     <ng-content select="[slot='trigger']"></ng-content>
     @if (showChevron()) {
-      <svg
-        class="dropdown-menu__chevron"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <polyline points="6 9 12 15 18 9" />
-      </svg>
+      <span class="material-icons dropdown-menu__chevron" aria-hidden="true">expand_more</span>
     }
   </button>
 
@@ -48,11 +37,9 @@
                 (click)="onItemClick(item, $event)"
               >
                 @if (item.icon) {
-                  <span
-                    class="dropdown-menu__item-icon"
-                    [innerHTML]="safeIcon(item.icon)"
-                    aria-hidden="true"
-                  ></span>
+                  <span class="material-icons dropdown-menu__item-icon" aria-hidden="true">
+                    {{ item.icon }}
+                  </span>
                 }
                 <span class="dropdown-menu__item-label">{{ item.label }}</span>
               </button>
