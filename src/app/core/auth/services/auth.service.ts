@@ -20,26 +20,26 @@ export class AuthService {
   }
 
   setToken(token: string): void {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      window.localStorage.setItem(this.storageKey, token);
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      window.sessionStorage.setItem(this.storageKey, token);
     }
 
     this.authenticated.set(true);
   }
 
   clearToken(): void {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      window.localStorage.removeItem(this.storageKey);
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      window.sessionStorage.removeItem(this.storageKey);
     }
 
     this.authenticated.set(false);
   }
 
   private readStoredToken(): string | null {
-    if (typeof window === 'undefined' || !window.localStorage) {
+    if (typeof window === 'undefined' || !window.sessionStorage) {
       return null;
     }
 
-    return window.localStorage.getItem(this.storageKey);
+    return window.sessionStorage.getItem(this.storageKey);
   }
 }
