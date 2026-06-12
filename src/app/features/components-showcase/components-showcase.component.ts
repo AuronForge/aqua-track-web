@@ -2,13 +2,14 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
 import { AvatarComponent } from '../../shared/ui/avatar/avatar.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
+import { ChipComponent } from '../../shared/components/chip/chip.component';
 import { DropdownMenuItem } from '../../shared/ui/dropdown-menu/dropdown-menu-item.model';
 import { DropdownMenuComponent } from '../../shared/ui/dropdown-menu/dropdown-menu.component';
 
 @Component({
   selector: 'app-components-showcase',
   standalone: true,
-  imports: [AvatarComponent, ButtonComponent, DropdownMenuComponent],
+  imports: [AvatarComponent, ButtonComponent, ChipComponent, DropdownMenuComponent],
   templateUrl: './components-showcase.component.html',
   styleUrl: './components-showcase.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
