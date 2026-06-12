@@ -116,18 +116,6 @@
 
 // ── Demo: user profile trigger ────────────────────────────────────────────
 
-.demo-avatar {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 2.2rem;
-  height: 2.2rem;
-  border-radius: 50%;
-  background: theme.$aq-color-primary;
-  color: theme.$aq-color-surface;
-  font: 700 0.8rem/1 theme.$aq-font-family-base;
-}
-
 .demo-user-info {
   display: flex;
   flex-direction: column;
@@ -155,18 +143,6 @@
   gap: 0.3rem;
   padding: 1.25rem 1rem 1rem;
   border-bottom: 1px solid theme.$aq-color-border;
-}
-
-.demo-user-card__avatar {
-  display: grid;
-  place-items: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  background: theme.$aq-color-primary;
-  color: theme.$aq-color-surface;
-  font: 700 1rem/1 theme.$aq-font-family-base;
-  margin-bottom: 0.2rem;
 }
 
 .demo-user-card__info {

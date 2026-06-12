@@ -20,10 +20,17 @@
         <!-- With chevron (default) -->
         <div class="showcase__card">
           <p class="showcase__card-label">Com chevron (default)</p>
-          <div class="showcase__card-stage showcase__card-stage--padded">
+          <div
+            class="showcase__card-stage showcase__card-stage--padded showcase__card-stage--justify-end"
+          >
             <app-dropdown-menu [items]="userMenuItems" (itemClick)="onMenuItemClick($event)">
               <ng-container slot="trigger">
-                <div class="demo-avatar">JD</div>
+                <app-avatar
+                  variant="initials"
+                  color="primary"
+                  size="normal"
+                  initials="JD"
+                ></app-avatar>
                 <div class="demo-user-info">
                   <span class="demo-user-name">John Doe</span>
                   <span class="demo-user-email">teste&#64;gmail.com</span>
@@ -31,7 +38,12 @@
               </ng-container>
 
               <div slot="header" class="demo-user-card">
-                <div class="demo-user-card__avatar">JD</div>
+                <app-avatar
+                  variant="initials"
+                  color="primary"
+                  size="large"
+                  initials="JD"
+                ></app-avatar>
                 <div class="demo-user-card__info">
                   <span class="demo-user-card__name">John Doe</span>
                   <span class="demo-user-card__email">teste&#64;gmail.com</span>

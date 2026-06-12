@@ -10,12 +10,14 @@ import {
   signal,
 } from '@angular/core';
 
+import { ButtonComponent } from '../../components/button/button.component';
 import { DropdownMenuItem } from './dropdown-menu-item.model';
 import { DropdownMenuPlacement } from './dropdown-menu-placement.type';
 
 @Component({
   selector: 'app-dropdown-menu',
   standalone: true,
+  imports: [ButtonComponent],
   templateUrl: './dropdown-menu.component.html',
   styleUrl: './dropdown-menu.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

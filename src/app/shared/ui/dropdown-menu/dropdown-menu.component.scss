@@ -1,31 +1,22 @@
 @use '../../theme' as theme;
 
 :host {
-  display: block;
+  display: inline-block;
   position: relative;
 }
 
 .dropdown-menu {
   position: relative;
-}
-
-// ── Trigger ───────────────────────────────────────────────────────────────
-
-.dropdown-menu__trigger {
   display: inline-flex;
   align-items: center;
-  border: 0;
-  padding: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
+}
 
-  &:focus-visible {
-    @include theme.aq-focus-ring;
+// ── Trigger button ────────────────────────────────────────────────────────
 
-    border-radius: theme.$aq-radius-sm;
-  }
+.dropdown-menu > button {
+  padding-inline: theme.$aq-space-lg;
+  padding-block: theme.$aq-space-sm;
+  height: auto;
 }
 
 // ── Chevron ───────────────────────────────────────────────────────────────
