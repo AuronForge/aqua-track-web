@@ -84,8 +84,18 @@
   min-height: 6rem;
 }
 
+.showcase__card--full {
+  width: 100%;
+  min-width: 0;
+}
+
 .showcase__card-stage--padded {
   padding: theme.$aq-space-lg;
+}
+
+.showcase__card-stage--flush {
+  padding: 0;
+  overflow: hidden;
 }
 
 .showcase__card-stage--align-bottom {
