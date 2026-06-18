@@ -1,4 +1,4 @@
-export type ChipColor =
+export type BadgeColor =
   | 'primary'
   | 'secondary'
   | 'tertiary'

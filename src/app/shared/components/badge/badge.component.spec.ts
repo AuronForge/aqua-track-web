@@ -1,37 +1,37 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChipColor } from './chip-color.type';
-import { ChipSize } from './chip-size.type';
-import { ChipVariant } from './chip-variant.type';
-import { ChipComponent } from './chip.component';
+import { BadgeColor } from './badge-color.type';
+import { BadgeSize } from './badge-size.type';
+import { BadgeVariant } from './badge-variant.type';
+import { BadgeComponent } from './badge.component';
 
 @Component({
   standalone: true,
-  imports: [ChipComponent],
+  imports: [BadgeComponent],
   template: `
-    <aq-chip [color]="color()" [size]="size()" [variant]="variant()" [disabled]="disabled()">
+    <aq-badge [color]="color()" [size]="size()" [variant]="variant()" [disabled]="disabled()">
       {{ label() }}
-    </aq-chip>
+    </aq-badge>
   `,
 })
 class TestHostComponent {
-  readonly color = signal<ChipColor>('primary');
-  readonly size = signal<ChipSize>('medium');
-  readonly variant = signal<ChipVariant>('filled');
+  readonly color = signal<BadgeColor>('primary');
+  readonly size = signal<BadgeSize>('medium');
+  readonly variant = signal<BadgeVariant>('filled');
   readonly disabled = signal<boolean>(false);
   readonly label = signal<string>('Pro Plan');
 }
 
-describe('ChipComponent', () => {
+describe('BadgeComponent', () => {
   let hostFixture: ComponentFixture<TestHostComponent>;
   let element: HTMLElement;
 
-  function getChip(): HTMLElement {
-    return element.querySelector('aq-chip') as HTMLElement;
+  function getBadge(): HTMLElement {
+    return element.querySelector('aq-badge') as HTMLElement;
   }
 
-  function getComponent(): ChipComponent {
+  function getComponent(): BadgeComponent {
     return hostFixture.debugElement.children[0].componentInstance;
   }
 
@@ -53,20 +53,20 @@ describe('ChipComponent', () => {
 
   // ── Default state ─────────────────────────────────────────────────────────
 
-  it('should always have the base chip class', () => {
-    expect(getChip().classList).toContain('chip');
+  it('should always have the base badge class', () => {
+    expect(getBadge().classList).toContain('badge');
   });
 
   it('should apply filled variant class by default', () => {
-    expect(getChip().classList).toContain('chip--filled');
+    expect(getBadge().classList).toContain('badge--filled');
   });
 
   it('should apply primary color class by default', () => {
-    expect(getChip().classList).toContain('chip--primary');
+    expect(getBadge().classList).toContain('badge--primary');
   });
 
   it('should apply medium size class by default', () => {
-    expect(getChip().classList).toContain('chip--medium');
+    expect(getBadge().classList).toContain('badge--medium');
   });
 
   // ── Variants ──────────────────────────────────────────────────────────────
@@ -75,14 +75,14 @@ describe('ChipComponent', () => {
     hostFixture.componentInstance.variant.set('outlined');
     hostFixture.detectChanges();
 
-    expect(getChip().classList).toContain('chip--outlined');
+    expect(getBadge().classList).toContain('badge--outlined');
   });
 
   it('should apply tinted variant class', () => {
     hostFixture.componentInstance.variant.set('tinted');
     hostFixture.detectChanges();
 
-    expect(getChip().classList).toContain('chip--tinted');
+    expect(getBadge().classList).toContain('badge--tinted');
   });
 
   // ── Colors ────────────────────────────────────────────────────────────────
@@ -91,42 +91,42 @@ describe('ChipComponent', () => {
     hostFixture.componentInstance.color.set('secondary');
     hostFixture.detectChanges();
 
-    expect(getChip().classList).toContain('chip--secondary');
+    expect(getBadge().classList).toContain('badge--secondary');
   });
 
   it('should apply tertiary color class', () => {
     hostFixture.componentInstance.color.set('tertiary');
     hostFixture.detectChanges();
 
-    expect(getChip().classList).toContain('chip--tertiary');
+    expect(getBadge().classList).toContain('badge--tertiary');
   });
 
   it('should apply success color class', () => {
     hostFixture.componentInstance.color.set('success');
     hostFixture.detectChanges();
 
-    expect(getChip().classList).toContain('chip--success');
+    expect(getBadge().classList).toContain('badge--success');
   });
 
   it('should apply error color class', () => {
     hostFixture.componentInstance.color.set('error');
     hostFixture.detectChanges();
 
-    expect(getChip().classList).toContain('chip--error');
+    expect(getBadge().classList).toContain('badge--error');
   });
 
   it('should apply warning color class', () => {
     hostFixture.componentInstance.color.set('warning');
     hostFixture.detectChanges();
 
-    expect(getChip().classList).toContain('chip--warning');
+    expect(getBadge().classList).toContain('badge--warning');
   });
 
   it('should apply information color class', () => {
     hostFixture.componentInstance.color.set('information');
     hostFixture.detectChanges();
 
-    expect(getChip().classList).toContain('chip--information');
+    expect(getBadge().classList).toContain('badge--information');
   });
 
   // ── Sizes ─────────────────────────────────────────────────────────────────
@@ -135,7 +135,7 @@ describe('ChipComponent', () => {
     hostFixture.componentInstance.size.set('small');
     hostFixture.detectChanges();
 
-    expect(getChip().classList).toContain('chip--small');
+    expect(getBadge().classList).toContain('badge--small');
   });
 
   // ── Disabled state ────────────────────────────────────────────────────────
@@ -144,11 +144,11 @@ describe('ChipComponent', () => {
     hostFixture.componentInstance.disabled.set(true);
     hostFixture.detectChanges();
 
-    expect(getChip().getAttribute('aria-disabled')).toBe('true');
+    expect(getBadge().getAttribute('aria-disabled')).toBe('true');
   });
 
   it('should not set aria-disabled when not disabled', () => {
-    expect(getChip().getAttribute('aria-disabled')).toBeNull();
+    expect(getBadge().getAttribute('aria-disabled')).toBeNull();
   });
 
   // ── Class composition ─────────────────────────────────────────────────────
@@ -159,11 +159,11 @@ describe('ChipComponent', () => {
     hostFixture.componentInstance.size.set('small');
     hostFixture.detectChanges();
 
-    const classList = getChip().classList;
-    expect(classList).toContain('chip');
-    expect(classList).toContain('chip--outlined');
-    expect(classList).toContain('chip--success');
-    expect(classList).toContain('chip--small');
+    const classList = getBadge().classList;
+    expect(classList).toContain('badge');
+    expect(classList).toContain('badge--outlined');
+    expect(classList).toContain('badge--success');
+    expect(classList).toContain('badge--small');
   });
 
   // ── Content projection ────────────────────────────────────────────────────
@@ -172,6 +172,6 @@ describe('ChipComponent', () => {
     hostFixture.componentInstance.label.set('Free Tier');
     hostFixture.detectChanges();
 
-    expect(getChip().textContent?.trim()).toBe('Free Tier');
+    expect(getBadge().textContent?.trim()).toBe('Free Tier');
   });
 });

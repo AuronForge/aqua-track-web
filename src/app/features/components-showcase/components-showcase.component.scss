@@ -98,6 +98,11 @@
   overflow: hidden;
 }
 
+.showcase__card-stage--menu {
+  min-height: 480px;
+  align-items: stretch;
+}
+
 .showcase__card-stage--align-bottom {
   align-items: flex-end;
 }
