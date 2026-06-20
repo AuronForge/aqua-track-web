@@ -585,6 +585,276 @@
         </div>
       </div>
     </section>
+    <!-- ── Chip ────────────────────────────────────────────────────── -->
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">Chip</h2>
+      <p class="showcase__section-desc">
+        Componente de chip presentacional para exibição de status e categorias. Possui um dot
+        indicator colorido que acompanha o label, reforçando o significado visual. Suporta três
+        variantes (filled, outlined, tinted), sete cores e dois tamanhos. O conteúdo é projetado via
+        <code>ng-content</code>.
+      </p>
+
+      <!-- Variantes -->
+      <h3 class="showcase__group-title">Variantes</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Tinted (default)</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="tinted" color="primary">Primary</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Filled</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="filled" color="primary">Primary</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Outlined</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="outlined" color="primary">Primary</aq-chip>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status — Tinted (protótipo) -->
+      <h3 class="showcase__group-title">Status — Tinted</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Estável</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="tinted" color="success">Estável</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Atenção</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="tinted" color="warning">Atenção</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Crítico</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="tinted" color="error">Crítico</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Alto</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="outlined" color="error">Alto</aq-chip>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cores — Tinted -->
+      <h3 class="showcase__group-title">Cores — Tinted</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Primary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="tinted" color="primary">Primary</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Secondary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="tinted" color="secondary">Secondary</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Tertiary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="tinted" color="tertiary">Tertiary</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Success</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="tinted" color="success">Success</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Error</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="tinted" color="error">Error</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Warning</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="tinted" color="warning">Warning</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Information</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="tinted" color="information">Information</aq-chip>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cores — Filled -->
+      <h3 class="showcase__group-title">Cores — Filled</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Primary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="filled" color="primary">Primary</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Secondary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="filled" color="secondary">Secondary</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Tertiary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="filled" color="tertiary">Tertiary</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Success</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="filled" color="success">Success</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Error</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="filled" color="error">Error</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Warning</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="filled" color="warning">Warning</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Information</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="filled" color="information">Information</aq-chip>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cores — Outlined -->
+      <h3 class="showcase__group-title">Cores — Outlined</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Primary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="outlined" color="primary">Primary</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Secondary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="outlined" color="secondary">Secondary</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Tertiary</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="outlined" color="tertiary">Tertiary</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Success</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="outlined" color="success">Success</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Error</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="outlined" color="error">Error</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Warning</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="outlined" color="warning">Warning</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Information</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="outlined" color="information">Information</aq-chip>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tamanhos -->
+      <h3 class="showcase__group-title">Tamanhos</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Small (default)</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip size="small" variant="tinted" color="primary">Small chip</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Medium</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip size="medium" variant="tinted" color="primary">Medium chip</aq-chip>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estado desabilitado -->
+      <h3 class="showcase__group-title">Estado desabilitado</h3>
+      <div class="showcase__row">
+        <div class="showcase__card">
+          <p class="showcase__card-label">Tinted disabled</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="tinted" color="primary" [disabled]="true">Estável</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Filled disabled</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="filled" color="primary" [disabled]="true">Estável</aq-chip>
+          </div>
+        </div>
+
+        <div class="showcase__card">
+          <p class="showcase__card-label">Outlined disabled</p>
+          <div class="showcase__card-stage showcase__card-stage--padded">
+            <aq-chip variant="outlined" color="primary" [disabled]="true">Estável</aq-chip>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ── Badge ───────────────────────────────────────────────────── -->
     <section class="showcase__section">
       <h2 class="showcase__section-title">Badge</h2>

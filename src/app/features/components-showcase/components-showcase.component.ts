@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { AvatarComponent } from '../../shared/ui/avatar/avatar.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { BadgeComponent } from '../../shared/components/badge/badge.component';
+import { ChipComponent } from '../../shared/components/chip/chip.component';
 import { DropdownMenuItem } from '../../shared/ui/dropdown-menu/dropdown-menu-item.model';
 import { DropdownMenuComponent } from '../../shared/ui/dropdown-menu/dropdown-menu.component';
 import { LanguageCode } from '../../shared/types/language-code.type';
@@ -17,6 +18,7 @@ import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.compon
     AvatarComponent,
     ButtonComponent,
     BadgeComponent,
+    ChipComponent,
     DropdownMenuComponent,
     NavMenuComponent,
     ToolbarComponent,
