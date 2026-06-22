@@ -1,0 +1,55 @@
+<div class="info-card__surface">
+  <div class="info-card__top">
+    <div class="info-card__header">
+      @if (icon()) {
+        <div class="info-card__icon-container" aria-hidden="true">
+          <span [class]="iconFamily() + ' info-card__icon'">{{ icon() }}</span>
+        </div>
+      }
+
+      @if (statusLabel()) {
+        <aq-badge
+          class="info-card__status"
+          [color]="statusBadgeColor()"
+          variant="outlined"
+          size="small"
+        >
+          {{ statusLabel() }}
+        </aq-badge>
+      }
+    </div>
+
+    <div class="info-card__body">
+      <p class="info-card__title">{{ title() }}</p>
+
+      @if (hasSubtitle()) {
+        <p class="info-card__subtitle">
+          @if (subtitleLabel()) {
+            <span class="info-card__subtitle-label">{{ subtitleLabel() }}</span>
+          }
+          @if (subtitleLabel() && subtitleValue()) {
+            <span class="info-card__subtitle-separator" aria-hidden="true"> • </span>
+          }
+          @if (subtitleValue()) {
+            <span class="info-card__subtitle-value">{{ subtitleValue() }}</span>
+          }
+        </p>
+      }
+    </div>
+  </div>
+
+  @if (metrics().length) {
+    <div class="info-card__footer">
+      <hr class="info-card__divider" aria-hidden="true" />
+
+      <div class="info-card__metrics">
+        @for (metric of metrics(); track metric.label) {
+          <div class="info-card__metric">
+            <span class="info-card__metric-label">{{ metric.label }}</span>
+            <span class="info-card__metric-value">{{ metric.value }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

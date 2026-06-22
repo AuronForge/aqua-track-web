@@ -12,6 +12,7 @@ $aq-color-primary: #123f61;
 $aq-color-primary-strong: #0d3452;
 $aq-color-accent: #23c0e8;
 $aq-color-accent-strong: #1d8aa8;
+$aq-color-surface-accent: rgb(35 192 232 / 12%);
 $aq-color-success: #2d8a4e;
 $aq-color-success-strong: #206138;
 $aq-color-tertiary: #5c6f8a;
@@ -30,6 +31,7 @@ $aq-space-md: 1rem;
 $aq-space-lg: 1.5rem;
 $aq-space-xl: 2rem;
 $aq-space-2xl: 3rem;
+$aq-radius-xs: 0.375rem;
 $aq-radius-sm: 0.75rem;
 $aq-radius-md: 1rem;
 $aq-radius-lg: 1.5rem;
@@ -37,3 +39,23 @@ $aq-radius-pill: 999px;
 $aq-shadow-card:
   0 18px 42px -24px $aq-color-shadow,
   0 20px 50px -32px rgb(36 48 65 / 28%);
+
+// ── Typography scale ───────────────────────────────────────────────────────────
+$aq-font-size-xs: 0.75rem;
+$aq-font-size-sm: 0.8125rem;
+$aq-font-size-md: 0.875rem;
+$aq-font-size-lg: 1rem;
+$aq-font-size-xl: 1.125rem;
+$aq-font-weight-regular: 400;
+$aq-font-weight-medium: 500;
+$aq-font-weight-semibold: 600;
+$aq-font-weight-bold: 700;
+$aq-line-height-tight: 1.2;
+$aq-line-height-base: 1.4;
+$aq-line-height-loose: 1.6;
+
+// ── Component sizes ────────────────────────────────────────────────────────────
+$aq-size-icon-container-sm: 2rem;
+$aq-size-icon-container-md: 2.5rem;
+$aq-size-icon-sm: 1rem;
+$aq-size-icon-md: 1.25rem;

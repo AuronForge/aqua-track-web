@@ -6,6 +6,8 @@ import { BadgeComponent } from '../../shared/components/badge/badge.component';
 import { ChipComponent } from '../../shared/components/chip/chip.component';
 import { DropdownMenuItem } from '../../shared/ui/dropdown-menu/dropdown-menu-item.model';
 import { DropdownMenuComponent } from '../../shared/ui/dropdown-menu/dropdown-menu.component';
+import { InfoCardComponent } from '../../shared/components/info-card/info-card.component';
+import { InfoCardMetric } from '../../shared/components/info-card/info-card-metric.model';
 import { LanguageCode } from '../../shared/types/language-code.type';
 import { NavMenuItem } from '../../shared/components/nav-menu/nav-menu-item.model';
 import { NavMenuComponent } from '../../shared/components/nav-menu/nav-menu.component';
@@ -20,6 +22,7 @@ import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.compon
     BadgeComponent,
     ChipComponent,
     DropdownMenuComponent,
+    InfoCardComponent,
     NavMenuComponent,
     ToolbarComponent,
   ],
@@ -68,6 +71,18 @@ export class ComponentsShowcaseComponent {
       roles: ['admin'],
     },
   ];
+
+  readonly infoCardPhMetrics: InfoCardMetric[] = [
+    { label: 'Nível de pH', value: '6.8' },
+    { label: 'Temp', value: '26°C' },
+  ];
+
+  readonly infoCardSalinityMetrics: InfoCardMetric[] = [
+    { label: 'Nível de pH', value: '8.2' },
+    { label: 'Temp', value: '25°C' },
+  ];
+
+  readonly infoCardSingleMetric: InfoCardMetric[] = [{ label: 'Nível de pH', value: '7.0' }];
 
   readonly lastClicked = signal<string | null>(null);
   readonly toolbarLanguage = signal<LanguageCode>('pt');

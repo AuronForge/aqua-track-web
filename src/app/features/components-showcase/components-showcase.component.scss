@@ -98,6 +98,29 @@
   overflow: hidden;
 }
 
+.showcase__card-stage--background {
+  background: theme.$aq-color-background;
+}
+
+.showcase__card-stage--block {
+  display: block;
+}
+
+.showcase__card-stage--fit-content {
+  width: fit-content;
+  align-self: flex-start;
+}
+
+.showcase__card-stage--borderless {
+  border: none;
+  background: transparent;
+}
+
+.showcase__info-card-frame {
+  width: 25vw;
+  height: 230px;
+}
+
 .showcase__card-stage--menu {
   min-height: 480px;
   align-items: stretch;

@@ -15,6 +15,7 @@
   --aq-color-primary-strong: #{$aq-color-primary-strong};
   --aq-color-accent: #{$aq-color-accent};
   --aq-color-accent-strong: #{$aq-color-accent-strong};
+  --aq-color-surface-accent: #{$aq-color-surface-accent};
   --aq-color-success: #{$aq-color-success};
   --aq-color-success-strong: #{$aq-color-success-strong};
   --aq-color-tertiary: #{$aq-color-tertiary};
@@ -31,8 +32,25 @@
   --aq-space-lg: #{$aq-space-lg};
   --aq-space-xl: #{$aq-space-xl};
   --aq-space-2xl: #{$aq-space-2xl};
+  --aq-radius-xs: #{$aq-radius-xs};
   --aq-radius-sm: #{$aq-radius-sm};
   --aq-radius-md: #{$aq-radius-md};
   --aq-radius-lg: #{$aq-radius-lg};
   --aq-radius-pill: #{$aq-radius-pill};
+  --aq-font-size-xs: #{$aq-font-size-xs};
+  --aq-font-size-sm: #{$aq-font-size-sm};
+  --aq-font-size-md: #{$aq-font-size-md};
+  --aq-font-size-lg: #{$aq-font-size-lg};
+  --aq-font-size-xl: #{$aq-font-size-xl};
+  --aq-font-weight-regular: #{$aq-font-weight-regular};
+  --aq-font-weight-medium: #{$aq-font-weight-medium};
+  --aq-font-weight-semibold: #{$aq-font-weight-semibold};
+  --aq-font-weight-bold: #{$aq-font-weight-bold};
+  --aq-line-height-tight: #{$aq-line-height-tight};
+  --aq-line-height-base: #{$aq-line-height-base};
+  --aq-line-height-loose: #{$aq-line-height-loose};
+  --aq-size-icon-container-sm: #{$aq-size-icon-container-sm};
+  --aq-size-icon-container-md: #{$aq-size-icon-container-md};
+  --aq-size-icon-sm: #{$aq-size-icon-sm};
+  --aq-size-icon-md: #{$aq-size-icon-md};
 }
