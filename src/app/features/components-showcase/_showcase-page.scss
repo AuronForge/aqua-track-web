@@ -1,0 +1,129 @@
+@use '../../shared/theme' as theme;
+
+// ── Section ───────────────────────────────────────────────────────────────
+
+.showcase__section {
+  margin-bottom: theme.$aq-space-2xl;
+}
+
+.showcase__section-title {
+  font: 700 1.2rem/1.2 theme.$aq-font-family-base;
+  color: theme.$aq-color-text-primary;
+  letter-spacing: -0.02em;
+}
+
+.showcase__group-title {
+  margin-top: theme.$aq-space-lg;
+  margin-bottom: theme.$aq-space-sm;
+  font: 600 0.85rem/1.2 theme.$aq-font-family-base;
+  color: theme.$aq-color-text-secondary;
+  letter-spacing: 0.04em;
+}
+
+.showcase__section-desc {
+  margin-top: 0.4rem;
+  margin-bottom: theme.$aq-space-lg;
+  max-width: 52rem;
+  font: 400 0.92rem/1.6 theme.$aq-font-family-base;
+  color: theme.$aq-color-text-secondary;
+}
+
+// ── Row & Card ────────────────────────────────────────────────────────────
+
+.showcase__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: theme.$aq-space-lg;
+}
+
+.showcase__card {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-sm;
+  min-width: 16rem;
+}
+
+.showcase__card--full {
+  width: 100%;
+  min-width: 0;
+}
+
+.showcase__card-label {
+  font: 600 0.8rem/1.2 theme.$aq-font-family-base;
+  color: theme.$aq-color-text-tertiary;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.showcase__card-stage {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background: theme.$aq-color-surface;
+  border: 1px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-md;
+  min-height: 6rem;
+}
+
+.showcase__card-stage--padded {
+  padding: theme.$aq-space-lg;
+}
+
+.showcase__card-stage--flush {
+  padding: 0;
+  overflow: hidden;
+}
+
+.showcase__card-stage--background {
+  background: theme.$aq-color-background;
+}
+
+.showcase__card-stage--block {
+  display: block;
+}
+
+.showcase__card-stage--fit-content {
+  width: fit-content;
+  align-self: flex-start;
+}
+
+.showcase__card-stage--borderless {
+  border: none;
+  background: transparent;
+}
+
+.showcase__card-stage--menu {
+  min-height: 480px;
+  align-items: stretch;
+}
+
+.showcase__card-stage--align-bottom {
+  align-items: flex-end;
+}
+
+.showcase__card-stage--justify-end {
+  justify-content: flex-end;
+}
+
+.showcase__info-card-frame {
+  width: 25vw;
+  height: 230px;
+}
+
+// ── Event log ─────────────────────────────────────────────────────────────
+
+.showcase__event-log {
+  margin-top: theme.$aq-space-md;
+  padding: 0.6rem 1rem;
+  background: rgb(35 192 232 / 8%);
+  border: 1px solid rgb(35 192 232 / 25%);
+  border-radius: theme.$aq-radius-sm;
+  font: 400 0.9rem/1.4 theme.$aq-font-family-base;
+  color: theme.$aq-color-text-secondary;
+  width: fit-content;
+
+  strong {
+    color: theme.$aq-color-accent-strong;
+    font-weight: 700;
+  }
+}

@@ -52,6 +52,65 @@ export const routes: Routes = [
       import('./features/components-showcase/components-showcase.component').then(
         (m) => m.ComponentsShowcaseComponent,
       ),
+    children: [
+      { path: '', redirectTo: 'menu', pathMatch: 'full' },
+      {
+        path: 'menu',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/nav-menu/nav-menu-showcase.component').then(
+            (m) => m.NavMenuShowcaseComponent,
+          ),
+      },
+      {
+        path: 'toolbar',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/toolbar/toolbar-showcase.component').then(
+            (m) => m.ToolbarShowcaseComponent,
+          ),
+      },
+      {
+        path: 'dropdown-menu',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/dropdown-menu/dropdown-menu-showcase.component').then(
+            (m) => m.DropdownMenuShowcaseComponent,
+          ),
+      },
+      {
+        path: 'button',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/button/button-showcase.component').then(
+            (m) => m.ButtonShowcaseComponent,
+          ),
+      },
+      {
+        path: 'avatar',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/avatar/avatar-showcase.component').then(
+            (m) => m.AvatarShowcaseComponent,
+          ),
+      },
+      {
+        path: 'chip',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/chip/chip-showcase.component').then(
+            (m) => m.ChipShowcaseComponent,
+          ),
+      },
+      {
+        path: 'info-card',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/info-card/info-card-showcase.component').then(
+            (m) => m.InfoCardShowcaseComponent,
+          ),
+      },
+      {
+        path: 'badge',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/badge/badge-showcase.component').then(
+            (m) => m.BadgeShowcaseComponent,
+          ),
+      },
+    ],
   },
   {
     path: '**',

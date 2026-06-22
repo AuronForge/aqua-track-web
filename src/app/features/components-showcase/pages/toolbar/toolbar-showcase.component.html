@@ -1,0 +1,49 @@
+<section class="showcase__section">
+  <h2 class="showcase__section-title">Toolbar</h2>
+  <p class="showcase__section-desc">
+    Barra de navegação superior da aplicação. Exibe a marca AquaTrack, o título e subtítulo da
+    página atual, o seletor de idioma e o menu do usuário com avatar e informações da conta.
+  </p>
+
+  <h3 class="showcase__group-title">Com subtítulo</h3>
+  <div class="showcase__card showcase__card--full">
+    <p class="showcase__card-label">Estado completo (título + subtítulo)</p>
+    <div class="showcase__card-stage showcase__card-stage--flush">
+      <app-toolbar
+        pageTitle="Dashboard"
+        pageSubtitle="Welcome back! Here's your aquarium overview"
+        userName="Admin AquaTrack"
+        userEmail="admin@aquatrack.com"
+        userInitials="AA"
+        [selectedLanguage]="toolbarLanguage()"
+        [userMenuItems]="toolbarMenuItems"
+        (languageChange)="onToolbarLanguageChange($event)"
+        (userMenuItemClick)="onToolbarMenuItemClick($event)"
+      />
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Sem subtítulo</h3>
+  <div class="showcase__card showcase__card--full">
+    <p class="showcase__card-label">Apenas título</p>
+    <div class="showcase__card-stage showcase__card-stage--flush">
+      <app-toolbar
+        pageTitle="Aquariums"
+        userName="João Silva"
+        userEmail="joao@aquatrack.com"
+        userInitials="JS"
+        userAvatarColor="secondary"
+        [selectedLanguage]="toolbarLanguage()"
+        [userMenuItems]="toolbarMenuItems"
+        (languageChange)="onToolbarLanguageChange($event)"
+        (userMenuItemClick)="onToolbarMenuItemClick($event)"
+      />
+    </div>
+  </div>
+
+  @if (toolbarLastMenuItem()) {
+    <p class="showcase__event-log">
+      Last clicked: <strong>{{ toolbarLastMenuItem() }}</strong>
+    </p>
+  }
+</section>
