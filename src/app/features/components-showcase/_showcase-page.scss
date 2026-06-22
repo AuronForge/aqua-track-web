@@ -110,6 +110,15 @@
   height: 230px;
 }
 
+// ── Usage (code examples) ─────────────────────────────────────────────────
+
+.showcase__usage {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-sm;
+  margin-bottom: theme.$aq-space-lg;
+}
+
 // ── Event log ─────────────────────────────────────────────────────────────
 
 .showcase__event-log {

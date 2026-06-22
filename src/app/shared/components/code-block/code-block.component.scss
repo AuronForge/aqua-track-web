@@ -1,0 +1,63 @@
+@use '../../theme' as theme;
+
+.code-block {
+  border-radius: theme.$aq-radius-md;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 8%);
+}
+
+.code-block__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background: #16162a;
+  border-bottom: 1px solid rgb(255 255 255 / 6%);
+}
+
+.code-block__lang {
+  font: 600 0.72rem/1 theme.$aq-font-family-base;
+  color: #818cf8;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.code-block__copy {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: theme.$aq-radius-sm;
+  background: transparent;
+  border: 1px solid rgb(255 255 255 / 12%);
+  color: rgb(255 255 255 / 50%);
+  font: 500 0.72rem/1 theme.$aq-font-family-base;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+
+  .material-icons {
+    font-size: 0.85rem;
+  }
+
+  &:hover {
+    background: rgb(255 255 255 / 8%);
+    color: rgb(255 255 255 / 85%);
+  }
+}
+
+.code-block__pre {
+  margin: 0;
+  padding: 1.25rem 1.5rem;
+  background: #0f0f1e;
+  overflow-x: auto;
+}
+
+.code-block__code {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 0.83rem;
+  line-height: 1.65;
+  color: #c8d3f5;
+  white-space: pre;
+}
