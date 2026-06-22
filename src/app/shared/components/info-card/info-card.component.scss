@@ -9,7 +9,7 @@
   --info-card-metric-label-size: #{theme.$aq-font-size-xs};
   --info-card-metric-value-size: #{theme.$aq-font-size-md};
   --info-card-shadow-hover:
-    0 24px 48px -26px #{theme.$aq-color-shadow}, 0 24px 56px -34px rgb(36 48 65 / 30%);
+    0 30px 60px -28px #{theme.$aq-color-shadow}, 0 32px 72px -36px rgb(36 48 65 / 34%);
 
   display: block;
   width: 100%;
@@ -36,6 +36,10 @@
   cursor: pointer;
 }
 
+:host(.info-card--interactive) .info-card__surface {
+  cursor: pointer;
+}
+
 :host(.info-card--fill) {
   height: 100%;
 }
@@ -46,16 +50,16 @@
 }
 
 :host(.info-card--interactive):hover .info-card__surface {
-  transform: translateY(-2px);
+  transform: translateY(-6px) scale(1.01);
   box-shadow: var(--info-card-shadow-hover);
 }
 
 :host(.info-card--interactive):active .info-card__surface {
-  transform: translateY(0);
+  transform: translateY(-2px) scale(1.005);
 }
 
 :host(.info-card--interactive):focus-visible .info-card__surface {
-  transform: translateY(-1px);
+  transform: translateY(-4px) scale(1.01);
   box-shadow:
     var(--info-card-shadow-hover),
     0 0 0 3px rgb(34 163 255 / 18%);
