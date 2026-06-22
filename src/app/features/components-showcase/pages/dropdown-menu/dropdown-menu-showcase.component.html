@@ -12,6 +12,56 @@
     <aq-code-block language="html" [code]="codeHtml" />
   </div>
 
+  <h3 class="showcase__group-title">Propriedades</h3>
+  <div class="showcase__props">
+    <table class="showcase__props-table">
+      <thead>
+        <tr>
+          <th>Input / Output</th>
+          <th>Tipo</th>
+          <th>Padrão</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="showcase__props-name">items</span>
+            <span class="showcase__props-required">required</span>
+          </td>
+          <td><span class="showcase__props-type">DropdownMenuItem[]</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>
+            Lista de itens do menu. Cada item suporta <code>id</code>, <code>label</code>,
+            <code>icon?</code>, <code>isDestructive?</code>, <code>hasDividerBefore?</code> e
+            <code>disabled?</code>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">placement</span></td>
+          <td><span class="showcase__props-type">'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'</span></td>
+          <td><span class="showcase__props-default">'bottom-right'</span></td>
+          <td>Posicionamento do painel em relação ao trigger</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">showChevron</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">true</span></td>
+          <td>Exibe ou oculta o ícone de seta no botão trigger</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">itemClick</span>
+            <span class="showcase__props-output">output</span>
+          </td>
+          <td><span class="showcase__props-type">EventEmitter&lt;DropdownMenuItem&gt;</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Emitido ao selecionar um item habilitado do menu</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <h3 class="showcase__group-title">Variantes</h3>
   <div class="showcase__row">
     <div class="showcase__card">

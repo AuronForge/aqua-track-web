@@ -11,6 +11,64 @@
     <aq-code-block language="html" [code]="codeHtml" />
   </div>
 
+  <h3 class="showcase__group-title">Propriedades</h3>
+  <div class="showcase__props">
+    <table class="showcase__props-table">
+      <thead>
+        <tr>
+          <th>Input</th>
+          <th>Tipo</th>
+          <th>Padrão</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="showcase__props-name">variant</span></td>
+          <td><span class="showcase__props-type">'initials' | 'circular' | 'icon'</span></td>
+          <td><span class="showcase__props-default">'initials'</span></td>
+          <td>Modo de exibição do avatar</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">color</span></td>
+          <td><span class="showcase__props-type">'primary' | 'secondary' | 'tertiary'</span></td>
+          <td><span class="showcase__props-default">'primary'</span></td>
+          <td>Cor de fundo do avatar</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">size</span></td>
+          <td><span class="showcase__props-type">'small' | 'normal' | 'large'</span></td>
+          <td><span class="showcase__props-default">'normal'</span></td>
+          <td>Tamanho do avatar</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">initials</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">''</span></td>
+          <td>Texto exibido na variante <code>initials</code> (máx. 3 caracteres)</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">src</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">''</span></td>
+          <td>URL da imagem na variante <code>circular</code></td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">alt</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">''</span></td>
+          <td>Texto alternativo da imagem (acessibilidade)</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">icon</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">''</span></td>
+          <td>Nome do ícone Material na variante <code>icon</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <h3 class="showcase__group-title">Variantes</h3>
   <div class="showcase__row">
     <div class="showcase__card">
@@ -86,6 +144,30 @@
       <p class="showcase__card-label">Large</p>
       <div class="showcase__card-stage showcase__card-stage--padded">
         <app-avatar initials="JD" size="large" />
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Tamanhos — Circular</h3>
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Small</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <app-avatar variant="circular" src="https://i.pravatar.cc/150?img=3" alt="Foto de perfil" size="small" />
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Normal (default)</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <app-avatar variant="circular" src="https://i.pravatar.cc/150?img=3" alt="Foto de perfil" size="normal" />
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Large</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <app-avatar variant="circular" src="https://i.pravatar.cc/150?img=3" alt="Foto de perfil" size="large" />
       </div>
     </div>
   </div>

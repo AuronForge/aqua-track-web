@@ -11,6 +11,106 @@
     <aq-code-block language="html" [code]="codeHtml" />
   </div>
 
+  <h3 class="showcase__group-title">Propriedades</h3>
+  <div class="showcase__props">
+    <table class="showcase__props-table">
+      <thead>
+        <tr>
+          <th>Input / Output</th>
+          <th>Tipo</th>
+          <th>Padrão</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="showcase__props-name">pageTitle</span>
+            <span class="showcase__props-required">required</span>
+          </td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Título da página exibido na toolbar</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">pageSubtitle</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">''</span></td>
+          <td>Subtítulo opcional exibido abaixo do título</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">userName</span>
+            <span class="showcase__props-required">required</span>
+          </td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Nome completo do usuário exibido no menu</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">userEmail</span>
+            <span class="showcase__props-required">required</span>
+          </td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>E-mail do usuário exibido no menu</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">userInitials</span>
+            <span class="showcase__props-required">required</span>
+          </td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Iniciais exibidas no avatar do usuário</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">userAvatarColor</span></td>
+          <td><span class="showcase__props-type">'primary' | 'secondary' | 'tertiary'</span></td>
+          <td><span class="showcase__props-default">'primary'</span></td>
+          <td>Cor de fundo do avatar do usuário</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">selectedLanguage</span>
+            <span class="showcase__props-required">required</span>
+          </td>
+          <td><span class="showcase__props-type">'pt' | 'en' | 'es'</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Idioma selecionado no switcher de idioma</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">userMenuItems</span>
+            <span class="showcase__props-required">required</span>
+          </td>
+          <td><span class="showcase__props-type">DropdownMenuItem[]</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Itens exibidos no menu dropdown do usuário</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">languageChange</span>
+            <span class="showcase__props-output">output</span>
+          </td>
+          <td><span class="showcase__props-type">EventEmitter&lt;'pt' | 'en' | 'es'&gt;</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Emitido ao trocar o idioma no switcher</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">userMenuItemClick</span>
+            <span class="showcase__props-output">output</span>
+          </td>
+          <td><span class="showcase__props-type">EventEmitter&lt;DropdownMenuItem&gt;</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Emitido ao clicar em um item do menu do usuário</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <h3 class="showcase__group-title">Com subtítulo</h3>
   <div class="showcase__card showcase__card--full">
     <p class="showcase__card-label">Estado completo (título + subtítulo)</p>

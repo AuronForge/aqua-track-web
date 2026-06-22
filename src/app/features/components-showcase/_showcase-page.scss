@@ -119,6 +119,92 @@
   margin-bottom: theme.$aq-space-lg;
 }
 
+// ── Props table ────────────────────────────────────────────────────────────
+
+.showcase__props {
+  overflow-x: auto;
+  margin-bottom: theme.$aq-space-lg;
+}
+
+.showcase__props-table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 400 0.85rem/1.5 theme.$aq-font-family-base;
+
+  thead tr {
+    border-bottom: 2px solid theme.$aq-color-border-strong;
+  }
+
+  thead th {
+    padding: theme.$aq-space-xs theme.$aq-space-md theme.$aq-space-xs 0;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: theme.$aq-color-text-secondary;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid theme.$aq-color-border;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  tbody td {
+    padding: theme.$aq-space-sm theme.$aq-space-md theme.$aq-space-sm 0;
+    vertical-align: top;
+    color: theme.$aq-color-text-primary;
+  }
+}
+
+.showcase__props-name {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  font-size: 0.85rem;
+  color: theme.$aq-color-accent-strong;
+}
+
+.showcase__props-required {
+  display: inline-block;
+  margin-left: 0.3rem;
+  padding: 0.05rem 0.35rem;
+  background: theme.$aq-color-surface-accent;
+  border: 1px solid rgb(35 192 232 / 30%);
+  border-radius: theme.$aq-radius-xs;
+  font: 600 0.68rem/1.4 theme.$aq-font-family-base;
+  color: theme.$aq-color-accent-strong;
+  vertical-align: middle;
+  letter-spacing: 0.04em;
+}
+
+.showcase__props-output {
+  display: inline-block;
+  margin-left: 0.3rem;
+  padding: 0.05rem 0.35rem;
+  background: rgb(46 138 78 / 10%);
+  border: 1px solid rgb(46 138 78 / 30%);
+  border-radius: theme.$aq-radius-xs;
+  font: 600 0.68rem/1.4 theme.$aq-font-family-base;
+  color: theme.$aq-color-success;
+  vertical-align: middle;
+  letter-spacing: 0.04em;
+}
+
+.showcase__props-type {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  font-size: 0.78rem;
+  color: theme.$aq-color-text-secondary;
+}
+
+.showcase__props-default {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  font-size: 0.78rem;
+  color: theme.$aq-color-text-tertiary;
+}
+
 // ── Event log ─────────────────────────────────────────────────────────────
 
 .showcase__event-log {

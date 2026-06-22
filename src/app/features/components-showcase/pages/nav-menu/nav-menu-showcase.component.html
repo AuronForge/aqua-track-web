@@ -13,6 +13,41 @@
     <aq-code-block language="html" [code]="codeHtml" />
   </div>
 
+  <h3 class="showcase__group-title">Propriedades</h3>
+  <div class="showcase__props">
+    <table class="showcase__props-table">
+      <thead>
+        <tr>
+          <th>Input</th>
+          <th>Tipo</th>
+          <th>Padrão</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="showcase__props-name">items</span>
+            <span class="showcase__props-required">required</span>
+          </td>
+          <td><span class="showcase__props-type">NavMenuItem[]</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>
+            Lista de itens do menu. Cada item possui <code>id</code>, <code>label</code>,
+            <code>icon</code>, <code>route</code>, e opcionalmente <code>exact</code> e
+            <code>roles</code>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">userRoles</span></td>
+          <td><span class="showcase__props-type">string[]</span></td>
+          <td><span class="showcase__props-default">[]</span></td>
+          <td>Roles do usuário autenticado; itens com <code>roles</code> definidas só aparecem se o usuário tiver ao menos uma delas</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <h3 class="showcase__group-title">Estado expandido e recolhido</h3>
   <div class="showcase__row">
     <div class="showcase__card showcase__card--full">
