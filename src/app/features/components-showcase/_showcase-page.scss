@@ -162,7 +162,7 @@
 }
 
 .showcase__props-name {
-  font-family: 'Cascadia Code', 'Consolas', monospace;
+  font-family: 'Cascadia Code', Consolas, monospace;
   font-size: 0.85rem;
   color: theme.$aq-color-accent-strong;
 }
@@ -194,13 +194,13 @@
 }
 
 .showcase__props-type {
-  font-family: 'Cascadia Code', 'Consolas', monospace;
+  font-family: 'Cascadia Code', Consolas, monospace;
   font-size: 0.78rem;
   color: theme.$aq-color-text-secondary;
 }
 
 .showcase__props-default {
-  font-family: 'Cascadia Code', 'Consolas', monospace;
+  font-family: 'Cascadia Code', Consolas, monospace;
   font-size: 0.78rem;
   color: theme.$aq-color-text-tertiary;
 }
