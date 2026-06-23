@@ -25,6 +25,12 @@ export class ComponentsShowcaseComponent {
       route: '/components/dropdown-menu',
     },
     { id: 'info-card', label: 'Info Card', icon: 'info', route: '/components/info-card' },
+    {
+      id: 'input-select',
+      label: 'Input Select',
+      icon: 'unfold_more',
+      route: '/components/input-select',
+    },
     { id: 'menu', label: 'Nav Menu', icon: 'menu', route: '/components/menu' },
     { id: 'toolbar', label: 'Toolbar', icon: 'web_asset', route: '/components/toolbar' },
   ];

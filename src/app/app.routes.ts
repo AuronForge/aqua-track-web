@@ -110,6 +110,13 @@ export const routes: Routes = [
             (m) => m.BadgeShowcaseComponent,
           ),
       },
+      {
+        path: 'input-select',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/select/input-select-showcase.component').then(
+            (m) => m.InputSelectShowcaseComponent,
+          ),
+      },
     ],
   },
   {
