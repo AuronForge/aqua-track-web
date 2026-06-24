@@ -26,6 +26,12 @@ export class ComponentsShowcaseComponent {
     },
     { id: 'info-card', label: 'Info Card', icon: 'info', route: '/components/info-card' },
     {
+      id: 'info-list-item',
+      label: 'Info List Item',
+      icon: 'format_list_bulleted',
+      route: '/components/info-list-item',
+    },
+    {
       id: 'input-select',
       label: 'Input Select',
       icon: 'unfold_more',

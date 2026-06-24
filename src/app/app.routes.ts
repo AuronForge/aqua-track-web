@@ -104,6 +104,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'info-list-item',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/info-list-item/info-list-item-showcase.component').then(
+            (m) => m.InfoListItemShowcaseComponent,
+          ),
+      },
+      {
         path: 'badge',
         loadComponent: () =>
           import('./features/components-showcase/pages/badge/badge-showcase.component').then(

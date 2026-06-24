@@ -1,0 +1,103 @@
+@use '../../theme' as theme;
+
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: theme.$aq-space-md;
+  padding: theme.$aq-space-sm theme.$aq-space-md;
+  background: theme.$aq-color-surface;
+  border-radius: theme.$aq-radius-sm;
+  outline: none;
+  transition:
+    background-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+:host(.info-list-item--clickable) {
+  cursor: pointer;
+}
+
+:host(.info-list-item--clickable):hover {
+  background: theme.$aq-color-surface-muted;
+}
+
+:host(.info-list-item--clickable):focus-visible {
+  box-shadow:
+    0 0 0 4px rgb(35 192 232 / 14%),
+    0 10px 24px -18px rgb(35 192 232 / 60%);
+}
+
+:host(.info-list-item--selected) {
+  background: theme.$aq-color-surface-accent;
+  box-shadow: inset 0 0 0 2px theme.$aq-color-accent;
+}
+
+:host(.info-list-item--disabled) {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
+
+.info-list-item__main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: theme.$aq-space-2xs;
+  min-width: 0;
+}
+
+.info-list-item__header {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-xs;
+}
+
+.info-list-item__title {
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-md;
+  font-weight: theme.$aq-font-weight-semibold;
+  line-height: theme.$aq-line-height-tight;
+  color: theme.$aq-color-text-primary;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.info-list-item__subtitle {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-regular;
+  line-height: theme.$aq-line-height-base;
+  color: theme.$aq-color-text-secondary;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.info-list-item__aside {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: theme.$aq-space-2xs;
+}
+
+.info-list-item__value {
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-md;
+  font-weight: theme.$aq-font-weight-semibold;
+  line-height: theme.$aq-line-height-tight;
+  color: theme.$aq-color-text-primary;
+  white-space: nowrap;
+}
+
+.info-list-item__metadata {
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-xs;
+  font-weight: theme.$aq-font-weight-regular;
+  line-height: theme.$aq-line-height-base;
+  color: theme.$aq-color-text-tertiary;
+  white-space: nowrap;
+}
