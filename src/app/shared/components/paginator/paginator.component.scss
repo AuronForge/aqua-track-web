@@ -1,0 +1,87 @@
+@use '../../theme' as theme;
+
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: theme.$aq-space-sm;
+}
+
+:host(.paginator--disabled) {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.paginator__size {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-xs;
+}
+
+.paginator__size-label {
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-regular;
+  color: theme.$aq-color-text-secondary;
+  white-space: nowrap;
+}
+
+.paginator__nav {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-md;
+}
+
+.paginator__info {
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-regular;
+  color: theme.$aq-color-text-secondary;
+  white-space: nowrap;
+}
+
+.paginator__controls {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-2xs;
+}
+
+.paginator__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background: transparent;
+  border: 1px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-xs;
+  color: theme.$aq-color-text-secondary;
+  cursor: pointer;
+  outline: none;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  &:hover:not(:disabled) {
+    background: theme.$aq-color-surface-muted;
+    border-color: theme.$aq-color-border-strong;
+    color: theme.$aq-color-text-primary;
+  }
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+  }
+
+  .material-icons-outlined {
+    font-size: 1.125rem;
+    line-height: 1;
+  }
+}

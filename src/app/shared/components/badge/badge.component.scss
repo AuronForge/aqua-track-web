@@ -1,0 +1,117 @@
+@use '../../theme' as theme;
+
+// ── Host / Block ──────────────────────────────────────────────────────────────
+
+:host {
+  --_accent: #{theme.$aq-color-primary};
+  --_accent-strong: #{theme.$aq-color-primary-strong};
+  --_accent-muted: rgb(18 63 97 / 12%);
+  --_on-accent: #{theme.$aq-color-surface};
+
+  display: inline-flex;
+  align-items: center;
+  gap: theme.$aq-space-2xs;
+  border: 1.5px solid transparent;
+  border-radius: theme.$aq-radius-xs;
+  font-family: theme.$aq-font-family-base;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+
+  &[aria-disabled='true'] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// ── Sizes ─────────────────────────────────────────────────────────────────────
+
+:host(.badge--small) {
+  height: 1.5rem;
+  padding: 0 theme.$aq-space-xs;
+  font-size: 0.75rem;
+}
+
+:host(.badge--medium) {
+  height: 2rem;
+  padding: 0 theme.$aq-space-sm;
+  font-size: 0.8125rem;
+}
+
+// ── Colors ────────────────────────────────────────────────────────────────────
+
+:host(.badge--primary) {
+  --_accent: #{theme.$aq-color-primary};
+  --_accent-strong: #{theme.$aq-color-primary-strong};
+  --_accent-muted: rgb(18 63 97 / 12%);
+}
+
+:host(.badge--secondary) {
+  --_accent: #{theme.$aq-color-accent};
+  --_accent-strong: #{theme.$aq-color-accent-strong};
+  --_accent-muted: rgb(35 192 232 / 12%);
+}
+
+:host(.badge--tertiary) {
+  --_accent: #{theme.$aq-color-tertiary};
+  --_accent-strong: #{theme.$aq-color-tertiary-strong};
+  --_accent-muted: rgb(92 111 138 / 10%);
+}
+
+:host(.badge--success) {
+  --_accent: #{theme.$aq-color-success};
+  --_accent-strong: #{theme.$aq-color-success-strong};
+  --_accent-muted: rgb(45 138 78 / 12%);
+}
+
+:host(.badge--error) {
+  --_accent: #{theme.$aq-color-error};
+  --_accent-strong: #{theme.$aq-color-error-strong};
+  --_accent-muted: rgb(217 48 37 / 10%);
+}
+
+:host(.badge--warning) {
+  --_accent: #{theme.$aq-color-warning};
+  --_accent-strong: #{theme.$aq-color-warning-strong};
+  --_accent-muted: rgb(230 172 0 / 14%);
+}
+
+:host(.badge--information) {
+  --_accent: #{theme.$aq-color-information};
+  --_accent-strong: #{theme.$aq-color-information-strong};
+  --_accent-muted: rgb(26 115 232 / 12%);
+}
+
+// ── Variants ──────────────────────────────────────────────────────────────────
+
+:host(.badge--filled) {
+  background: var(--_accent);
+  border-color: transparent;
+  color: var(--_on-accent);
+}
+
+:host(.badge--outlined) {
+  background: transparent;
+  border-color: var(--_accent);
+  color: var(--_accent);
+}
+
+:host(.badge--tinted) {
+  background: var(--_accent-muted);
+  border-color: transparent;
+  color: var(--_accent-strong);
+}
+
+// ── Inner elements (content-projected helpers) ────────────────────────────────
+
+/* stylelint-disable selector-pseudo-element-no-unknown */
+:host ::ng-deep .material-icons {
+  font-size: 1.1em;
+  line-height: 1;
+  flex-shrink: 0;
+  user-select: none;
+}
+/* stylelint-enable selector-pseudo-element-no-unknown */

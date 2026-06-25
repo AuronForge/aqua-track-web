@@ -1,0 +1,45 @@
+<header class="toolbar" role="banner">
+  <!-- ── Brand ──────────────────────────────────────────────────────────── -->
+  <div class="toolbar__brand">
+    <div class="toolbar__logo" aria-hidden="true">
+      <img class="toolbar__logo-icon" src="/app-icon.svg" alt="" />
+    </div>
+    <span class="toolbar__brand-name">AquaTrack</span>
+  </div>
+
+  <!-- ── Page info ──────────────────────────────────────────────────────── -->
+  <div class="toolbar__page-info">
+    <h1 class="toolbar__page-title">{{ pageTitle() }}</h1>
+    @if (pageSubtitle()) {
+      <p class="toolbar__page-subtitle">{{ pageSubtitle() }}</p>
+    }
+  </div>
+
+  <!-- ── Actions ───────────────────────────────────────────────────────── -->
+  <div class="toolbar__actions">
+    <app-language-switcher
+      label="Language"
+      [selectedLanguage]="selectedLanguage()"
+      (languageChange)="languageChange.emit($event)"
+    />
+
+    <app-dropdown-menu
+      [items]="userMenuItems()"
+      placement="bottom-right"
+      (itemClick)="userMenuItemClick.emit($event)"
+    >
+      <ng-container slot="trigger">
+        <app-avatar
+          variant="initials"
+          [color]="userAvatarColor()"
+          size="normal"
+          [initials]="userInitials()"
+        />
+        <div class="toolbar__user-info">
+          <span class="toolbar__user-name">{{ userName() }}</span>
+          <span class="toolbar__user-email">{{ userEmail() }}</span>
+        </div>
+      </ng-container>
+    </app-dropdown-menu>
+  </div>
+</header>

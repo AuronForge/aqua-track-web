@@ -1,0 +1,103 @@
+@use '../../theme' as theme;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+// ── Block ─────────────────────────────────────────────────────────────────
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-xl;
+  padding-inline: theme.$aq-space-xl;
+  height: 4.5rem;
+  background: theme.$aq-color-surface;
+  border-bottom: 1px solid theme.$aq-color-border;
+  box-shadow: 0 2px 12px -6px theme.$aq-color-shadow;
+}
+
+// ── Brand ─────────────────────────────────────────────────────────────────
+
+.toolbar__brand {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-sm;
+  flex-shrink: 0;
+  min-width: 11rem;
+}
+
+.toolbar__logo {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+}
+
+.toolbar__logo-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  transform: translateY(0.28rem);
+}
+
+.toolbar__brand-name {
+  font: 700 1.05rem/1 theme.$aq-font-family-base;
+  color: theme.$aq-color-text-primary;
+  letter-spacing: -0.01em;
+}
+
+// ── Page info ─────────────────────────────────────────────────────────────
+
+.toolbar__page-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.toolbar__page-title {
+  margin: 0;
+  font: 600 1.1rem/1.25 theme.$aq-font-family-heading;
+  color: theme.$aq-color-text-primary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toolbar__page-subtitle {
+  margin: 0.15rem 0 0;
+  font: 400 0.8rem/1.4 theme.$aq-font-family-base;
+  color: theme.$aq-color-text-secondary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ── Actions ───────────────────────────────────────────────────────────────
+
+.toolbar__actions {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-md;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+// ── User info (projected inside dropdown trigger) ──────────────────────────
+
+.toolbar__user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+}
+
+.toolbar__user-name {
+  font: 600 0.88rem/1.2 theme.$aq-font-family-base;
+  color: theme.$aq-color-text-primary;
+}
+
+.toolbar__user-email {
+  font: 400 0.75rem/1.2 theme.$aq-font-family-base;
+  color: theme.$aq-color-text-secondary;
+}

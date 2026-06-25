@@ -1,0 +1,83 @@
+@use '../../theme' as theme;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-md;
+}
+
+:host(.info-list--disabled) {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.info-list__items {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-xs;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.info-list__item {
+  display: block;
+}
+
+.info-list__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: theme.$aq-space-xs;
+  padding: theme.$aq-space-xl theme.$aq-space-lg;
+  text-align: center;
+}
+
+.info-list__empty-title {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-md;
+  font-weight: theme.$aq-font-weight-semibold;
+  color: theme.$aq-color-text-secondary;
+}
+
+.info-list__empty-description {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-regular;
+  color: theme.$aq-color-text-tertiary;
+}
+
+.info-list__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: theme.$aq-space-xs;
+  padding: theme.$aq-space-xl theme.$aq-space-lg;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  color: theme.$aq-color-text-tertiary;
+}
+
+.info-list__loading-icon {
+  font-size: 1.5rem;
+  animation: info-list-spin 1s linear infinite;
+}
+
+@keyframes info-list-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.info-list__pagination {
+  padding-top: theme.$aq-space-xs;
+  border-top: 1px solid theme.$aq-color-border;
+}

@@ -47,6 +47,93 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'components',
+    loadComponent: () =>
+      import('./features/components-showcase/components-showcase.component').then(
+        (m) => m.ComponentsShowcaseComponent,
+      ),
+    children: [
+      { path: '', redirectTo: 'menu', pathMatch: 'full' },
+      {
+        path: 'menu',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/nav-menu/nav-menu-showcase.component').then(
+            (m) => m.NavMenuShowcaseComponent,
+          ),
+      },
+      {
+        path: 'toolbar',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/toolbar/toolbar-showcase.component').then(
+            (m) => m.ToolbarShowcaseComponent,
+          ),
+      },
+      {
+        path: 'dropdown-menu',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/dropdown-menu/dropdown-menu-showcase.component').then(
+            (m) => m.DropdownMenuShowcaseComponent,
+          ),
+      },
+      {
+        path: 'button',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/button/button-showcase.component').then(
+            (m) => m.ButtonShowcaseComponent,
+          ),
+      },
+      {
+        path: 'avatar',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/avatar/avatar-showcase.component').then(
+            (m) => m.AvatarShowcaseComponent,
+          ),
+      },
+      {
+        path: 'chip',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/chip/chip-showcase.component').then(
+            (m) => m.ChipShowcaseComponent,
+          ),
+      },
+      {
+        path: 'info-card',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/info-card/info-card-showcase.component').then(
+            (m) => m.InfoCardShowcaseComponent,
+          ),
+      },
+      {
+        path: 'info-list-item',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/info-list-item/info-list-item-showcase.component').then(
+            (m) => m.InfoListItemShowcaseComponent,
+          ),
+      },
+      {
+        path: 'info-list',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/info-list/info-list-showcase.component').then(
+            (m) => m.InfoListShowcaseComponent,
+          ),
+      },
+      {
+        path: 'badge',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/badge/badge-showcase.component').then(
+            (m) => m.BadgeShowcaseComponent,
+          ),
+      },
+      {
+        path: 'input-select',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/select/input-select-showcase.component').then(
+            (m) => m.InputSelectShowcaseComponent,
+          ),
+      },
+    ],
+  },
+  {
     path: '**',
     redirectTo: 'error/404',
   },
