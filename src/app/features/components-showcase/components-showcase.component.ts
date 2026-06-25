@@ -32,6 +32,12 @@ export class ComponentsShowcaseComponent {
       route: '/components/info-list-item',
     },
     {
+      id: 'info-list',
+      label: 'Info List',
+      icon: 'view_list',
+      route: '/components/info-list',
+    },
+    {
       id: 'input-select',
       label: 'Input Select',
       icon: 'unfold_more',

@@ -1,0 +1,44 @@
+@if (loading()) {
+  <div class="info-list__loading" aria-label="Carregando itens...">
+    <span class="material-icons-outlined info-list__loading-icon">sync</span>
+    <span>Carregando...</span>
+  </div>
+} @else if (isEmpty()) {
+  <div class="info-list__empty">
+    <p class="info-list__empty-title">{{ emptyState().title }}</p>
+
+    @if (emptyState().description) {
+      <p class="info-list__empty-description">{{ emptyState().description }}</p>
+    }
+  </div>
+} @else {
+  <ul class="info-list__items" role="list">
+    @for (item of visibleItems(); track $index) {
+      <li class="info-list__item">
+        <aq-info-list-item
+          [title]="item.title"
+          [subtitle]="item.subtitle ?? ''"
+          [value]="item.value"
+          [metadata]="item.metadata ?? ''"
+          [badge]="item.badge ?? null"
+          [clickable]="clickable()"
+          [disabled]="disabled()"
+          (itemClick)="onItemClick(item)"
+        />
+      </li>
+    }
+  </ul>
+
+  @if (showPaginator()) {
+    <div class="info-list__pagination">
+      <aq-paginator
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize()"
+        [pageSizeOptions]="pageSizeOptions()"
+        [totalItems]="totalItems()"
+        [disabled]="disabled()"
+        (pageChange)="onPaginatorChange($event)"
+      />
+    </div>
+  }
+}

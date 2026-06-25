@@ -1,0 +1,214 @@
+<section class="showcase__section">
+  <h2 class="showcase__section-title">Info List</h2>
+  <p class="showcase__section-desc">
+    Lista genérica e reutilizável de itens informativos. Exibe uma coleção de
+    <code>InfoListItemData</code> usando o componente <code>aq-info-list-item</code> internamente.
+    Suporta paginação opcional, estados de carregamento e vazio, itens clicáveis e diferentes
+    variações de badge. O componente é agnóstico ao domínio — o consumidor é responsável por
+    converter seus dados para o formato <code>InfoListItemData</code>.
+  </p>
+
+  <h3 class="showcase__group-title">Como usar</h3>
+  <div class="showcase__usage">
+    <aq-code-block language="typescript" [code]="codeTs" />
+    <aq-code-block language="html" [code]="codeHtml" />
+  </div>
+
+  <h3 class="showcase__group-title">Propriedades</h3>
+  <div class="showcase__props">
+    <table class="showcase__props-table">
+      <thead>
+        <tr>
+          <th>Input / Output</th>
+          <th>Tipo</th>
+          <th>Padrão</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="showcase__props-name">items</span>
+            <span class="showcase__props-required">required</span>
+          </td>
+          <td><span class="showcase__props-type">InfoListItemData[]</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Lista de itens a exibir, já convertidos para o formato de UI</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">paginated</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">true</span></td>
+          <td>Habilita paginação e exibe o paginador quando há mais itens que o pageSize</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">pageIndex</span></td>
+          <td><span class="showcase__props-type">number</span></td>
+          <td><span class="showcase__props-default">0</span></td>
+          <td>Índice da página atual (base 0), controlado externamente</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">pageSize</span></td>
+          <td><span class="showcase__props-type">number</span></td>
+          <td><span class="showcase__props-default">10</span></td>
+          <td>Quantidade de itens exibidos por página</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">pageSizeOptions</span></td>
+          <td><span class="showcase__props-type">number[]</span></td>
+          <td><span class="showcase__props-default">[5, 10, 20]</span></td>
+          <td>Opções disponíveis para o seletor de tamanho de página</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">loading</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">false</span></td>
+          <td>Exibe o estado de carregamento e oculta a lista</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">disabled</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">false</span></td>
+          <td>Desabilita a lista e todos os itens internamente</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">emptyState</span></td>
+          <td>
+            <span class="showcase__props-type"
+              >&#123; title: string; description?: string &#125;</span
+            >
+          </td>
+          <td>
+            <span class="showcase__props-default"
+              >&#123; title: 'Nenhum item encontrado' &#125;</span
+            >
+          </td>
+          <td>Customiza o título e a descrição exibidos quando a lista está vazia</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">clickable</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">false</span></td>
+          <td>Torna todos os itens da lista clicáveis com foco via teclado</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">pageChange</span>
+            <span class="showcase__props-output">output</span>
+          </td>
+          <td><span class="showcase__props-type">InfoListPageChange</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Emitido quando o usuário troca de página ou altera o tamanho de página</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">itemClick</span>
+            <span class="showcase__props-output">output</span>
+          </td>
+          <td><span class="showcase__props-type">InfoListItemData</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Emitido com o item clicado (apenas quando <code>clickable=true</code>)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="showcase__group-title">Lista paginada</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">paginated=true — 12 itens, 5 por página, itens clicáveis</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded showcase__card-stage--block"
+      >
+        <aq-info-list
+          [items]="allItems"
+          [pageIndex]="pageIndex()"
+          [pageSize]="pageSize()"
+          [pageSizeOptions]="[5, 10]"
+          [clickable]="true"
+          (pageChange)="onPageChange($event)"
+          (itemClick)="onItemClick($event)"
+        />
+      </div>
+
+      @if (lastClickedItem()) {
+        <p class="showcase__event-log">
+          Item clicado: <strong>{{ lastClickedItem()!.title }}</strong> —
+          {{ lastClickedItem()!.value }}
+        </p>
+      }
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Lista sem paginação</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">paginated=false — exibe todos os itens sem controles</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded showcase__card-stage--block"
+      >
+        <aq-info-list [items]="recentItems" [paginated]="false" />
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Lista com itens clicáveis</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">clickable=true — itens com role=button e foco via teclado</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded showcase__card-stage--block"
+      >
+        <aq-info-list
+          [items]="recentItems"
+          [paginated]="false"
+          [clickable]="true"
+          (itemClick)="onItemClick($event)"
+        />
+      </div>
+
+      @if (lastClickedItem()) {
+        <p class="showcase__event-log">
+          Item clicado: <strong>{{ lastClickedItem()!.title }}</strong> —
+          {{ lastClickedItem()!.value }}
+        </p>
+      }
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Variações de status do badge</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">normal · attention · danger · neutral</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded showcase__card-stage--block"
+      >
+        <aq-info-list [items]="badgeVariantItems" [paginated]="false" />
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Estado vazio</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">items=[] — exibe mensagem de lista vazia customizável</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded showcase__card-stage--block"
+      >
+        <aq-info-list [items]="[]" [emptyState]="emptyStateExample" />
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Estado de carregamento</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">loading=true — exibe indicador e oculta a lista</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded showcase__card-stage--block"
+      >
+        <aq-info-list [items]="allItems" [loading]="true" />
+      </div>
+    </div>
+  </div>
+</section>

@@ -111,6 +111,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'info-list',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/info-list/info-list-showcase.component').then(
+            (m) => m.InfoListShowcaseComponent,
+          ),
+      },
+      {
         path: 'badge',
         loadComponent: () =>
           import('./features/components-showcase/pages/badge/badge-showcase.component').then(
