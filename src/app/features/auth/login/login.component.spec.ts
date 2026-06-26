@@ -30,7 +30,7 @@ describe('LoginComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [LoginComponent],
-      providers: [provideRouter([]), provideHttpClient()],
+      providers: [provideRouter([{ path: '**', redirectTo: '' }]), provideHttpClient()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
@@ -44,7 +44,10 @@ describe('LoginComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [LoginComponent],
-      providers: [provideRouter([]), { provide: AuthApiService, useValue: { login: loginFn } }],
+      providers: [
+        provideRouter([{ path: '**', redirectTo: '' }]),
+        { provide: AuthApiService, useValue: { login: loginFn } },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
@@ -244,7 +247,7 @@ describe('LoginComponent', () => {
       fixture.componentInstance.submit();
 
       expect(setTokenSpy).toHaveBeenCalledWith('test-access-token');
-      expect(navigateSpy).toHaveBeenCalledWith(['/']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/home']);
     });
 
     it('should show an error message and clear loading on API error', async () => {

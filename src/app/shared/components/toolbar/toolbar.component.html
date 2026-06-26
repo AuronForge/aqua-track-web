@@ -1,11 +1,13 @@
 <header class="toolbar" role="banner">
   <!-- ── Brand ──────────────────────────────────────────────────────────── -->
-  <div class="toolbar__brand">
-    <div class="toolbar__logo" aria-hidden="true">
-      <img class="toolbar__logo-icon" src="/app-icon.svg" alt="" />
+  @if (showBrand()) {
+    <div class="toolbar__brand">
+      <div class="toolbar__logo" aria-hidden="true">
+        <img class="toolbar__logo-icon" src="/app-icon.svg" alt="" />
+      </div>
+      <span class="toolbar__brand-name">AquaTrack</span>
     </div>
-    <span class="toolbar__brand-name">AquaTrack</span>
-  </div>
+  }
 
   <!-- ── Page info ──────────────────────────────────────────────────────── -->
   <div class="toolbar__page-info">

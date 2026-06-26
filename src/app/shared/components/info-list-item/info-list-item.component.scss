@@ -8,6 +8,7 @@
   padding: theme.$aq-space-sm theme.$aq-space-md;
   background: theme.$aq-color-surface;
   border-radius: theme.$aq-radius-sm;
+  box-shadow: inset 0 0 0 1px theme.$aq-color-border;
   outline: none;
   transition:
     background-color 150ms ease,
@@ -18,7 +19,7 @@
   cursor: pointer;
 }
 
-:host(.info-list-item--clickable):hover {
+:host(:hover) {
   background: theme.$aq-color-surface-muted;
   box-shadow: inset 0 0 0 1px theme.$aq-color-border-strong;
 }

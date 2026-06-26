@@ -1,0 +1,24 @@
+<div class="layout">
+  <aside class="layout__sidebar">
+    <app-nav-menu [items]="navItems" />
+  </aside>
+
+  <div class="layout__content">
+    <app-toolbar
+      [showBrand]="false"
+      [pageTitle]="pageTitleService.title()"
+      [pageSubtitle]="pageTitleService.subtitle()"
+      [userName]="userName"
+      [userEmail]="userEmail"
+      [userInitials]="userInitials"
+      [selectedLanguage]="selectedLanguage()"
+      [userMenuItems]="userMenuItems"
+      (languageChange)="onLanguageChange($event)"
+      (userMenuItemClick)="onUserMenuItemClick($event)"
+    />
+
+    <main class="layout__main" role="main">
+      <router-outlet />
+    </main>
+  </div>
+</div>

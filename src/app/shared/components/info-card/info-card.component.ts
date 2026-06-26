@@ -32,6 +32,7 @@ export class InfoCardComponent {
   readonly metrics = input<InfoCardMetric[]>([]);
   readonly clickable = input<boolean>(false);
   readonly fillContainer = input<boolean>(false);
+  readonly selected = input<boolean>(false);
   readonly cardClick = output<void>();
 
   protected readonly hostClass = computed(() =>
@@ -40,6 +41,7 @@ export class InfoCardComponent {
       `info-card--${this.status()}`,
       this.clickable() ? 'info-card--interactive' : '',
       this.fillContainer() ? 'info-card--fill' : '',
+      this.selected() ? 'info-card--selected' : '',
     ]
       .filter(Boolean)
       .join(' '),
@@ -51,8 +53,10 @@ export class InfoCardComponent {
 
   protected readonly statusBadgeColor = computed((): BadgeColor => {
     const map: Record<InfoCardStatus, BadgeColor> = {
-      attention: 'warning',
       stable: 'success',
+      attention: 'warning',
+      critical: 'error',
+      unknown: 'secondary',
     };
     return map[this.status()];
   });

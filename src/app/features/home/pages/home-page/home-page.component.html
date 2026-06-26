@@ -1,0 +1,165 @@
+<div class="home-page">
+  <!-- ── Seção: Meus Aquários ──────────────────────────────────────────────── -->
+  <section class="home-page__section" aria-labelledby="aquariums-title">
+    <div class="home-page__section-header">
+      <div>
+        <h2 id="aquariums-title" class="home-page__section-title">Meus Aquários</h2>
+        <p class="home-page__section-subtitle">
+          Monitor e gerencie todos os seus aquários em um só lugar
+        </p>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    @if (facade.loading()) {
+      <div class="home-page__aquariums-grid" aria-busy="true" aria-label="Carregando aquários">
+        @for (i of [1, 2, 3, 4]; track i) {
+          <div class="home-page__skeleton-card" aria-hidden="true"></div>
+        }
+      </div>
+    }
+
+    <!-- Error -->
+    @else if (facade.error()) {
+      <div class="home-page__state-container" role="alert">
+        <span class="material-icons home-page__state-icon home-page__state-icon--error">
+          error_outline
+        </span>
+        <p class="home-page__state-message">{{ facade.error() }}</p>
+        <button type="button" class="home-page__retry-btn" (click)="facade.retry()">
+          Tentar novamente
+        </button>
+      </div>
+    }
+
+    <!-- Empty -->
+    @else if (!facade.hasAquariums()) {
+      <div class="home-page__state-container">
+        <span class="material-icons home-page__state-icon">water_drop</span>
+        <p class="home-page__state-message">Nenhum aquário cadastrado.</p>
+      </div>
+    }
+
+    <!-- Cards -->
+    @else {
+      <div class="home-page__aquariums-grid">
+        @for (card of facade.aquariumCards(); track card.id) {
+          <aq-info-card
+            [icon]="card.icon"
+            [status]="card.status"
+            [statusLabel]="card.statusLabel"
+            [title]="card.title"
+            [subtitleValue]="card.subtitle"
+            [metrics]="card.metrics"
+            [clickable]="true"
+            [fillContainer]="true"
+            [selected]="card.selected"
+            (cardClick)="onAquariumSelect(card.id)"
+          />
+        }
+      </div>
+    }
+  </section>
+
+  <!-- ── Seção: Parâmetros + Atividades Recentes ───────────────────────────── -->
+  @if (!facade.loading() && !facade.error() && facade.hasAquariums()) {
+    <!-- Parâmetros da Água -->
+    <section class="home-page__section" aria-labelledby="params-title">
+      <div class="home-page__section-header">
+        <div>
+          <h2 id="params-title" class="home-page__section-title">Parâmetros da Água</h2>
+          <p class="home-page__section-subtitle">Parâmetros básicos</p>
+        </div>
+
+        <aq-input-select
+          [options]="aquariumSelectOptions()"
+          [selectedOption]="selectedAquariumOption()"
+          (selectionChange)="onAquariumDropdownChange($event)"
+        />
+      </div>
+
+      @if (facade.waterParameters().length) {
+        <div class="home-page__subsection">
+          <h3 class="home-page__subsection-title">Parâmetros Básicos</h3>
+          <div class="home-page__parameters-grid">
+            @for (param of facade.waterParameters(); track param.key) {
+              <aq-info-card
+                [title]="param.name"
+                [subtitleValue]="param.periodLabel"
+                [metrics]="[{ label: 'Variação', value: param.variation.displayValue }]"
+              />
+            }
+          </div>
+        </div>
+      }
+    </section>
+
+    <!-- Atividades Recentes -->
+    <div class="home-page__recent-grid">
+      <!-- Medições Recentes -->
+      <section
+        class="home-page__section home-page__section--card"
+        aria-labelledby="measurements-title"
+      >
+        <div class="home-page__section-header">
+          <div class="home-page__recent-header">
+            <div class="home-page__recent-icon-wrapper">
+              <span class="material-icons-outlined home-page__recent-icon">assignment</span>
+            </div>
+            <div>
+              <h2 id="measurements-title" class="home-page__section-title">Medições Recentes</h2>
+              <p class="home-page__section-subtitle">Últimos testes de parâmetros da água</p>
+            </div>
+          </div>
+
+          <aq-input-select
+            [options]="aquariumSelectOptions()"
+            [selectedOption]="selectedAquariumOption()"
+            (selectionChange)="onAquariumDropdownChange($event)"
+          />
+        </div>
+
+        <aq-info-list
+          [items]="facade.recentMeasurements()"
+          [loading]="facade.loading()"
+          [paginated]="false"
+          [emptyState]="measurementsEmptyState"
+        />
+      </section>
+
+      <!-- Aplicações Recentes -->
+      <section
+        class="home-page__section home-page__section--card"
+        aria-labelledby="applications-title"
+      >
+        <div class="home-page__section-header">
+          <div class="home-page__recent-header">
+            <div class="home-page__recent-icon-wrapper home-page__recent-icon-wrapper--accent">
+              <span
+                class="material-icons-outlined home-page__recent-icon home-page__recent-icon--accent"
+                >water_drop</span
+              >
+            </div>
+            <div>
+              <h2 id="applications-title" class="home-page__section-title">Aplicações Recentes</h2>
+              <p class="home-page__section-subtitle">Últimas dosagens de produtos</p>
+            </div>
+          </div>
+
+          <aq-input-select
+            [options]="aquariumSelectOptions()"
+            [selectedOption]="selectedAquariumOption()"
+            (selectionChange)="onAquariumDropdownChange($event)"
+          />
+        </div>
+
+        <aq-info-list
+          [items]="facade.recentApplications()"
+          [loading]="facade.loading()"
+          [paginated]="false"
+          [emptyState]="applicationsEmptyState"
+        />
+      </section>
+    </div>
+  }
+</div>

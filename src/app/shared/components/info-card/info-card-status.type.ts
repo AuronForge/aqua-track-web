@@ -1,1 +1,1 @@
-export type InfoCardStatus = 'attention' | 'stable';
+export type InfoCardStatus = 'stable' | 'attention' | 'critical' | 'unknown';

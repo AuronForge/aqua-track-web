@@ -49,6 +49,12 @@
   min-height: 100%;
 }
 
+:host(.info-card--selected) .info-card__surface {
+  box-shadow:
+    theme.$aq-shadow-card,
+    inset 0 0 0 2px theme.$aq-color-primary;
+}
+
 :host(.info-card--interactive):hover .info-card__surface {
   transform: translateY(-6px) scale(1.01);
   box-shadow: var(--info-card-shadow-hover);
@@ -63,6 +69,12 @@
   box-shadow:
     var(--info-card-shadow-hover),
     0 0 0 3px rgb(34 163 255 / 18%);
+}
+
+:host(.info-card--interactive.info-card--selected):hover .info-card__surface {
+  box-shadow:
+    var(--info-card-shadow-hover),
+    inset 0 0 0 2px theme.$aq-color-primary;
 }
 
 .info-card__top {

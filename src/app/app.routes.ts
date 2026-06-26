@@ -35,14 +35,21 @@ export const routes: Routes = [
   },
   {
     path: '',
+    loadComponent: () =>
+      import('./layouts/authenticated-layout/authenticated-layout.component').then(
+        (m) => m.AuthenticatedLayoutComponent,
+      ),
     canMatch: [authCanMatchGuard],
     canActivateChild: [authCanActivateChildGuard],
     children: [
       {
+        path: 'home',
+        loadChildren: () => import('./features/home/home.routes').then((m) => m.HOME_ROUTES),
+      },
+      {
         path: '',
         pathMatch: 'full',
-        loadComponent: () =>
-          import('./features/welcome/welcome.component').then((m) => m.WelcomeComponent),
+        redirectTo: 'home',
       },
     ],
   },
