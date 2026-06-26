@@ -64,6 +64,20 @@
   color: theme.$aq-color-text-primary;
 }
 
+// ── Parameter card measurements list ─────────────────────────────────────────
+
+.home-page__param-measurements {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-sm;
+}
+
+.home-page__param-divider {
+  margin: 0;
+  border: none;
+  border-top: 1px solid theme.$aq-color-border;
+}
+
 // ── Aquarium cards grid ───────────────────────────────────────────────────────
 
 .home-page__aquariums-grid {

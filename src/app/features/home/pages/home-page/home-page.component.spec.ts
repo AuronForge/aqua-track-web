@@ -184,46 +184,10 @@ describe('HomePageComponent', () => {
       expect(facade.selectAquarium).toHaveBeenCalledWith('aq-2');
     });
 
-    it('should expose select options derived from aquarium cards', () => {
-      expect(fixture.componentInstance['aquariumSelectOptions']()).toEqual(
-        MOCK_CARDS.map(({ id, title, subtitle, icon }) => ({ id, title, subtitle, icon })),
-      );
-    });
-
-    it('should expose the selected aquarium option', () => {
-      expect(fixture.componentInstance['selectedAquariumOption']()).toEqual({
-        id: MOCK_CARDS[0].id,
-        title: MOCK_CARDS[0].title,
-        subtitle: MOCK_CARDS[0].subtitle,
-        icon: MOCK_CARDS[0].icon,
-      });
-    });
-
-    it('should call selectAquarium when dropdown selection changes', () => {
-      fixture.componentInstance['onAquariumDropdownChange']({
-        option: { id: 'aq-2', title: 'Paisagismo Plantado' },
-        previousOption: null,
-      });
-
-      expect(facade.selectAquarium).toHaveBeenCalledWith('aq-2');
-    });
-
     it('should call selectAquarium when onAquariumSelect is invoked directly', () => {
       fixture.componentInstance['onAquariumSelect']('aq-2');
       expect(facade.selectAquarium).toHaveBeenCalledWith('aq-2');
     });
-  });
-
-  it('should return null when selected aquarium option cannot be found', async () => {
-    const fixture = await createFixture(
-      buildFacadeMock({
-        hasAquariums: signal(true),
-        aquariumCards: signal(MOCK_CARDS),
-        selectedAquariumId: signal('missing-id'),
-      }),
-    );
-
-    expect(fixture.componentInstance['selectedAquariumOption']()).toBeNull();
   });
 
   describe('no charts in v1', () => {

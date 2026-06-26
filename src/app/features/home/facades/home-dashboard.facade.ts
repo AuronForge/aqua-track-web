@@ -4,6 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HomeDashboardMapper } from '../mappers/home-dashboard.mapper';
 import { HomeDashboardMockService } from '../services/home-dashboard-mock.service';
 import { HomeDashboardViewModel } from '../models/home-dashboard-view.model';
+import { RecentMeasurementViewModel } from '../models/recent-measurement-view.model';
 
 @Injectable()
 export class HomeDashboardFacade {
@@ -33,8 +34,46 @@ export class HomeDashboardFacade {
   );
 
   readonly waterParameters = computed(() => this._data()?.waterParameters ?? []);
-  readonly recentMeasurements = computed(() => this._data()?.recentMeasurements ?? []);
-  readonly recentApplications = computed(() => this._data()?.recentApplications ?? []);
+  readonly recentMeasurements = computed(() => {
+    const selectedId = this._selectedAquariumId();
+    return (this._data()?.recentMeasurements ?? [])
+      .filter((m) => m.aquariumId === selectedId)
+      .slice(0, 5);
+  });
+
+  readonly recentApplications = computed(() => {
+    const selectedId = this._selectedAquariumId();
+    return (this._data()?.recentApplications ?? [])
+      .filter((a) => a.aquariumId === selectedId)
+      .slice(0, 5);
+  });
+
+  readonly measurementsByParamKey = computed(
+    (): Partial<Record<string, RecentMeasurementViewModel[]>> => {
+      const selectedId = this._selectedAquariumId();
+      const result: Record<string, RecentMeasurementViewModel[]> = {};
+      for (const m of this._data()?.recentMeasurements ?? []) {
+        if (m.aquariumId !== selectedId) continue;
+        if (!result[m.parameterKey]) result[m.parameterKey] = [];
+        if (result[m.parameterKey].length < 3) {
+          result[m.parameterKey].push({ ...m, metadata: this.formatDate(m.measuredAt) });
+        }
+      }
+      return result;
+    },
+  );
+
+  private formatDate(isoTimestamp: string): string {
+    try {
+      return new Date(isoTimestamp).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      });
+    } catch {
+      return '';
+    }
+  }
 
   loadDashboard(): void {
     this._loading.set(true);

@@ -30,6 +30,7 @@ export class InfoListComponent {
   readonly disabled = input<boolean>(false);
   readonly emptyState = input<InfoListEmptyState>({ title: 'Nenhum item encontrado' });
   readonly clickable = input<boolean>(false);
+  readonly equalSpacing = input<boolean>(false);
 
   readonly pageChange = output<InfoListPageChange>();
   readonly itemClick = output<InfoListItemData>();
@@ -54,6 +55,7 @@ export class InfoListComponent {
       this.disabled() ? 'info-list--disabled' : '',
       this.loading() ? 'info-list--loading' : '',
       this.isEmpty() ? 'info-list--empty' : '',
+      this.equalSpacing() ? 'info-list--equal-spacing' : '',
     ]
       .filter(Boolean)
       .join(' '),

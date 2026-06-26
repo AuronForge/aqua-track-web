@@ -216,5 +216,105 @@ describe('HomeDashboardFacade', () => {
       await Promise.resolve();
       expect(facade.recentApplications().length).toBeGreaterThan(0);
     });
+
+    it('recentMeasurements filters by selected aquarium', async () => {
+      facade.loadDashboard();
+      jest.runAllTimers();
+      await Promise.resolve();
+
+      const aq1 = facade.recentMeasurements();
+      facade.selectAquarium('aq-2');
+      const aq2 = facade.recentMeasurements();
+
+      expect(aq1).not.toEqual(aq2);
+      aq1.forEach((m) => expect(m.aquariumId).toBe('aq-1'));
+      aq2.forEach((m) => expect(m.aquariumId).toBe('aq-2'));
+    });
+
+    it('recentMeasurements limits to 5 items', async () => {
+      facade.loadDashboard();
+      jest.runAllTimers();
+      await Promise.resolve();
+      expect(facade.recentMeasurements().length).toBeLessThanOrEqual(5);
+    });
+
+    it('recentApplications filters by selected aquarium', async () => {
+      facade.loadDashboard();
+      jest.runAllTimers();
+      await Promise.resolve();
+
+      const aq1 = facade.recentApplications();
+      facade.selectAquarium('aq-2');
+      const aq2 = facade.recentApplications();
+
+      expect(aq1).not.toEqual(aq2);
+      aq1.forEach((a) => expect(a.aquariumId).toBe('aq-1'));
+      aq2.forEach((a) => expect(a.aquariumId).toBe('aq-2'));
+    });
+
+    it('recentApplications limits to 5 items', async () => {
+      facade.loadDashboard();
+      jest.runAllTimers();
+      await Promise.resolve();
+      expect(facade.recentApplications().length).toBeLessThanOrEqual(5);
+    });
+  });
+
+  describe('measurementsByParamKey', () => {
+    const loadAndTick = async () => {
+      facade.loadDashboard();
+      jest.runAllTimers();
+      await Promise.resolve();
+    };
+
+    it('groups measurements by parameterKey for the selected aquarium', async () => {
+      await loadAndTick();
+      const byKey = facade.measurementsByParamKey();
+      expect(byKey['ph']).toBeDefined();
+      expect(byKey['ph']!.length).toBeGreaterThan(0);
+    });
+
+    it('limits measurements per parameterKey to 3', async () => {
+      await loadAndTick();
+      const byKey = facade.measurementsByParamKey();
+      Object.values(byKey).forEach((measurements) => {
+        expect(measurements!.length).toBeLessThanOrEqual(3);
+      });
+    });
+
+    it('excludes measurements from other aquariums', async () => {
+      await loadAndTick();
+      facade.selectAquarium('aq-2');
+      const byKey = facade.measurementsByParamKey();
+      // aq-1 has nitrite and ammonia; aq-2 does not
+      expect(byKey['nitrite']).toBeUndefined();
+      expect(byKey['ammonia']).toBeUndefined();
+      // aq-2 has nitrate measurements
+      expect(byKey['nitrate']).toBeDefined();
+    });
+
+    it('returns empty object when no measurements match the selected aquarium', async () => {
+      mockService.getDashboard.mockReturnValue(of(MOCK_DASHBOARD_EMPTY_AQUARIUMS));
+      facade.loadDashboard();
+      jest.runAllTimers();
+      await Promise.resolve();
+      expect(facade.measurementsByParamKey()).toEqual({});
+    });
+
+    it('overrides metadata with formatted date (DD/MM/YYYY)', async () => {
+      await loadAndTick();
+      const byKey = facade.measurementsByParamKey();
+      const phMeasurements = byKey['ph'];
+      expect(phMeasurements).toBeDefined();
+      expect(phMeasurements![0].metadata).toMatch(/^\d{2}\/\d{2}\/\d{4}$/);
+    });
+
+    it('updates when selected aquarium changes', async () => {
+      await loadAndTick();
+      const before = Object.keys(facade.measurementsByParamKey());
+      facade.selectAquarium('aq-3');
+      const after = Object.keys(facade.measurementsByParamKey());
+      expect(before).not.toEqual(after);
+    });
   });
 });

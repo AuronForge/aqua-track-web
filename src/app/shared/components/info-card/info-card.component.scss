@@ -90,6 +90,10 @@
   margin-top: auto;
 }
 
+:host(.info-card--align-top) .info-card__footer {
+  margin-top: 0;
+}
+
 .info-card__header {
   display: flex;
   align-items: center;

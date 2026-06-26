@@ -113,8 +113,7 @@ export class HomeDashboardMapper {
   } {
     const direction = this.mapVariationDirection(dto.direction);
     const sign = dto.direction === 'UP' ? '+' : dto.direction === 'DOWN' ? '-' : '';
-    const unitSuffix = this.mapUnitSuffix(dto.unit);
-    const displayValue = `${sign}${dto.value}${unitSuffix}`;
+    const displayValue = `${sign}${this.formatWithUnit(dto.value, dto.unit)}`;
 
     return { displayValue, direction };
   }
@@ -131,7 +130,7 @@ export class HomeDashboardMapper {
 
   private mapUnitSuffix(unit: MeasurementUnit): string {
     const map: Record<string, string> = {
-      PH: '',
+      PH: 'pH',
       CELSIUS: '°C',
       PPM: 'ppm',
       MG_L: 'mg/L',
@@ -142,12 +141,21 @@ export class HomeDashboardMapper {
     return map[unit] ?? '';
   }
 
+  private formatWithUnit(value: number, unit: MeasurementUnit): string {
+    const suffix = this.mapUnitSuffix(unit);
+    if (!suffix) return String(value);
+    const separator = unit === 'CELSIUS' ? '' : ' ';
+    return `${value}${separator}${suffix}`;
+  }
+
   private mapRecentMeasurement(dto: RecentMeasurementDto): RecentMeasurementViewModel {
-    const unitSuffix = this.mapUnitSuffix(dto.unit);
-    const value = unitSuffix ? `${dto.value} ${unitSuffix}` : String(dto.value);
+    const value = this.formatWithUnit(dto.value, dto.unit);
 
     return {
       id: dto.id,
+      aquariumId: dto.aquariumId,
+      parameterKey: dto.parameterKey,
+      measuredAt: dto.measuredAt,
       title: dto.parameterName,
       subtitle: dto.aquariumName,
       value,
@@ -170,6 +178,7 @@ export class HomeDashboardMapper {
   private mapRecentApplication(dto: RecentApplicationDto): RecentApplicationViewModel {
     return {
       id: dto.id,
+      aquariumId: dto.aquariumId,
       title: dto.productName,
       subtitle: dto.aquariumName,
       value: `${dto.dosage} ${dto.dosageUnit}`,

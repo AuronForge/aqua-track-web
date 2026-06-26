@@ -33,6 +33,7 @@ export class InfoCardComponent {
   readonly clickable = input<boolean>(false);
   readonly fillContainer = input<boolean>(false);
   readonly selected = input<boolean>(false);
+  readonly alignTop = input<boolean>(false);
   readonly cardClick = output<void>();
 
   protected readonly hostClass = computed(() =>
@@ -42,6 +43,7 @@ export class InfoCardComponent {
       this.clickable() ? 'info-card--interactive' : '',
       this.fillContainer() ? 'info-card--fill' : '',
       this.selected() ? 'info-card--selected' : '',
+      this.alignTop() ? 'info-card--align-top' : '',
     ]
       .filter(Boolean)
       .join(' '),

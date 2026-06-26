@@ -26,8 +26,8 @@ describe('HomeDashboardMapper', () => {
 
       expect(vm.aquariumCards.length).toBe(4);
       expect(vm.waterParameters.length).toBe(MOCK_DASHBOARD_FULL.waterParameters.length);
-      expect(vm.recentMeasurements.length).toBe(4);
-      expect(vm.recentApplications.length).toBe(3);
+      expect(vm.recentMeasurements.length).toBe(MOCK_DASHBOARD_FULL.recentMeasurements.length);
+      expect(vm.recentApplications.length).toBe(MOCK_DASHBOARD_FULL.recentApplications.length);
     });
 
     it('uses selectedAquarium from the DTO when present', () => {
@@ -163,7 +163,7 @@ describe('HomeDashboardMapper', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
       const phParam = vm.waterParameters.find((p) => p.key === 'ph');
 
-      expect(phParam?.variation.displayValue).toBe('+0.2');
+      expect(phParam?.variation.displayValue).toBe('+0.2 pH');
       expect(phParam?.variation.direction).toBe('up');
     });
 
@@ -171,7 +171,7 @@ describe('HomeDashboardMapper', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
       const nitriteParam = vm.waterParameters.find((p) => p.key === 'nitrite');
 
-      expect(nitriteParam?.variation.displayValue).toBe('-0.1ppm');
+      expect(nitriteParam?.variation.displayValue).toBe('-0.1 ppm');
       expect(nitriteParam?.variation.direction).toBe('down');
     });
 
@@ -184,11 +184,19 @@ describe('HomeDashboardMapper', () => {
     });
 
     it('maps UNKNOWN direction with no sign and unknown direction output', () => {
-      const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
-      const orpParam = vm.waterParameters.find((p) => p.key === 'orp');
+      const dto = {
+        ...MOCK_DASHBOARD_FULL,
+        waterParameters: [
+          {
+            ...MOCK_DASHBOARD_FULL.waterParameters[0],
+            variation: { value: 0, unit: 'NONE' as const, direction: 'UNKNOWN' as const },
+          },
+        ],
+      };
+      const vm = mapper.mapDashboardDtoToViewModel(dto);
 
-      expect(orpParam?.variation.displayValue).toBe('0');
-      expect(orpParam?.variation.direction).toBe('unknown');
+      expect(vm.waterParameters[0].variation.displayValue).toBe('0');
+      expect(vm.waterParameters[0].variation.direction).toBe('unknown');
     });
 
     it('falls back to unknown direction and empty suffix for unmapped variation data', () => {
@@ -233,21 +241,21 @@ describe('HomeDashboardMapper', () => {
   describe('measurement badge mapping', () => {
     it('maps NORMAL to a normal badge', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
-      const measurement = vm.recentMeasurements.find((r) => r.id === 'm-1');
+      const measurement = vm.recentMeasurements.find((r) => r.id === 'm-ph-1');
 
       expect(measurement?.badge).toEqual({ label: 'Normal', status: 'normal' });
     });
 
     it('maps ATTENTION to an attention badge', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
-      const measurement = vm.recentMeasurements.find((r) => r.id === 'm-2');
+      const measurement = vm.recentMeasurements.find((r) => r.id === 'm-aq2-1');
 
       expect(measurement?.badge).toEqual({ label: 'Alto', status: 'attention' });
     });
 
     it('maps CRITICAL to a danger badge', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
-      const measurement = vm.recentMeasurements.find((r) => r.id === 'm-4');
+      const measurement = vm.recentMeasurements.find((r) => r.id === 'm-aq4-1');
 
       expect(measurement?.badge).toEqual({
         label: expect.stringContaining('Cr'),
@@ -320,7 +328,7 @@ describe('HomeDashboardMapper', () => {
   describe('recent application mapping', () => {
     it('maps dosage and unit to the value string', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
-      expect(vm.recentApplications[0].value).toBe('5 ml');
+      expect(vm.recentApplications[0].value).toBe('2 ml');
     });
 
     it('keeps recent application badges as null', () => {

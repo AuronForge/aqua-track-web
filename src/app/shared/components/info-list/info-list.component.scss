@@ -1,5 +1,9 @@
 @use '../../theme' as theme;
 
+// Height of one aq-info-list-item: vertical padding + title + gap + subtitle
+$item-h: (theme.$aq-space-sm * 2) + (theme.$aq-font-size-md * theme.$aq-line-height-tight) +
+  theme.$aq-space-2xs + (theme.$aq-font-size-sm * theme.$aq-line-height-base);
+
 :host {
   display: flex;
   flex-direction: column;
@@ -18,6 +22,15 @@
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+:host(.info-list--equal-spacing) .info-list__items {
+  // Space evenly distributes gaps before, between, and after each item.
+  // min-height locks the container to exactly 3 items so fewer items spread
+  // out to occupy the same area.
+  min-height: ($item-h * 3) + (theme.$aq-space-xs * 4);
+  justify-content: space-evenly;
+  gap: 0;
 }
 
 .info-list__item {
