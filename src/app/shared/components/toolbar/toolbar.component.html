@@ -42,6 +42,26 @@
           <span class="toolbar__user-email">{{ userEmail() }}</span>
         </div>
       </ng-container>
+
+      <ng-container slot="header">
+        <div class="toolbar__menu-header">
+          <app-avatar
+            variant="initials"
+            [color]="userAvatarColor()"
+            size="large"
+            [initials]="userInitials()"
+          />
+          <div class="toolbar__menu-header-info">
+            <span class="toolbar__menu-header-name">{{ userName() }}</span>
+            @if (userPlan()) {
+              <span class="toolbar__menu-plan-badge">
+                <span class="toolbar__menu-plan-dot" aria-hidden="true"></span>
+                {{ userPlan() }}
+              </span>
+            }
+          </div>
+        </div>
+      </ng-container>
     </app-dropdown-menu>
   </div>
 </header>

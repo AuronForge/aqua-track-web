@@ -101,3 +101,44 @@
   font: 400 0.75rem/1.2 theme.$aq-font-family-base;
   color: theme.$aq-color-text-secondary;
 }
+
+// ── User menu header (inside dropdown panel) ──────────────────────────────
+
+.toolbar__menu-header {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-md;
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid theme.$aq-color-border;
+}
+
+.toolbar__menu-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.toolbar__menu-header-name {
+  font: 600 0.95rem/1.2 theme.$aq-font-family-base;
+  color: theme.$aq-color-text-primary;
+}
+
+.toolbar__menu-plan-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  background: theme.$aq-color-border;
+  border-radius: theme.$aq-radius-pill;
+  font: 500 0.75rem/1 theme.$aq-font-family-base;
+  color: theme.$aq-color-text-secondary;
+  width: fit-content;
+}
+
+.toolbar__menu-plan-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: theme.$aq-color-success;
+  flex-shrink: 0;
+}

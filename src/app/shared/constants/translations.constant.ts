@@ -83,6 +83,11 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     // Water parameter — period label
     periodLastNDays: 'Últimos {{n}} dias',
 
+    // User menu
+    userMenuProfile: 'Meu Perfil',
+    userMenuHelp: 'Ajuda e Suporte',
+    userMenuLogout: 'Sair',
+
     // Navigation menu
     navDashboard: 'Dashboard',
     navAquariums: 'Aquários',
@@ -199,6 +204,11 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
 
     // Water parameter — period label
     periodLastNDays: 'Last {{n}} days',
+
+    // User menu
+    userMenuProfile: 'My Profile',
+    userMenuHelp: 'Help & Support',
+    userMenuLogout: 'Logout',
 
     // Navigation menu
     navDashboard: 'Dashboard',
@@ -317,6 +327,11 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
 
     // Water parameter — period label
     periodLastNDays: 'Últimos {{n}} días',
+
+    // User menu
+    userMenuProfile: 'Mi Perfil',
+    userMenuHelp: 'Ayuda y Soporte',
+    userMenuLogout: 'Cerrar sesión',
 
     // Navigation menu
     navDashboard: 'Dashboard',

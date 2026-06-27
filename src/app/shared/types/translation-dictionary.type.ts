@@ -78,6 +78,11 @@ export interface TranslationDictionary {
   // Water parameter — period label (use {{n}} as placeholder for number of days)
   readonly periodLastNDays: string;
 
+  // User menu
+  readonly userMenuProfile: string;
+  readonly userMenuHelp: string;
+  readonly userMenuLogout: string;
+
   // Navigation menu
   readonly navDashboard: string;
   readonly navAquariums: string;

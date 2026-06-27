@@ -23,6 +23,7 @@ export class ToolbarComponent {
   readonly userEmail = input.required<string>();
   readonly userInitials = input.required<string>();
   readonly userAvatarColor = input<AvatarColor>('primary');
+  readonly userPlan = input<string>('');
   readonly selectedLanguage = input.required<LanguageCode>();
   readonly languageSelectorLabel = input<string>('Select language');
   readonly userMenuItems = input.required<DropdownMenuItem[]>();

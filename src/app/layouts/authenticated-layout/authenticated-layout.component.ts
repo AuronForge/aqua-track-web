@@ -10,12 +10,6 @@ import { NavMenuItem } from '../../shared/components/nav-menu/nav-menu-item.mode
 import { LanguageCode } from '../../shared/types/language-code.type';
 import { LanguageService } from '../../shared/services/language.service';
 
-const USER_MENU_ITEMS: DropdownMenuItem[] = [
-  { id: 'profile', label: 'My Profile', icon: 'person' },
-  { id: 'help', label: 'Help & Support', icon: 'help_outline' },
-  { id: 'logout', label: 'Logout', icon: 'logout', isDestructive: true, hasDividerBefore: true },
-];
-
 @Component({
   selector: 'app-authenticated-layout',
   standalone: true,
@@ -30,10 +24,24 @@ export class AuthenticatedLayoutComponent {
   protected readonly languageService = inject(LanguageService);
 
   protected readonly pageTitleService = inject(PageTitleService);
-  protected readonly userMenuItems = USER_MENU_ITEMS;
 
   protected readonly selectedLanguage = this.languageService.selectedLanguage;
   private readonly t = this.languageService.translation;
+
+  protected readonly userMenuItems = computed<DropdownMenuItem[]>(() => {
+    const t = this.t();
+    return [
+      { id: 'profile', label: t.userMenuProfile, icon: 'person' },
+      { id: 'help', label: t.userMenuHelp, icon: 'help_outline' },
+      {
+        id: 'logout',
+        label: t.userMenuLogout,
+        icon: 'logout',
+        isDestructive: true,
+        hasDividerBefore: true,
+      },
+    ];
+  });
 
   protected readonly navItems = computed<NavMenuItem[]>(() => {
     const t = this.t();
@@ -63,6 +71,7 @@ export class AuthenticatedLayoutComponent {
   readonly userName = 'Usuário';
   readonly userEmail = 'usuario@aquatrack.app';
   readonly userInitials = 'U';
+  readonly userPlan = 'Pro Plan';
 
   protected onLanguageChange(language: LanguageCode): void {
     this.languageService.setLanguage(language);
