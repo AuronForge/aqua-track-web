@@ -1,6 +1,11 @@
 <div class="layout">
   <aside class="layout__sidebar">
-    <app-nav-menu [items]="navItems" />
+    <app-nav-menu
+      [items]="navItems()"
+      [collapseLabel]="languageService.translation().navCollapse"
+      [expandLabel]="languageService.translation().navExpand"
+      [homeAriaLabel]="languageService.translation().navGoHome"
+    />
   </aside>
 
   <div class="layout__content">
@@ -12,6 +17,7 @@
       [userEmail]="userEmail"
       [userInitials]="userInitials"
       [selectedLanguage]="selectedLanguage()"
+      [languageSelectorLabel]="languageService.translation().languageSelectorLabel"
       [userMenuItems]="userMenuItems"
       (languageChange)="onLanguageChange($event)"
       (userMenuItemClick)="onUserMenuItemClick($event)"

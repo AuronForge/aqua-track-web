@@ -24,6 +24,7 @@ export class ToolbarComponent {
   readonly userInitials = input.required<string>();
   readonly userAvatarColor = input<AvatarColor>('primary');
   readonly selectedLanguage = input.required<LanguageCode>();
+  readonly languageSelectorLabel = input<string>('Select language');
   readonly userMenuItems = input.required<DropdownMenuItem[]>();
 
   readonly languageChange = output<LanguageCode>();

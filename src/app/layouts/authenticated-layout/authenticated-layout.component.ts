@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 
 import { AuthService } from '../../core/auth/services/auth.service';
@@ -8,25 +8,7 @@ import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.compon
 import { DropdownMenuItem } from '../../shared/ui/dropdown-menu/dropdown-menu-item.model';
 import { NavMenuItem } from '../../shared/components/nav-menu/nav-menu-item.model';
 import { LanguageCode } from '../../shared/types/language-code.type';
-import { getInitialLanguage } from '../../shared/utils/get-initial-language.util';
-import { LANGUAGE_STORAGE_KEY } from '../../shared/constants/language-storage-key.constant';
-import { signal } from '@angular/core';
-
-const NAV_ITEMS: NavMenuItem[] = [
-  { id: 'dashboard', label: 'Dashboard', icon: 'space_dashboard', route: '/home', exact: true },
-  { id: 'aquariums', label: 'Aquários', icon: 'water_drop', route: '/aquariums' },
-  { id: 'measurements', label: 'Medições', icon: 'show_chart', route: '/measurements' },
-  { id: 'alerts', label: 'Alertas', icon: 'notifications', route: '/alerts' },
-  { id: 'aquatic-life', label: 'Vida Aquática', icon: 'pets', route: '/aquatic-life' },
-  { id: 'products', label: 'Produtos', icon: 'inventory_2', route: '/products' },
-  {
-    id: 'dosage-calculator',
-    label: 'Calculadora de Dosagem',
-    icon: 'calculate',
-    route: '/dosage-calculator',
-  },
-  { id: 'settings', label: 'Configurações', icon: 'settings', route: '/settings' },
-];
+import { LanguageService } from '../../shared/services/language.service';
 
 const USER_MENU_ITEMS: DropdownMenuItem[] = [
   { id: 'profile', label: 'My Profile', icon: 'person' },
@@ -45,23 +27,45 @@ const USER_MENU_ITEMS: DropdownMenuItem[] = [
 export class AuthenticatedLayoutComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  protected readonly languageService = inject(LanguageService);
 
   protected readonly pageTitleService = inject(PageTitleService);
-
-  protected readonly navItems = NAV_ITEMS;
   protected readonly userMenuItems = USER_MENU_ITEMS;
 
-  protected readonly selectedLanguage = signal<LanguageCode>(getInitialLanguage());
+  protected readonly selectedLanguage = this.languageService.selectedLanguage;
+  private readonly t = this.languageService.translation;
+
+  protected readonly navItems = computed<NavMenuItem[]>(() => {
+    const t = this.t();
+    return [
+      {
+        id: 'dashboard',
+        label: t.navDashboard,
+        icon: 'space_dashboard',
+        route: '/home',
+        exact: true,
+      },
+      { id: 'aquariums', label: t.navAquariums, icon: 'water_drop', route: '/aquariums' },
+      { id: 'measurements', label: t.navMeasurements, icon: 'show_chart', route: '/measurements' },
+      { id: 'alerts', label: t.navAlerts, icon: 'notifications', route: '/alerts' },
+      { id: 'aquatic-life', label: t.navAquaticLife, icon: 'pets', route: '/aquatic-life' },
+      { id: 'products', label: t.navProducts, icon: 'inventory_2', route: '/products' },
+      {
+        id: 'dosage-calculator',
+        label: t.navDosageCalculator,
+        icon: 'calculate',
+        route: '/dosage-calculator',
+      },
+      { id: 'settings', label: t.navSettings, icon: 'settings', route: '/settings' },
+    ];
+  });
 
   readonly userName = 'Usuário';
   readonly userEmail = 'usuario@aquatrack.app';
   readonly userInitials = 'U';
 
   protected onLanguageChange(language: LanguageCode): void {
-    this.selectedLanguage.set(language);
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
-    }
+    this.languageService.setLanguage(language);
   }
 
   protected onUserMenuItemClick(item: DropdownMenuItem): void {

@@ -1,8 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { InfoCardStatus } from '../../../shared/components/info-card/info-card-status.type';
 import { InfoListItemBadge } from '../../../shared/components/info-list-item/info-list-item-badge.model';
 import { InfoListItemStatus } from '../../../shared/components/info-list-item/info-list-item-status.type';
+import { LanguageService } from '../../../shared/services/language.service';
+import { TranslationDictionary } from '../../../shared/types/translation-dictionary.type';
 import {
   AquariumHealthStatus,
   DashboardApiDto,
@@ -26,48 +28,54 @@ import { RecentMeasurementViewModel } from '../models/recent-measurement-view.mo
 
 @Injectable({ providedIn: 'root' })
 export class HomeDashboardMapper {
+  private readonly languageService = inject(LanguageService);
+
   mapDashboardDtoToViewModel(dto: DashboardApiDto): HomeDashboardViewModel {
+    const t = this.languageService.translation();
     return {
-      aquariumCards: dto.aquariums.map((aq) => this.mapAquariumCard(aq)),
+      aquariumCards: dto.aquariums.map((aq) => this.mapAquariumCard(aq, t)),
       selectedAquariumId: dto.selectedAquarium?.id ?? dto.aquariums[0]?.id ?? null,
-      waterParameters: dto.waterParameters.map((p) => this.mapWaterParameter(p)),
-      recentMeasurements: dto.recentMeasurements.map((m) => this.mapRecentMeasurement(m)),
+      waterParameters: dto.waterParameters.map((p) => this.mapWaterParameter(p, t)),
+      recentMeasurements: dto.recentMeasurements.map((m) => this.mapRecentMeasurement(m, t)),
       recentApplications: dto.recentApplications.map((a) => this.mapRecentApplication(a)),
     };
   }
 
-  private mapAquariumCard(dto: DashboardAquariumDto): AquariumCardViewModel {
+  private mapAquariumCard(
+    dto: DashboardAquariumDto,
+    t: TranslationDictionary,
+  ): AquariumCardViewModel {
     const metrics = [];
     if (dto.summary.ph !== undefined) {
-      metrics.push({ label: 'Nível de pH', value: String(dto.summary.ph) });
+      metrics.push({ label: t.metricPhLevel, value: String(dto.summary.ph) });
     }
     if (dto.summary.temperature !== undefined) {
-      metrics.push({ label: 'Temp', value: `${dto.summary.temperature}°C` });
+      metrics.push({ label: t.metricTemperature, value: `${dto.summary.temperature}°C` });
     }
 
     return {
       id: dto.id,
       title: dto.name,
-      subtitle: this.mapAquariumSubtitle(dto),
+      subtitle: this.mapAquariumSubtitle(dto, t),
       status: this.mapHealthStatus(dto.healthStatus),
-      statusLabel: this.mapHealthStatusLabel(dto.healthStatus),
+      statusLabel: this.mapHealthStatusLabel(dto.healthStatus, t),
       metrics,
       icon: 'water_drop',
       selected: false,
     };
   }
 
-  private mapAquariumSubtitle(dto: DashboardAquariumDto): string {
-    const waterTypeLabel = this.mapWaterTypeLabel(dto.waterType);
+  private mapAquariumSubtitle(dto: DashboardAquariumDto, t: TranslationDictionary): string {
+    const waterTypeLabel = this.mapWaterTypeLabel(dto.waterType, t);
     const volumeLabel = this.mapVolumeLabel(dto.volume, dto.volumeUnit);
     return `${waterTypeLabel} • ${volumeLabel}`;
   }
 
-  private mapWaterTypeLabel(waterType: string): string {
+  private mapWaterTypeLabel(waterType: string, t: TranslationDictionary): string {
     const map: Record<string, string> = {
-      FRESHWATER: 'Água Doce',
-      SALTWATER: 'Água Salgada',
-      BRACKISH: 'Salobra',
+      FRESHWATER: t.waterTypeFreshwater,
+      SALTWATER: t.waterTypeSaltwater,
+      BRACKISH: t.waterTypeBrackish,
     };
     return map[waterType] ?? waterType;
   }
@@ -87,21 +95,24 @@ export class HomeDashboardMapper {
     return map[status] ?? 'unknown';
   }
 
-  private mapHealthStatusLabel(status: AquariumHealthStatus): string {
+  private mapHealthStatusLabel(status: AquariumHealthStatus, t: TranslationDictionary): string {
     const map: Record<AquariumHealthStatus, string> = {
-      STABLE: 'Estável',
-      ATTENTION: 'Atenção',
-      CRITICAL: 'Crítico',
-      UNKNOWN: 'Desconhecido',
+      STABLE: t.statusStable,
+      ATTENTION: t.statusAttention,
+      CRITICAL: t.statusCritical,
+      UNKNOWN: t.statusUnknown,
     };
-    return map[status] ?? 'Desconhecido';
+    return map[status] ?? t.statusUnknown;
   }
 
-  private mapWaterParameter(dto: WaterParameterDto): WaterParameterCardViewModel {
+  private mapWaterParameter(
+    dto: WaterParameterDto,
+    t: TranslationDictionary,
+  ): WaterParameterCardViewModel {
     return {
       key: dto.key,
       name: dto.name,
-      periodLabel: dto.periodLabel,
+      periodLabel: t.periodLastNDays.replace('{{n}}', String(dto.periodDays)),
       variation: this.mapVariation(dto.variation),
       hasChartData: dto.series.length > 0,
     };
@@ -148,7 +159,10 @@ export class HomeDashboardMapper {
     return `${value}${separator}${suffix}`;
   }
 
-  private mapRecentMeasurement(dto: RecentMeasurementDto): RecentMeasurementViewModel {
+  private mapRecentMeasurement(
+    dto: RecentMeasurementDto,
+    t: TranslationDictionary,
+  ): RecentMeasurementViewModel {
     const value = this.formatWithUnit(dto.value, dto.unit);
 
     return {
@@ -160,16 +174,19 @@ export class HomeDashboardMapper {
       subtitle: dto.aquariumName,
       value,
       metadata: this.formatTime(dto.measuredAt),
-      badge: this.mapMeasurementBadge(dto.status),
+      badge: this.mapMeasurementBadge(dto.status, t),
     };
   }
 
-  private mapMeasurementBadge(status: WaterParameterStatus): InfoListItemBadge | null {
+  private mapMeasurementBadge(
+    status: WaterParameterStatus,
+    t: TranslationDictionary,
+  ): InfoListItemBadge | null {
     const map: Record<WaterParameterStatus, { label: string; status: InfoListItemStatus } | null> =
       {
-        NORMAL: { label: 'Normal', status: 'normal' },
-        ATTENTION: { label: 'Alto', status: 'attention' },
-        CRITICAL: { label: 'Crítico', status: 'danger' },
+        NORMAL: { label: t.badgeNormal, status: 'normal' },
+        ATTENTION: { label: t.badgeHigh, status: 'attention' },
+        CRITICAL: { label: t.badgeCritical, status: 'danger' },
         UNKNOWN: null,
       };
     return map[status] ?? null;

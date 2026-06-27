@@ -1,5 +1,5 @@
 <nav class="nav-menu" [class.nav-menu--collapsed]="collapsed()">
-  <a class="nav-menu__brand" routerLink="/" aria-label="Ir para a página inicial">
+  <a class="nav-menu__brand" routerLink="/" [attr.aria-label]="homeAriaLabel()">
     <span class="material-icons nav-menu__brand-icon">waves</span>
     @if (!collapsed()) {
       <span class="nav-menu__brand-name">AquaTrack</span>
@@ -30,11 +30,11 @@
       type="button"
       class="nav-menu__toggle"
       (click)="toggleCollapse()"
-      [attr.aria-label]="collapsed() ? 'Expandir menu' : 'Recolher menu'"
+      [attr.aria-label]="collapsed() ? expandLabel() : collapseLabel()"
     >
       <span class="material-icons">{{ collapsed() ? 'chevron_right' : 'chevron_left' }}</span>
       @if (!collapsed()) {
-        <span class="nav-menu__toggle-label">Collapse</span>
+        <span class="nav-menu__toggle-label">{{ collapseLabel() }}</span>
       }
     </button>
   </div>

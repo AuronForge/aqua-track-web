@@ -14,6 +14,9 @@ import { NavMenuItem } from './nav-menu-item.model';
 export class NavMenuComponent {
   readonly items = input.required<NavMenuItem[]>();
   readonly userRoles = input<string[]>([]);
+  readonly collapseLabel = input<string>('Collapse');
+  readonly expandLabel = input<string>('Expand');
+  readonly homeAriaLabel = input<string>('Go to home page');
 
   protected readonly collapsed = signal(false);
 

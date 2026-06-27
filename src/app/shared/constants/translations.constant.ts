@@ -3,7 +3,11 @@ import { TranslationDictionary } from '../types/translation-dictionary.type';
 
 export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
   pt: {
+    // Shared
     languageSelectorLabel: 'Selecionar idioma',
+    footer: 'Todos os direitos reservados.',
+
+    // Auth — login
     title: 'Bem-vindo ao AquaTrack',
     subtitle: 'Gerencie seus aquários com precisão',
     emailLabel: 'E-mail',
@@ -15,11 +19,12 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     loadingLabel: 'Entrando...',
     createAccountPrompt: 'Ainda não tem uma conta?',
     createAccount: 'Criar conta',
-    footer: 'Todos os direitos reservados.',
     emailRequired: 'O e-mail é obrigatório.',
     emailInvalid: 'Informe um e-mail válido.',
     passwordRequired: 'A senha é obrigatória.',
     loginError: 'E-mail ou senha incorretos. Tente novamente.',
+
+    // Auth — registration
     registrationTitle: 'Crie sua conta',
     registrationSubtitle: 'Comece a gerenciar seus aquários hoje',
     fullNameLabel: 'Nome completo',
@@ -36,6 +41,8 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     signInPrompt: 'Já tem uma conta?',
     signInInstead: 'Entrar em vez disso',
     registrationError: 'Não foi possível criar a conta. Tente novamente.',
+
+    // Auth — forgot password
     forgotPasswordTitle: 'Esqueceu a senha?',
     forgotPasswordSubtitle: 'Informe os dados da sua conta abaixo para redefinir sua senha.',
     usernameLabel: 'Nome de usuário',
@@ -52,9 +59,72 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     forgotPasswordNewPasswordLabel: 'Sua nova senha é:',
     copyPassword: 'Copiar senha',
     passwordCopied: 'Copiado!',
+
+    // Aquarium — water types
+    waterTypeFreshwater: 'Água Doce',
+    waterTypeSaltwater: 'Água Salgada',
+    waterTypeBrackish: 'Salobra',
+
+    // Aquarium — health status labels
+    statusStable: 'Estável',
+    statusAttention: 'Atenção',
+    statusCritical: 'Crítico',
+    statusUnknown: 'Desconhecido',
+
+    // Aquarium — metric labels
+    metricPhLevel: 'Nível de pH',
+    metricTemperature: 'Temp',
+
+    // Measurement — badge labels
+    badgeNormal: 'Normal',
+    badgeHigh: 'Alto',
+    badgeCritical: 'Crítico',
+
+    // Water parameter — period label
+    periodLastNDays: 'Últimos {{n}} dias',
+
+    // Navigation menu
+    navDashboard: 'Dashboard',
+    navAquariums: 'Aquários',
+    navMeasurements: 'Medições',
+    navAlerts: 'Alertas',
+    navAquaticLife: 'Vida Aquática',
+    navProducts: 'Produtos',
+    navDosageCalculator: 'Calculadora de Dosagem',
+    navSettings: 'Configurações',
+    navCollapse: 'Recolher',
+    navExpand: 'Expandir',
+    navGoHome: 'Ir para a página inicial',
+
+    // Home — page title
+    homePageSubtitle: 'Bem-vindo de volta! Veja o resumo dos seus aquários',
+
+    // Home — sections
+    homeMyAquariums: 'Meus Aquários',
+    homeMyAquariumsSubtitle: 'Monitor e gerencie todos os seus aquários em um só lugar',
+    homeWaterParameters: 'Parâmetros da Água',
+    homeVariation: 'Variação',
+    homeRecentMeasurements: 'Medições Recentes',
+    homeRecentMeasurementsSubtitle: 'Últimos testes de parâmetros da água',
+    homeRecentApplications: 'Aplicações Recentes',
+    homeRecentApplicationsSubtitle: 'Últimas dosagens de produtos',
+
+    // Home — states
+    homeNoAquariums: 'Nenhum aquário cadastrado.',
+    homeLoadingAquariums: 'Carregando aquários',
+    homeErrorRetry: 'Tentar novamente',
+    homeMeasurementsEmptyTitle: 'Nenhuma medição recente',
+    homeMeasurementsEmptyDesc: 'As medições aparecerão aqui após os primeiros testes.',
+    homeApplicationsEmptyTitle: 'Nenhuma aplicação recente',
+    homeApplicationsEmptyDesc: 'As aplicações de produtos aparecerão aqui.',
   },
+
   en: {
+    // Shared
     languageSelectorLabel: 'Select language',
+    footer: 'All rights reserved.',
+
+    // Auth — login
     title: 'Welcome to AquaTrack',
     subtitle: 'Manage your aquariums with precision',
     emailLabel: 'E-mail',
@@ -66,11 +136,12 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     loadingLabel: 'Signing in...',
     createAccountPrompt: "Don't have an account?",
     createAccount: 'Create account',
-    footer: 'All rights reserved.',
     emailRequired: 'Email is required.',
     emailInvalid: 'Please enter a valid email.',
     passwordRequired: 'Password is required.',
     loginError: 'Invalid email or password. Please try again.',
+
+    // Auth — registration
     registrationTitle: 'Create your account',
     registrationSubtitle: 'Start managing your aquariums today',
     fullNameLabel: 'Full Name',
@@ -87,6 +158,8 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     signInPrompt: 'Already have an account?',
     signInInstead: 'Sign in instead',
     registrationError: 'Could not create account. Please try again.',
+
+    // Auth — forgot password
     forgotPasswordTitle: 'Forgot your password?',
     forgotPasswordSubtitle: 'Enter your account information below to reset your password.',
     usernameLabel: 'Username',
@@ -103,9 +176,72 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     forgotPasswordNewPasswordLabel: 'Your new password is:',
     copyPassword: 'Copy password',
     passwordCopied: 'Copied!',
+
+    // Aquarium — water types
+    waterTypeFreshwater: 'Freshwater',
+    waterTypeSaltwater: 'Saltwater',
+    waterTypeBrackish: 'Brackish',
+
+    // Aquarium — health status labels
+    statusStable: 'Stable',
+    statusAttention: 'Attention',
+    statusCritical: 'Critical',
+    statusUnknown: 'Unknown',
+
+    // Aquarium — metric labels
+    metricPhLevel: 'pH Level',
+    metricTemperature: 'Temp',
+
+    // Measurement — badge labels
+    badgeNormal: 'Normal',
+    badgeHigh: 'High',
+    badgeCritical: 'Critical',
+
+    // Water parameter — period label
+    periodLastNDays: 'Last {{n}} days',
+
+    // Navigation menu
+    navDashboard: 'Dashboard',
+    navAquariums: 'Aquariums',
+    navMeasurements: 'Measurements',
+    navAlerts: 'Alerts',
+    navAquaticLife: 'Aquatic Life',
+    navProducts: 'Products',
+    navDosageCalculator: 'Dosage Calculator',
+    navSettings: 'Settings',
+    navCollapse: 'Collapse',
+    navExpand: 'Expand',
+    navGoHome: 'Go to home page',
+
+    // Home — page title
+    homePageSubtitle: "Welcome back! Here's your aquarium overview",
+
+    // Home — sections
+    homeMyAquariums: 'My Aquariums',
+    homeMyAquariumsSubtitle: 'Monitor and manage all your aquariums in one place',
+    homeWaterParameters: 'Water Parameters',
+    homeVariation: 'Variation',
+    homeRecentMeasurements: 'Recent Measurements',
+    homeRecentMeasurementsSubtitle: 'Latest water parameter tests',
+    homeRecentApplications: 'Recent Applications',
+    homeRecentApplicationsSubtitle: 'Latest product dosages',
+
+    // Home — states
+    homeNoAquariums: 'No aquariums registered.',
+    homeLoadingAquariums: 'Loading aquariums',
+    homeErrorRetry: 'Try again',
+    homeMeasurementsEmptyTitle: 'No recent measurements',
+    homeMeasurementsEmptyDesc: 'Measurements will appear here after the first tests.',
+    homeApplicationsEmptyTitle: 'No recent applications',
+    homeApplicationsEmptyDesc: 'Product applications will appear here.',
   },
+
   es: {
+    // Shared
     languageSelectorLabel: 'Seleccionar idioma',
+    footer: 'Todos los derechos reservados.',
+
+    // Auth — login
     title: 'Bienvenido a AquaTrack',
     subtitle: 'Gestiona tus acuarios con precisión',
     emailLabel: 'Correo electrónico',
@@ -117,11 +253,12 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     loadingLabel: 'Ingresando...',
     createAccountPrompt: '¿Aún no tienes una cuenta?',
     createAccount: 'Crear cuenta',
-    footer: 'Todos los derechos reservados.',
     emailRequired: 'El correo electrónico es obligatorio.',
     emailInvalid: 'Ingresa un correo electrónico válido.',
     passwordRequired: 'La contraseña es obligatoria.',
     loginError: 'Correo electrónico o contraseña incorrectos. Inténtalo de nuevo.',
+
+    // Auth — registration
     registrationTitle: 'Crea tu cuenta',
     registrationSubtitle: 'Empieza a gestionar tus acuarios hoy',
     fullNameLabel: 'Nombre completo',
@@ -138,6 +275,8 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     signInPrompt: '¿Ya tienes una cuenta?',
     signInInstead: 'Inicia sesión en su lugar',
     registrationError: 'No se pudo crear la cuenta. Inténtalo de nuevo.',
+
+    // Auth — forgot password
     forgotPasswordTitle: '¿Olvidaste tu contraseña?',
     forgotPasswordSubtitle:
       'Ingresa los datos de tu cuenta a continuación para restablecer tu contraseña.',
@@ -155,5 +294,63 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     forgotPasswordNewPasswordLabel: 'Tu nueva contraseña es:',
     copyPassword: 'Copiar contraseña',
     passwordCopied: '¡Copiado!',
+
+    // Aquarium — water types
+    waterTypeFreshwater: 'Agua Dulce',
+    waterTypeSaltwater: 'Agua Salada',
+    waterTypeBrackish: 'Salobre',
+
+    // Aquarium — health status labels
+    statusStable: 'Estable',
+    statusAttention: 'Atención',
+    statusCritical: 'Crítico',
+    statusUnknown: 'Desconocido',
+
+    // Aquarium — metric labels
+    metricPhLevel: 'Nivel de pH',
+    metricTemperature: 'Temp',
+
+    // Measurement — badge labels
+    badgeNormal: 'Normal',
+    badgeHigh: 'Alto',
+    badgeCritical: 'Crítico',
+
+    // Water parameter — period label
+    periodLastNDays: 'Últimos {{n}} días',
+
+    // Navigation menu
+    navDashboard: 'Dashboard',
+    navAquariums: 'Acuarios',
+    navMeasurements: 'Mediciones',
+    navAlerts: 'Alertas',
+    navAquaticLife: 'Vida Acuática',
+    navProducts: 'Productos',
+    navDosageCalculator: 'Calculadora de Dosaje',
+    navSettings: 'Configuraciones',
+    navCollapse: 'Contraer',
+    navExpand: 'Expandir',
+    navGoHome: 'Ir a la página de inicio',
+
+    // Home — page title
+    homePageSubtitle: '¡Bienvenido de vuelta! Aquí tienes un resumen de tu acuario',
+
+    // Home — sections
+    homeMyAquariums: 'Mis Acuarios',
+    homeMyAquariumsSubtitle: 'Monitorea y gestiona todos tus acuarios en un solo lugar',
+    homeWaterParameters: 'Parámetros del Agua',
+    homeVariation: 'Variación',
+    homeRecentMeasurements: 'Mediciones Recientes',
+    homeRecentMeasurementsSubtitle: 'Últimas pruebas de parámetros del agua',
+    homeRecentApplications: 'Aplicaciones Recientes',
+    homeRecentApplicationsSubtitle: 'Últimas dosis de productos',
+
+    // Home — states
+    homeNoAquariums: 'No hay acuarios registrados.',
+    homeLoadingAquariums: 'Cargando acuarios',
+    homeErrorRetry: 'Intentar de nuevo',
+    homeMeasurementsEmptyTitle: 'Sin mediciones recientes',
+    homeMeasurementsEmptyDesc: 'Las mediciones aparecerán aquí después de las primeras pruebas.',
+    homeApplicationsEmptyTitle: 'Sin aplicaciones recientes',
+    homeApplicationsEmptyDesc: 'Las aplicaciones de productos aparecerán aquí.',
   },
 };

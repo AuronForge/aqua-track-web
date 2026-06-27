@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { HomeDashboardMapper } from '../mappers/home-dashboard.mapper';
 import { HomeDashboardMockService } from '../services/home-dashboard-mock.service';
-import { HomeDashboardViewModel } from '../models/home-dashboard-view.model';
+import { DashboardApiDto } from '../models';
 import { RecentMeasurementViewModel } from '../models/recent-measurement-view.model';
 
 @Injectable()
@@ -14,12 +14,19 @@ export class HomeDashboardFacade {
 
   private readonly _loading = signal(false);
   private readonly _error = signal<string | null>(null);
-  private readonly _data = signal<HomeDashboardViewModel | null>(null);
+  private readonly _rawDto = signal<DashboardApiDto | null>(null);
   private readonly _selectedAquariumId = signal<string | null>(null);
 
   readonly loading = this._loading.asReadonly();
   readonly error = this._error.asReadonly();
   readonly selectedAquariumId = this._selectedAquariumId.asReadonly();
+
+  // Re-mapped automatically when language or raw data changes
+  private readonly _data = computed(() => {
+    const dto = this._rawDto();
+    if (!dto) return null;
+    return this.mapper.mapDashboardDtoToViewModel(dto);
+  });
 
   readonly hasAquariums = computed(() => (this._data()?.aquariumCards.length ?? 0) > 0);
 
@@ -34,6 +41,7 @@ export class HomeDashboardFacade {
   );
 
   readonly waterParameters = computed(() => this._data()?.waterParameters ?? []);
+
   readonly recentMeasurements = computed(() => {
     const selectedId = this._selectedAquariumId();
     return (this._data()?.recentMeasurements ?? [])
@@ -84,9 +92,9 @@ export class HomeDashboardFacade {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (dto) => {
-          const vm = this.mapper.mapDashboardDtoToViewModel(dto);
-          this._data.set(vm);
-          this._selectedAquariumId.set(vm.selectedAquariumId);
+          const initialId = dto.selectedAquarium?.id ?? dto.aquariums[0]?.id ?? null;
+          this._rawDto.set(dto);
+          this._selectedAquariumId.set(initialId);
           this._loading.set(false);
         },
         error: () => {

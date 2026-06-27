@@ -20,7 +20,7 @@
   <!-- ── Actions ───────────────────────────────────────────────────────── -->
   <div class="toolbar__actions">
     <app-language-switcher
-      label="Language"
+      [label]="languageSelectorLabel()"
       [selectedLanguage]="selectedLanguage()"
       (languageChange)="languageChange.emit($event)"
     />

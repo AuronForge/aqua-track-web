@@ -1,10 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { signal } from '@angular/core';
+import { computed, signal } from '@angular/core';
 
 import { HomePageComponent } from './home-page.component';
 import { HomeDashboardFacade } from '../../facades/home-dashboard.facade';
 import { PageTitleService } from '../../../../core/page-title/page-title.service';
+import { LanguageService } from '../../../../shared/services/language.service';
+import { TRANSLATIONS } from '../../../../shared/constants/translations.constant';
 import { AquariumCardViewModel } from '../../models/aquarium-card-view.model';
+
+const buildLanguageServiceMock = (lang: 'pt' | 'en' | 'es' = 'pt') => ({
+  selectedLanguage: signal(lang),
+  translation: computed(() => TRANSLATIONS[lang]),
+  setLanguage: jest.fn(),
+});
 
 const buildFacadeMock = (overrides: Record<string, unknown> = {}) => ({
   loading: signal(false),
@@ -58,6 +66,7 @@ async function createFixture(
     providers: [
       { provide: HomeDashboardFacade, useValue: facadeMock },
       { provide: PageTitleService, useValue: buildPageTitleMock() },
+      { provide: LanguageService, useValue: buildLanguageServiceMock() },
     ],
   }).compileComponents();
 
@@ -87,6 +96,7 @@ describe('HomePageComponent', () => {
       providers: [
         { provide: HomeDashboardFacade, useValue: buildFacadeMock() },
         { provide: PageTitleService, useValue: pageTitleMock },
+        { provide: LanguageService, useValue: buildLanguageServiceMock('en') },
       ],
     }).compileComponents();
     const fixture = TestBed.createComponent(HomePageComponent);
@@ -95,6 +105,25 @@ describe('HomePageComponent', () => {
     expect(pageTitleMock.set).toHaveBeenCalledWith(
       'Dashboard',
       expect.stringContaining('Welcome back'),
+    );
+  });
+
+  it('should set page title using current language translation', async () => {
+    const pageTitleMock = buildPageTitleMock();
+    await TestBed.configureTestingModule({
+      imports: [HomePageComponent],
+      providers: [
+        { provide: HomeDashboardFacade, useValue: buildFacadeMock() },
+        { provide: PageTitleService, useValue: pageTitleMock },
+        { provide: LanguageService, useValue: buildLanguageServiceMock('pt') },
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(HomePageComponent);
+    fixture.detectChanges();
+
+    expect(pageTitleMock.set).toHaveBeenCalledWith(
+      'Dashboard',
+      expect.stringContaining('Bem-vindo'),
     );
   });
 

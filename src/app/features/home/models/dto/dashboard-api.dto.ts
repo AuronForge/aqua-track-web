@@ -32,7 +32,7 @@ export interface WaterParameterDto {
   key: string;
   name: string;
   unit: MeasurementUnit;
-  periodLabel: string;
+  periodDays: number;
   variation: WaterParameterVariationDto;
   status: WaterParameterStatus;
   minRecommendedValue: number | null;

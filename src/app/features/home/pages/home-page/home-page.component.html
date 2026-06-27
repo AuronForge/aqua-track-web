@@ -3,16 +3,18 @@
   <section class="home-page__section" aria-labelledby="aquariums-title">
     <div class="home-page__section-header">
       <div>
-        <h2 id="aquariums-title" class="home-page__section-title">Meus Aquários</h2>
-        <p class="home-page__section-subtitle">
-          Monitor e gerencie todos os seus aquários em um só lugar
-        </p>
+        <h2 id="aquariums-title" class="home-page__section-title">{{ t().homeMyAquariums }}</h2>
+        <p class="home-page__section-subtitle">{{ t().homeMyAquariumsSubtitle }}</p>
       </div>
     </div>
 
     <!-- Loading -->
     @if (facade.loading()) {
-      <div class="home-page__aquariums-grid" aria-busy="true" aria-label="Carregando aquários">
+      <div
+        class="home-page__aquariums-grid"
+        aria-busy="true"
+        [attr.aria-label]="t().homeLoadingAquariums"
+      >
         @for (i of [1, 2, 3, 4]; track i) {
           <div class="home-page__skeleton-card" aria-hidden="true"></div>
         }
@@ -27,7 +29,7 @@
         </span>
         <p class="home-page__state-message">{{ facade.error() }}</p>
         <button type="button" class="home-page__retry-btn" (click)="facade.retry()">
-          Tentar novamente
+          {{ t().homeErrorRetry }}
         </button>
       </div>
     }
@@ -36,7 +38,7 @@
     @else if (!facade.hasAquariums()) {
       <div class="home-page__state-container">
         <span class="material-icons home-page__state-icon">water_drop</span>
-        <p class="home-page__state-message">Nenhum aquário cadastrado.</p>
+        <p class="home-page__state-message">{{ t().homeNoAquariums }}</p>
       </div>
     }
 
@@ -67,7 +69,7 @@
     <section class="home-page__section" aria-labelledby="params-title">
       <div class="home-page__section-header">
         <div>
-          <h2 id="params-title" class="home-page__section-title">Parâmetros da Água</h2>
+          <h2 id="params-title" class="home-page__section-title">{{ t().homeWaterParameters }}</h2>
         </div>
       </div>
 
@@ -78,7 +80,7 @@
               <aq-info-card
                 [title]="param.name"
                 [subtitleValue]="param.periodLabel"
-                [metrics]="[{ label: 'Variação', value: param.variation.displayValue }]"
+                [metrics]="[{ label: t().homeVariation, value: param.variation.displayValue }]"
                 [fillContainer]="true"
                 [alignTop]="true"
               >
@@ -111,8 +113,10 @@
               <span class="material-icons-outlined home-page__recent-icon">assignment</span>
             </div>
             <div>
-              <h2 id="measurements-title" class="home-page__section-title">Medições Recentes</h2>
-              <p class="home-page__section-subtitle">Últimos testes de parâmetros da água</p>
+              <h2 id="measurements-title" class="home-page__section-title">
+                {{ t().homeRecentMeasurements }}
+              </h2>
+              <p class="home-page__section-subtitle">{{ t().homeRecentMeasurementsSubtitle }}</p>
             </div>
           </div>
         </div>
@@ -121,7 +125,7 @@
           [items]="facade.recentMeasurements()"
           [loading]="facade.loading()"
           [paginated]="false"
-          [emptyState]="measurementsEmptyState"
+          [emptyState]="measurementsEmptyState()"
         />
       </section>
 
@@ -139,8 +143,10 @@
               >
             </div>
             <div>
-              <h2 id="applications-title" class="home-page__section-title">Aplicações Recentes</h2>
-              <p class="home-page__section-subtitle">Últimas dosagens de produtos</p>
+              <h2 id="applications-title" class="home-page__section-title">
+                {{ t().homeRecentApplications }}
+              </h2>
+              <p class="home-page__section-subtitle">{{ t().homeRecentApplicationsSubtitle }}</p>
             </div>
           </div>
         </div>
@@ -149,7 +155,7 @@
           [items]="facade.recentApplications()"
           [loading]="facade.loading()"
           [paginated]="false"
-          [emptyState]="applicationsEmptyState"
+          [emptyState]="applicationsEmptyState()"
         />
       </section>
     </div>
