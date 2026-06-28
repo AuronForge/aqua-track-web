@@ -64,4 +64,16 @@ describe('AuthService', () => {
     expect(windowlessService.hasAccess()).toBe(false);
     expect(windowlessService.isAuthenticated()).toBe(false);
   });
+
+  it('should return the stored token via getToken', () => {
+    getItemSpy.mockReturnValue('stored-token');
+
+    expect(service.getToken()).toBe('stored-token');
+  });
+
+  it('should return null via getToken when no token is stored', () => {
+    getItemSpy.mockReturnValue(null);
+
+    expect(service.getToken()).toBeNull();
+  });
 });

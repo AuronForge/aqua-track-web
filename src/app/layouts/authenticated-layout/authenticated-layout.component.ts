@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterOutlet } from '@angular/router';
 
 import { AuthService } from '../../core/auth/services/auth.service';
+import { UserService } from '../../core/users/services/user.service';
 import { PageTitleService } from '../../core/page-title/page-title.service';
 import { NavMenuComponent } from '../../shared/components/nav-menu/nav-menu.component';
 import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.component';
@@ -20,13 +22,19 @@ import { LanguageService } from '../../shared/services/language.service';
 })
 export class AuthenticatedLayoutComponent {
   private readonly authService = inject(AuthService);
+  private readonly userService = inject(UserService);
   private readonly router = inject(Router);
   protected readonly languageService = inject(LanguageService);
-
   protected readonly pageTitleService = inject(PageTitleService);
 
   protected readonly selectedLanguage = this.languageService.selectedLanguage;
   private readonly t = this.languageService.translation;
+  private readonly currentUser = this.userService.currentUser;
+
+  protected readonly userName = computed(() => this.currentUser()?.name ?? 'Usuário');
+  protected readonly userEmail = computed(() => this.currentUser()?.email ?? '');
+  protected readonly userInitials = computed(() => this.buildInitials(this.currentUser()?.name));
+  protected readonly userPlan = computed(() => this.currentUser()?.plan ?? '');
 
   protected readonly userMenuItems = computed<DropdownMenuItem[]>(() => {
     const t = this.t();
@@ -68,10 +76,9 @@ export class AuthenticatedLayoutComponent {
     ];
   });
 
-  readonly userName = 'Usuário';
-  readonly userEmail = 'usuario@aquatrack.app';
-  readonly userInitials = 'U';
-  readonly userPlan = 'Pro Plan';
+  constructor() {
+    this.userService.loadCurrentUser().pipe(takeUntilDestroyed()).subscribe();
+  }
 
   protected onLanguageChange(language: LanguageCode): void {
     this.languageService.setLanguage(language);
@@ -79,8 +86,16 @@ export class AuthenticatedLayoutComponent {
 
   protected onUserMenuItemClick(item: DropdownMenuItem): void {
     if (item.id === 'logout') {
+      this.userService.clearCurrentUser();
       this.authService.clearToken();
       this.router.navigate(['/login']);
     }
+  }
+
+  private buildInitials(name?: string): string {
+    if (!name) return 'U';
+    const words = name.trim().split(/\s+/);
+    if (words.length === 1) return words[0].charAt(0).toUpperCase();
+    return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
   }
 }

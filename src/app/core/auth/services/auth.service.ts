@@ -35,6 +35,10 @@ export class AuthService {
     this.authenticated.set(false);
   }
 
+  getToken(): string | null {
+    return this.readStoredToken();
+  }
+
   private readStoredToken(): string | null {
     if (typeof window === 'undefined' || !window.sessionStorage) {
       return null;
