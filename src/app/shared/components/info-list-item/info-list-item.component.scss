@@ -40,6 +40,18 @@
   cursor: default;
 }
 
+:host(.info-list-item--flat) {
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding-inline: 0;
+}
+
+:host(.info-list-item--flat:hover) {
+  background: transparent;
+  box-shadow: none;
+}
+
 .info-list-item__main {
   display: flex;
   flex: 1;
@@ -58,7 +70,7 @@
   font-family: theme.$aq-font-family-base;
   font-size: theme.$aq-font-size-md;
   font-weight: theme.$aq-font-weight-semibold;
-  line-height: theme.$aq-line-height-tight;
+  line-height: theme.$aq-line-height-base;
   color: theme.$aq-color-text-primary;
   overflow: hidden;
   white-space: nowrap;

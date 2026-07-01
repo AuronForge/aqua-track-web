@@ -2,13 +2,12 @@ import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { HomeDashboardMapper } from '../mappers/home-dashboard.mapper';
-import { HomeDashboardMockService } from '../services/home-dashboard-mock.service';
+import { HomeDashboardApiService } from '../services/home-dashboard-api.service';
 import { DashboardApiDto } from '../models';
-import { RecentMeasurementViewModel } from '../models/recent-measurement-view.model';
 
 @Injectable()
 export class HomeDashboardFacade {
-  private readonly mockService = inject(HomeDashboardMockService);
+  private readonly apiService = inject(HomeDashboardApiService);
   private readonly mapper = inject(HomeDashboardMapper);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -21,7 +20,6 @@ export class HomeDashboardFacade {
   readonly error = this._error.asReadonly();
   readonly selectedAquariumId = this._selectedAquariumId.asReadonly();
 
-  // Re-mapped automatically when language or raw data changes
   private readonly _data = computed(() => {
     const dto = this._rawDto();
     if (!dto) return null;
@@ -40,59 +38,36 @@ export class HomeDashboardFacade {
     () => this.aquariumCards().find((c) => c.selected)?.title ?? null,
   );
 
-  readonly waterParameters = computed(() => this._data()?.waterParameters ?? []);
-
-  readonly recentMeasurements = computed(() => {
+  readonly waterParameters = computed(() => {
     const selectedId = this._selectedAquariumId();
-    return (this._data()?.recentMeasurements ?? [])
-      .filter((m) => m.aquariumId === selectedId)
-      .slice(0, 5);
+    if (!selectedId) return [];
+    return this._data()?.waterParametersByAquariumId[selectedId] ?? [];
   });
 
-  readonly recentApplications = computed(() => {
+  readonly summaryParameters = computed(() => {
     const selectedId = this._selectedAquariumId();
-    return (this._data()?.recentApplications ?? [])
-      .filter((a) => a.aquariumId === selectedId)
-      .slice(0, 5);
+    if (!selectedId) return [];
+    return this._data()?.summaryParametersByAquariumId[selectedId] ?? [];
   });
 
-  readonly measurementsByParamKey = computed(
-    (): Partial<Record<string, RecentMeasurementViewModel[]>> => {
-      const selectedId = this._selectedAquariumId();
-      const result: Record<string, RecentMeasurementViewModel[]> = {};
-      for (const m of this._data()?.recentMeasurements ?? []) {
-        if (m.aquariumId !== selectedId) continue;
-        if (!result[m.parameterKey]) result[m.parameterKey] = [];
-        if (result[m.parameterKey].length < 3) {
-          result[m.parameterKey].push({ ...m, metadata: this.formatDate(m.measuredAt) });
-        }
-      }
-      return result;
-    },
+  readonly recentMeasurements = computed(() =>
+    (this._data()?.recentMeasurements ?? []).slice(0, 5),
   );
 
-  private formatDate(isoTimestamp: string): string {
-    try {
-      return new Date(isoTimestamp).toLocaleDateString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      });
-    } catch {
-      return '';
-    }
-  }
+  readonly recentApplications = computed(() =>
+    (this._data()?.recentApplications ?? []).slice(0, 5),
+  );
 
   loadDashboard(): void {
     this._loading.set(true);
     this._error.set(null);
 
-    this.mockService
+    this.apiService
       .getDashboard()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (dto) => {
-          const initialId = dto.selectedAquarium?.id ?? dto.aquariums[0]?.id ?? null;
+          const initialId = dto.aquariums[0]?.id ?? null;
           this._rawDto.set(dto);
           this._selectedAquariumId.set(initialId);
           this._loading.set(false);

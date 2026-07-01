@@ -78,6 +78,33 @@ export interface TranslationDictionary {
   // Water parameter — period label (use {{n}} as placeholder for number of days)
   readonly periodLastNDays: string;
 
+  // Water parameter — series date labels
+  readonly seriesDateToday: string;
+  readonly seriesDateYesterday: string;
+
+  // Water parameter — names
+  readonly paramNamePh: string;
+  readonly paramNameGh: string;
+  readonly paramNameKh: string;
+  readonly paramNameNitrate: string;
+  readonly paramNameNitrite: string;
+  readonly paramNameAmmonia: string;
+  readonly paramNameTemperature: string;
+  readonly paramNameTds: string;
+  readonly paramNameCopper: string;
+  readonly paramNamePhosphate: string;
+  readonly paramNameIron: string;
+  readonly paramNameCo2: string;
+  readonly paramNameO2: string;
+  readonly paramNameCalcium: string;
+  readonly paramNameSilicates: string;
+  readonly paramNameDensitySalinity: string;
+  readonly paramNameMagnesium: string;
+  readonly paramNameIodine: string;
+  readonly paramNameMolybdenum: string;
+  readonly paramNameStrontium: string;
+  readonly paramNamePotassium: string;
+
   // User menu
   readonly userMenuProfile: string;
   readonly userMenuHelp: string;
@@ -104,10 +131,15 @@ export interface TranslationDictionary {
   readonly homeMyAquariumsSubtitle: string;
   readonly homeWaterParameters: string;
   readonly homeVariation: string;
+  readonly homeCurrentValue: string;
   readonly homeRecentMeasurements: string;
   readonly homeRecentMeasurementsSubtitle: string;
   readonly homeRecentApplications: string;
   readonly homeRecentApplicationsSubtitle: string;
+
+  // Shared — list states
+  readonly listEmptyDefault: string;
+  readonly listLoadingDefault: string;
 
   // Home — states
   readonly homeNoAquariums: string;

@@ -6,6 +6,8 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     // Shared
     languageSelectorLabel: 'Selecionar idioma',
     footer: 'Todos os direitos reservados.',
+    listEmptyDefault: 'Nenhum item encontrado',
+    listLoadingDefault: 'Carregando...',
 
     // Auth — login
     title: 'Bem-vindo ao AquaTrack',
@@ -73,7 +75,7 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
 
     // Aquarium — metric labels
     metricPhLevel: 'Nível de pH',
-    metricTemperature: 'Temp',
+    metricTemperature: 'Temperatura',
 
     // Measurement — badge labels
     badgeNormal: 'Normal',
@@ -82,6 +84,33 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
 
     // Water parameter — period label
     periodLastNDays: 'Últimos {{n}} dias',
+
+    // Water parameter — series date labels
+    seriesDateToday: 'Hoje',
+    seriesDateYesterday: 'Ontem',
+
+    // Water parameter — names
+    paramNamePh: 'pH',
+    paramNameGh: 'Dureza Geral (gH)',
+    paramNameKh: 'Dureza de Carbonato (kH)',
+    paramNameNitrate: 'Nitrato',
+    paramNameNitrite: 'Nitrito',
+    paramNameAmmonia: 'Amônia',
+    paramNameTemperature: 'Temperatura',
+    paramNameTds: 'Sólidos Dissolvidos Totais (TDS)',
+    paramNameCopper: 'Cobre',
+    paramNamePhosphate: 'Fosfato',
+    paramNameIron: 'Ferro',
+    paramNameCo2: 'Dióxido de Carbono (CO2)',
+    paramNameO2: 'Oxigênio Dissolvido (O2)',
+    paramNameCalcium: 'Cálcio',
+    paramNameSilicates: 'Silicatos',
+    paramNameDensitySalinity: 'Densidade / Salinidade',
+    paramNameMagnesium: 'Magnésio',
+    paramNameIodine: 'Iodo',
+    paramNameMolybdenum: 'Molibdênio',
+    paramNameStrontium: 'Estrôncio',
+    paramNamePotassium: 'Potássio',
 
     // User menu
     userMenuProfile: 'Meu Perfil',
@@ -109,6 +138,7 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     homeMyAquariumsSubtitle: 'Monitor e gerencie todos os seus aquários em um só lugar',
     homeWaterParameters: 'Parâmetros da Água',
     homeVariation: 'Variação',
+    homeCurrentValue: 'Valor atual',
     homeRecentMeasurements: 'Medições Recentes',
     homeRecentMeasurementsSubtitle: 'Últimos testes de parâmetros da água',
     homeRecentApplications: 'Aplicações Recentes',
@@ -127,6 +157,8 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
   en: {
     // Shared
     languageSelectorLabel: 'Select language',
+    listEmptyDefault: 'No items found',
+    listLoadingDefault: 'Loading...',
     footer: 'All rights reserved.',
 
     // Auth — login
@@ -195,7 +227,7 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
 
     // Aquarium — metric labels
     metricPhLevel: 'pH Level',
-    metricTemperature: 'Temp',
+    metricTemperature: 'Temperature',
 
     // Measurement — badge labels
     badgeNormal: 'Normal',
@@ -204,6 +236,33 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
 
     // Water parameter — period label
     periodLastNDays: 'Last {{n}} days',
+
+    // Water parameter — series date labels
+    seriesDateToday: 'Today',
+    seriesDateYesterday: 'Yesterday',
+
+    // Water parameter — names
+    paramNamePh: 'pH',
+    paramNameGh: 'General Hardness (gH)',
+    paramNameKh: 'Carbonate Hardness (kH)',
+    paramNameNitrate: 'Nitrate',
+    paramNameNitrite: 'Nitrite',
+    paramNameAmmonia: 'Ammonia',
+    paramNameTemperature: 'Temperature',
+    paramNameTds: 'Total Dissolved Solids (TDS)',
+    paramNameCopper: 'Copper',
+    paramNamePhosphate: 'Phosphate',
+    paramNameIron: 'Iron',
+    paramNameCo2: 'Carbon Dioxide (CO2)',
+    paramNameO2: 'Dissolved Oxygen (O2)',
+    paramNameCalcium: 'Calcium',
+    paramNameSilicates: 'Silicates',
+    paramNameDensitySalinity: 'Density / Salinity',
+    paramNameMagnesium: 'Magnesium',
+    paramNameIodine: 'Iodine',
+    paramNameMolybdenum: 'Molybdenum',
+    paramNameStrontium: 'Strontium',
+    paramNamePotassium: 'Potassium',
 
     // User menu
     userMenuProfile: 'My Profile',
@@ -231,6 +290,7 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     homeMyAquariumsSubtitle: 'Monitor and manage all your aquariums in one place',
     homeWaterParameters: 'Water Parameters',
     homeVariation: 'Variation',
+    homeCurrentValue: 'Current value',
     homeRecentMeasurements: 'Recent Measurements',
     homeRecentMeasurementsSubtitle: 'Latest water parameter tests',
     homeRecentApplications: 'Recent Applications',
@@ -249,6 +309,8 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
   es: {
     // Shared
     languageSelectorLabel: 'Seleccionar idioma',
+    listEmptyDefault: 'No se encontraron elementos',
+    listLoadingDefault: 'Cargando...',
     footer: 'Todos los derechos reservados.',
 
     // Auth — login
@@ -318,7 +380,7 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
 
     // Aquarium — metric labels
     metricPhLevel: 'Nivel de pH',
-    metricTemperature: 'Temp',
+    metricTemperature: 'Temperatura',
 
     // Measurement — badge labels
     badgeNormal: 'Normal',
@@ -327,6 +389,33 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
 
     // Water parameter — period label
     periodLastNDays: 'Últimos {{n}} días',
+
+    // Water parameter — series date labels
+    seriesDateToday: 'Hoy',
+    seriesDateYesterday: 'Ayer',
+
+    // Water parameter — names
+    paramNamePh: 'pH',
+    paramNameGh: 'Dureza General (gH)',
+    paramNameKh: 'Dureza de Carbonatos (kH)',
+    paramNameNitrate: 'Nitrato',
+    paramNameNitrite: 'Nitrito',
+    paramNameAmmonia: 'Amoníaco',
+    paramNameTemperature: 'Temperatura',
+    paramNameTds: 'Sólidos Disueltos Totales (TDS)',
+    paramNameCopper: 'Cobre',
+    paramNamePhosphate: 'Fosfato',
+    paramNameIron: 'Hierro',
+    paramNameCo2: 'Dióxido de Carbono (CO2)',
+    paramNameO2: 'Oxígeno Disuelto (O2)',
+    paramNameCalcium: 'Calcio',
+    paramNameSilicates: 'Silicatos',
+    paramNameDensitySalinity: 'Densidad / Salinidad',
+    paramNameMagnesium: 'Magnesio',
+    paramNameIodine: 'Yodo',
+    paramNameMolybdenum: 'Molibdeno',
+    paramNameStrontium: 'Estroncio',
+    paramNamePotassium: 'Potasio',
 
     // User menu
     userMenuProfile: 'Mi Perfil',
@@ -354,6 +443,7 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     homeMyAquariumsSubtitle: 'Monitorea y gestiona todos tus acuarios en un solo lugar',
     homeWaterParameters: 'Parámetros del Agua',
     homeVariation: 'Variación',
+    homeCurrentValue: 'Valor actual',
     homeRecentMeasurements: 'Mediciones Recientes',
     homeRecentMeasurementsSubtitle: 'Últimas pruebas de parámetros del agua',
     homeRecentApplications: 'Aplicaciones Recientes',

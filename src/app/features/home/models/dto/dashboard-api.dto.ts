@@ -1,14 +1,52 @@
 export type AquariumHealthStatus = 'STABLE' | 'ATTENTION' | 'CRITICAL' | 'UNKNOWN';
 export type WaterParameterStatus = 'NORMAL' | 'ATTENTION' | 'CRITICAL' | 'UNKNOWN';
 export type VariationDirection = 'UP' | 'DOWN' | 'STABLE' | 'UNKNOWN';
-export type MeasurementUnit = 'PH' | 'CELSIUS' | 'PPM' | 'MG_L' | 'DKH' | 'DGH' | 'NONE' | string;
+export type MeasurementUnit =
+  | 'PH'
+  | 'CELSIUS'
+  | 'PPM'
+  | 'MG_L'
+  | 'DKH'
+  | 'DGH'
+  | 'SPECIFIC_GRAVITY'
+  | 'NONE'
+  | string;
 export type VolumeUnit = 'LITER' | 'GALLON';
-export type AquariumType = 'COMMUNITY' | 'PLANTED' | 'REEF' | 'SHRIMP' | string;
+export type AquariumType = 'COMMUNITY' | 'PLANTED' | 'REEF' | 'SHRIMP' | 'SPECIES_ONLY' | string;
 export type WaterType = 'FRESHWATER' | 'SALTWATER' | 'BRACKISH' | string;
 
+export interface AquariumSummaryValueDto {
+  value: number;
+  unit: MeasurementUnit;
+  measuredAt: string;
+}
+
 export interface AquariumSummaryDto {
-  ph?: number;
-  temperature?: number;
+  ph?: AquariumSummaryValueDto;
+  temperature?: AquariumSummaryValueDto;
+}
+
+export interface WaterParameterVariationDto {
+  value: number;
+  unit: MeasurementUnit;
+  direction: VariationDirection;
+}
+
+export interface WaterParameterSeriesDto {
+  date: string;
+  value: number;
+}
+
+export interface WaterParameterDto {
+  key: string;
+  name: string;
+  unit: MeasurementUnit;
+  periodLabel: string;
+  variation: WaterParameterVariationDto;
+  status: WaterParameterStatus;
+  minRecommendedValue: number | null;
+  maxRecommendedValue: number | null;
+  series: WaterParameterSeriesDto[];
 }
 
 export interface DashboardAquariumDto {
@@ -20,29 +58,12 @@ export interface DashboardAquariumDto {
   volumeUnit: VolumeUnit;
   healthStatus: AquariumHealthStatus;
   summary: AquariumSummaryDto;
-}
-
-export interface WaterParameterVariationDto {
-  value: number;
-  unit: MeasurementUnit;
-  direction: VariationDirection;
-}
-
-export interface WaterParameterDto {
-  key: string;
-  name: string;
-  unit: MeasurementUnit;
-  periodDays: number;
-  variation: WaterParameterVariationDto;
-  status: WaterParameterStatus;
-  minRecommendedValue: number | null;
-  maxRecommendedValue: number | null;
-  series: unknown[];
+  waterParameters: WaterParameterDto[];
 }
 
 export interface RecentMeasurementDto {
   id: string;
-  parameterName: string;
+  waterParameterName: string;
   parameterKey: string;
   aquariumId: string;
   aquariumName: string;
@@ -54,28 +75,16 @@ export interface RecentMeasurementDto {
 
 export interface RecentApplicationDto {
   id: string;
-  productName: string;
-  aquariumId: string;
   aquariumName: string;
-  dosage: number;
-  dosageUnit: string;
+  productName: string;
+  amount: number;
+  unit: string;
   appliedAt: string;
-}
-
-export interface DashboardSummaryDto {
-  totalAquariums: number;
-  stableAquariums: number;
-  attentionAquariums: number;
-  criticalAquariums: number;
-  unknownAquariums: number;
-  periodDays: number;
+  notes: string | null;
 }
 
 export interface DashboardApiDto {
   aquariums: DashboardAquariumDto[];
-  selectedAquarium: { id: string; name: string } | null;
-  waterParameters: WaterParameterDto[];
   recentMeasurements: RecentMeasurementDto[];
   recentApplications: RecentApplicationDto[];
-  summary: DashboardSummaryDto;
 }

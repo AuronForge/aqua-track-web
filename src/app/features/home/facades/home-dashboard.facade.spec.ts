@@ -3,30 +3,30 @@ import { of, throwError } from 'rxjs';
 
 import { HomeDashboardFacade } from './home-dashboard.facade';
 import { HomeDashboardMapper } from '../mappers/home-dashboard.mapper';
-import { HomeDashboardMockService } from '../services/home-dashboard-mock.service';
+import { HomeDashboardApiService } from '../services/home-dashboard-api.service';
 import { MOCK_DASHBOARD_FULL, MOCK_DASHBOARD_EMPTY_AQUARIUMS } from '../mocks/home-dashboard.mock';
 
 describe('HomeDashboardFacade', () => {
   let facade: HomeDashboardFacade;
-  let mockService: jest.Mocked<HomeDashboardMockService>;
+  let apiService: jest.Mocked<HomeDashboardApiService>;
 
   beforeEach(() => {
     jest.useFakeTimers();
 
-    const mockServiceSpy = {
+    const apiServiceSpy = {
       getDashboard: jest.fn().mockReturnValue(of(MOCK_DASHBOARD_FULL)),
-    } as unknown as jest.Mocked<HomeDashboardMockService>;
+    } as unknown as jest.Mocked<HomeDashboardApiService>;
 
     TestBed.configureTestingModule({
       providers: [
         HomeDashboardFacade,
         HomeDashboardMapper,
-        { provide: HomeDashboardMockService, useValue: mockServiceSpy },
+        { provide: HomeDashboardApiService, useValue: apiServiceSpy },
       ],
     });
 
     facade = TestBed.inject(HomeDashboardFacade);
-    mockService = TestBed.inject(HomeDashboardMockService) as jest.Mocked<HomeDashboardMockService>;
+    apiService = TestBed.inject(HomeDashboardApiService) as jest.Mocked<HomeDashboardApiService>;
   });
 
   afterEach(() => jest.useRealTimers());
@@ -65,7 +65,7 @@ describe('HomeDashboardFacade', () => {
 
   describe('loadDashboard', () => {
     it('sets loading to false after success', async () => {
-      mockService.getDashboard.mockReturnValue(of(MOCK_DASHBOARD_FULL));
+      apiService.getDashboard.mockReturnValue(of(MOCK_DASHBOARD_FULL));
       facade.loadDashboard();
       jest.runAllTimers();
       await Promise.resolve();
@@ -73,13 +73,13 @@ describe('HomeDashboardFacade', () => {
     });
 
     it('clears error on new load after failure', async () => {
-      mockService.getDashboard.mockReturnValueOnce(throwError(() => new Error('fail')));
+      apiService.getDashboard.mockReturnValueOnce(throwError(() => new Error('fail')));
       facade.loadDashboard();
       jest.runAllTimers();
       await Promise.resolve();
       expect(facade.error()).toBeTruthy();
 
-      mockService.getDashboard.mockReturnValue(of(MOCK_DASHBOARD_FULL));
+      apiService.getDashboard.mockReturnValue(of(MOCK_DASHBOARD_FULL));
       facade.loadDashboard();
       jest.runAllTimers();
       await Promise.resolve();
@@ -108,7 +108,7 @@ describe('HomeDashboardFacade', () => {
     });
 
     it('sets hasAquariums false when no aquariums', async () => {
-      mockService.getDashboard.mockReturnValue(of(MOCK_DASHBOARD_EMPTY_AQUARIUMS));
+      apiService.getDashboard.mockReturnValue(of(MOCK_DASHBOARD_EMPTY_AQUARIUMS));
       facade.loadDashboard();
       jest.runAllTimers();
       await Promise.resolve();
@@ -118,7 +118,7 @@ describe('HomeDashboardFacade', () => {
 
   describe('error state', () => {
     it('sets error message when service throws', async () => {
-      mockService.getDashboard.mockReturnValue(throwError(() => new Error('API error')));
+      apiService.getDashboard.mockReturnValue(throwError(() => new Error('API error')));
       facade.loadDashboard();
       jest.runAllTimers();
       await Promise.resolve();
@@ -127,7 +127,7 @@ describe('HomeDashboardFacade', () => {
     });
 
     it('sets loading to false after error', async () => {
-      mockService.getDashboard.mockReturnValue(throwError(() => new Error('API error')));
+      apiService.getDashboard.mockReturnValue(throwError(() => new Error('API error')));
       facade.loadDashboard();
       jest.runAllTimers();
       await Promise.resolve();
@@ -180,141 +180,90 @@ describe('HomeDashboardFacade', () => {
       facade.loadDashboard();
       jest.runAllTimers();
       await Promise.resolve();
-      const callCount = mockService.getDashboard.mock.calls.length;
+      const callCount = apiService.getDashboard.mock.calls.length;
       facade.retry();
       jest.runAllTimers();
       await Promise.resolve();
-      expect(mockService.getDashboard.mock.calls.length).toBe(callCount + 1);
+      expect(apiService.getDashboard.mock.calls.length).toBe(callCount + 1);
+    });
+  });
+
+  describe('summaryParameters', () => {
+    it('returns empty array when no aquarium is selected', () => {
+      expect(facade.summaryParameters()).toEqual([]);
+    });
+
+    it('returns summary parameters for the selected aquarium after load', async () => {
+      facade.loadDashboard();
+      jest.runAllTimers();
+      await Promise.resolve();
+      expect(facade.summaryParameters().length).toBeGreaterThan(0);
+    });
+
+    it('returns empty array when selected aquarium id does not match', async () => {
+      facade.loadDashboard();
+      jest.runAllTimers();
+      await Promise.resolve();
+      facade.selectAquarium('non-existent-id');
+      expect(facade.summaryParameters()).toEqual([]);
     });
   });
 
   describe('water parameters', () => {
-    it('returns parameters after load', async () => {
+    it('returns parameters for the selected aquarium after load', async () => {
       facade.loadDashboard();
       jest.runAllTimers();
       await Promise.resolve();
       expect(facade.waterParameters().length).toBeGreaterThan(0);
     });
 
-    it('no parameter has hasChartData: true (v1 mocks have empty series)', async () => {
+    it('no parameter has hasChartData: true (mocks have empty series)', async () => {
       facade.loadDashboard();
       jest.runAllTimers();
       await Promise.resolve();
       facade.waterParameters().forEach((p) => expect(p.hasChartData).toBe(false));
     });
 
-    it('returns recent measurements after load', async () => {
+    it('returns empty waterParameters for unknown aquarium id', async () => {
+      facade.loadDashboard();
+      jest.runAllTimers();
+      await Promise.resolve();
+      facade.selectAquarium('non-existent-id');
+      expect(facade.waterParameters()).toEqual([]);
+    });
+
+    it('updates waterParameters when selected aquarium changes', async () => {
+      facade.loadDashboard();
+      jest.runAllTimers();
+      await Promise.resolve();
+
+      const aq1Params = facade.waterParameters();
+      facade.selectAquarium('aq-2');
+      const aq2Params = facade.waterParameters();
+
+      expect(aq1Params.length).not.toBe(aq2Params.length);
+    });
+
+    it('recentMeasurements returns measurements regardless of selected aquarium', async () => {
       facade.loadDashboard();
       jest.runAllTimers();
       await Promise.resolve();
       expect(facade.recentMeasurements().length).toBeGreaterThan(0);
+
+      const beforeCount = facade.recentMeasurements().length;
+      facade.selectAquarium('aq-2');
+      expect(facade.recentMeasurements().length).toBe(beforeCount);
     });
 
-    it('returns recent applications after load', async () => {
+    it('recentApplications returns mapped application entries', async () => {
       facade.loadDashboard();
       jest.runAllTimers();
       await Promise.resolve();
       expect(facade.recentApplications().length).toBeGreaterThan(0);
-    });
-
-    it('recentMeasurements filters by selected aquarium', async () => {
-      facade.loadDashboard();
-      jest.runAllTimers();
-      await Promise.resolve();
-
-      const aq1 = facade.recentMeasurements();
-      facade.selectAquarium('aq-2');
-      const aq2 = facade.recentMeasurements();
-
-      expect(aq1).not.toEqual(aq2);
-      aq1.forEach((m) => expect(m.aquariumId).toBe('aq-1'));
-      aq2.forEach((m) => expect(m.aquariumId).toBe('aq-2'));
-    });
-
-    it('recentMeasurements limits to 5 items', async () => {
-      facade.loadDashboard();
-      jest.runAllTimers();
-      await Promise.resolve();
-      expect(facade.recentMeasurements().length).toBeLessThanOrEqual(5);
-    });
-
-    it('recentApplications filters by selected aquarium', async () => {
-      facade.loadDashboard();
-      jest.runAllTimers();
-      await Promise.resolve();
-
-      const aq1 = facade.recentApplications();
-      facade.selectAquarium('aq-2');
-      const aq2 = facade.recentApplications();
-
-      expect(aq1).not.toEqual(aq2);
-      aq1.forEach((a) => expect(a.aquariumId).toBe('aq-1'));
-      aq2.forEach((a) => expect(a.aquariumId).toBe('aq-2'));
-    });
-
-    it('recentApplications limits to 5 items', async () => {
-      facade.loadDashboard();
-      jest.runAllTimers();
-      await Promise.resolve();
-      expect(facade.recentApplications().length).toBeLessThanOrEqual(5);
-    });
-  });
-
-  describe('measurementsByParamKey', () => {
-    const loadAndTick = async () => {
-      facade.loadDashboard();
-      jest.runAllTimers();
-      await Promise.resolve();
-    };
-
-    it('groups measurements by parameterKey for the selected aquarium', async () => {
-      await loadAndTick();
-      const byKey = facade.measurementsByParamKey();
-      expect(byKey['ph']).toBeDefined();
-      expect(byKey['ph']!.length).toBeGreaterThan(0);
-    });
-
-    it('limits measurements per parameterKey to 3', async () => {
-      await loadAndTick();
-      const byKey = facade.measurementsByParamKey();
-      Object.values(byKey).forEach((measurements) => {
-        expect(measurements!.length).toBeLessThanOrEqual(3);
+      expect(facade.recentApplications()[0]).toMatchObject({
+        title: expect.any(String),
+        subtitle: expect.any(String),
       });
-    });
-
-    it('excludes measurements from other aquariums', async () => {
-      await loadAndTick();
-      facade.selectAquarium('aq-2');
-      const byKey = facade.measurementsByParamKey();
-      // aq-1 has nitrite and ammonia; aq-2 does not
-      expect(byKey['nitrite']).toBeUndefined();
-      expect(byKey['ammonia']).toBeUndefined();
-      // aq-2 has nitrate measurements
-      expect(byKey['nitrate']).toBeDefined();
-    });
-
-    it('returns empty object when no measurements match the selected aquarium', async () => {
-      mockService.getDashboard.mockReturnValue(of(MOCK_DASHBOARD_EMPTY_AQUARIUMS));
-      facade.loadDashboard();
-      jest.runAllTimers();
-      await Promise.resolve();
-      expect(facade.measurementsByParamKey()).toEqual({});
-    });
-
-    it('overrides metadata with formatted date (DD/MM/YYYY)', async () => {
-      await loadAndTick();
-      const byKey = facade.measurementsByParamKey();
-      const phMeasurements = byKey['ph'];
-      expect(phMeasurements).toBeDefined();
-      expect(phMeasurements![0].metadata).toMatch(/^\d{2}\/\d{2}\/\d{4}$/);
-    });
-
-    it('updates when selected aquarium changes', async () => {
-      await loadAndTick();
-      const before = Object.keys(facade.measurementsByParamKey());
-      facade.selectAquarium('aq-3');
-      const after = Object.keys(facade.measurementsByParamKey());
-      expect(before).not.toEqual(after);
     });
   });
 });

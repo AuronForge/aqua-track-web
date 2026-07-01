@@ -118,8 +118,45 @@
 
 .info-card__body {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: theme.$aq-space-2xs;
+}
+
+.info-card__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: theme.$aq-space-sm;
+}
+
+.info-card__title-metric {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: theme.$aq-space-2xs;
+  color: theme.$aq-color-text-secondary;
+
+  &.info-card__metric-icon--up {
+    color: theme.$aq-color-success;
+  }
+
+  &.info-card__metric-icon--down {
+    color: theme.$aq-color-error;
+  }
+}
+
+.info-card__title-metric-icon {
+  font-size: theme.$aq-font-size-md;
+  line-height: 1;
+}
+
+.info-card__title-metric-value {
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-semibold;
+  line-height: theme.$aq-line-height-tight;
+  white-space: nowrap;
 }
 
 .info-card__title {

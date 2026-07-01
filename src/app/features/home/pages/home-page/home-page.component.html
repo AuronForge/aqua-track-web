@@ -80,17 +80,22 @@
               <aq-info-card
                 [title]="param.name"
                 [subtitleValue]="param.periodLabel"
-                [metrics]="[{ label: t().homeVariation, value: param.variation.displayValue }]"
+                [titleMetric]="{
+                  icon: param.variation.icon,
+                  iconClass: param.variation.iconClass,
+                  label: '',
+                  value: param.variation.displayValue,
+                }"
                 [fillContainer]="true"
                 [alignTop]="true"
               >
                 <div class="home-page__param-measurements">
                   <hr class="home-page__param-divider" aria-hidden="true" />
                   <aq-info-list
-                    [items]="facade.measurementsByParamKey()[param.key] ?? []"
+                    [items]="param.seriesItems"
                     [loading]="facade.loading()"
                     [paginated]="false"
-                    [equalSpacing]="true"
+                    [flat]="true"
                   />
                 </div>
               </aq-info-card>

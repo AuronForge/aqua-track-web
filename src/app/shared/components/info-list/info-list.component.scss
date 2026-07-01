@@ -37,6 +37,18 @@ $item-h: (theme.$aq-space-sm * 2) + (theme.$aq-font-size-md * theme.$aq-line-hei
   display: block;
 }
 
+:host(.info-list--flat) .info-list__items {
+  gap: 0;
+}
+
+:host(.info-list--flat) .info-list__item {
+  border-bottom: 1px solid theme.$aq-color-border;
+}
+
+:host(.info-list--flat) .info-list__item:last-child {
+  border-bottom: none;
+}
+
 .info-list__empty {
   display: flex;
   flex-direction: column;

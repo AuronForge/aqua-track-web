@@ -34,6 +34,7 @@ export class InfoCardComponent {
   readonly fillContainer = input<boolean>(false);
   readonly selected = input<boolean>(false);
   readonly alignTop = input<boolean>(false);
+  readonly titleMetric = input<InfoCardMetric | null>(null);
   readonly cardClick = output<void>();
 
   protected readonly hostClass = computed(() =>

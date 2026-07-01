@@ -25,19 +25,18 @@ describe('HomeDashboardMapper', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
 
       expect(vm.aquariumCards.length).toBe(4);
-      expect(vm.waterParameters.length).toBe(MOCK_DASHBOARD_FULL.waterParameters.length);
       expect(vm.recentMeasurements.length).toBe(MOCK_DASHBOARD_FULL.recentMeasurements.length);
       expect(vm.recentApplications.length).toBe(MOCK_DASHBOARD_FULL.recentApplications.length);
     });
 
-    it('uses selectedAquarium from the DTO when present', () => {
+    it('maps waterParameters per aquarium', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
-      expect(vm.selectedAquariumId).toBe('aq-1');
+      const aq1Params = vm.waterParametersByAquariumId['aq-1'];
+      expect(aq1Params?.length).toBe(MOCK_DASHBOARD_FULL.aquariums[0].waterParameters.length);
     });
 
-    it('falls back to the first aquarium when selectedAquarium is null', () => {
-      const dto = { ...MOCK_DASHBOARD_FULL, selectedAquarium: null };
-      const vm = mapper.mapDashboardDtoToViewModel(dto);
+    it('uses the first aquarium as selectedAquariumId', () => {
+      const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
       expect(vm.selectedAquariumId).toBe('aq-1');
     });
 
@@ -114,7 +113,7 @@ describe('HomeDashboardMapper', () => {
             ...MOCK_DASHBOARD_FULL.aquariums[0],
             waterType: 'BRACKISH',
             volume: 30,
-            volumeUnit: 'GALLON',
+            volumeUnit: 'GALLON' as const,
           },
         ],
       };
@@ -148,192 +147,129 @@ describe('HomeDashboardMapper', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
       const card = vm.aquariumCards[0];
 
-      expect(card.metrics).toContainEqual({ label: expect.stringContaining('pH'), value: '7.2' });
-      expect(card.metrics).toContainEqual({ label: 'Temp', value: expect.stringContaining('24') });
+      expect(card.metrics).toContainEqual({ label: expect.stringContaining('pH'), value: '7.20' });
+      expect(card.metrics).toContainEqual({
+        label: 'Temperatura',
+        value: expect.stringContaining('24.00'),
+      });
     });
 
-    it('returns empty metrics when summary is empty', () => {
+    it('shows dash placeholders when summary is empty', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_SINGLE_UNKNOWN);
-      expect(vm.aquariumCards[0].metrics).toHaveLength(0);
+      const card = vm.aquariumCards[0];
+      expect(card.metrics).toHaveLength(2);
+      expect(card.metrics).toContainEqual({ label: expect.stringContaining('pH'), value: '-' });
+      expect(card.metrics).toContainEqual({ label: 'Temperatura', value: '- °C' });
     });
   });
 
   describe('water parameter variation', () => {
     it('maps UP direction with a plus prefix', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
-      const phParam = vm.waterParameters.find((p) => p.key === 'ph');
+      const aq1Params = vm.waterParametersByAquariumId['aq-1'];
+      const phParam = aq1Params?.find((p) => p.key === 'ph');
 
-      expect(phParam?.variation.displayValue).toBe('+0.2 pH');
+      expect(phParam?.variation.displayValue).toBe('+0.20 pH');
       expect(phParam?.variation.direction).toBe('up');
     });
 
     it('maps DOWN direction with a minus prefix', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
-      const nitriteParam = vm.waterParameters.find((p) => p.key === 'nitrite');
+      const aq1Params = vm.waterParametersByAquariumId['aq-1'];
+      const nitriteParam = aq1Params?.find((p) => p.key === 'nitrite');
 
-      expect(nitriteParam?.variation.displayValue).toBe('-0.1 ppm');
+      expect(nitriteParam?.variation.displayValue).toBe('-0.10 ppm');
       expect(nitriteParam?.variation.direction).toBe('down');
     });
 
     it('maps STABLE direction with no sign', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
-      const tempParam = vm.waterParameters.find((p) => p.key === 'temperature');
+      const aq1Params = vm.waterParametersByAquariumId['aq-1'];
+      const tempParam = aq1Params?.find((p) => p.key === 'temperature');
 
       expect(tempParam?.variation.displayValue).toContain('0');
       expect(tempParam?.variation.direction).toBe('stable');
     });
 
     it('maps UNKNOWN direction with no sign and unknown direction output', () => {
-      const dto = {
+      const dto: typeof MOCK_DASHBOARD_FULL = {
         ...MOCK_DASHBOARD_FULL,
-        waterParameters: [
+        aquariums: [
           {
-            ...MOCK_DASHBOARD_FULL.waterParameters[0],
-            variation: { value: 0, unit: 'NONE' as const, direction: 'UNKNOWN' as const },
+            ...MOCK_DASHBOARD_FULL.aquariums[0],
+            waterParameters: [
+              {
+                ...MOCK_DASHBOARD_FULL.aquariums[0].waterParameters[0],
+                variation: { value: 0, unit: 'NONE' as const, direction: 'UNKNOWN' as const },
+              },
+            ],
           },
         ],
       };
       const vm = mapper.mapDashboardDtoToViewModel(dto);
+      const params = vm.waterParametersByAquariumId['aq-1'];
 
-      expect(vm.waterParameters[0].variation.displayValue).toBe('0');
-      expect(vm.waterParameters[0].variation.direction).toBe('unknown');
+      expect(params?.[0].variation.displayValue).toBe('0.00');
+      expect(params?.[0].variation.direction).toBe('unknown');
     });
 
     it('falls back to unknown direction and empty suffix for unmapped variation data', () => {
-      const dto = {
+      const dto: typeof MOCK_DASHBOARD_FULL = {
         ...MOCK_DASHBOARD_FULL,
-        waterParameters: [
+        aquariums: [
           {
-            ...MOCK_DASHBOARD_FULL.waterParameters[0],
-            variation: { value: 3, unit: 'PSI' as never, direction: 'SIDEWAYS' as never },
+            ...MOCK_DASHBOARD_FULL.aquariums[0],
+            waterParameters: [
+              {
+                ...MOCK_DASHBOARD_FULL.aquariums[0].waterParameters[0],
+                variation: { value: 3, unit: 'PSI' as never, direction: 'SIDEWAYS' as never },
+              },
+            ],
           },
         ],
       };
 
       const vm = mapper.mapDashboardDtoToViewModel(dto);
-      expect(vm.waterParameters[0].variation).toEqual({
-        displayValue: '3',
+      const params = vm.waterParametersByAquariumId['aq-1'];
+      expect(params?.[0].variation).toEqual({
+        displayValue: '3.00',
         direction: 'unknown',
+        icon: '',
+        iconClass: '',
       });
     });
 
     it('sets hasChartData to false when series is empty', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
-      vm.waterParameters.forEach((p) => expect(p.hasChartData).toBe(false));
+      const aq1Params = vm.waterParametersByAquariumId['aq-1'] ?? [];
+      aq1Params.forEach((p) => expect(p.hasChartData).toBe(false));
     });
 
     it('sets hasChartData to true when series has data', () => {
-      const dto = {
+      const dto: typeof MOCK_DASHBOARD_FULL = {
         ...MOCK_DASHBOARD_FULL,
-        waterParameters: [
+        aquariums: [
           {
-            ...MOCK_DASHBOARD_FULL.waterParameters[0],
-            series: [{ x: 1, y: 7.2 }],
-          } as WaterParameterDto,
-        ],
-      };
-
-      const vm = mapper.mapDashboardDtoToViewModel(dto);
-      expect(vm.waterParameters[0].hasChartData).toBe(true);
-    });
-  });
-
-  describe('measurement badge mapping', () => {
-    it('maps NORMAL to a normal badge', () => {
-      const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
-      const measurement = vm.recentMeasurements.find((r) => r.id === 'm-ph-1');
-
-      expect(measurement?.badge).toEqual({ label: 'Normal', status: 'normal' });
-    });
-
-    it('maps ATTENTION to an attention badge', () => {
-      const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
-      const measurement = vm.recentMeasurements.find((r) => r.id === 'm-aq2-1');
-
-      expect(measurement?.badge).toEqual({ label: 'Alto', status: 'attention' });
-    });
-
-    it('maps CRITICAL to a danger badge', () => {
-      const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
-      const measurement = vm.recentMeasurements.find((r) => r.id === 'm-aq4-1');
-
-      expect(measurement?.badge).toEqual({
-        label: expect.stringContaining('Cr'),
-        status: 'danger',
-      });
-    });
-
-    it('maps UNKNOWN to a null badge', () => {
-      const dto = {
-        ...MOCK_DASHBOARD_FULL,
-        recentMeasurements: [
-          { ...MOCK_DASHBOARD_FULL.recentMeasurements[0], status: 'UNKNOWN' as const },
-        ],
-      };
-
-      const vm = mapper.mapDashboardDtoToViewModel(dto);
-      expect(vm.recentMeasurements[0].badge).toBeNull();
-    });
-
-    it('falls back to null badge for an unmapped measurement status', () => {
-      const dto = {
-        ...MOCK_DASHBOARD_FULL,
-        recentMeasurements: [
-          {
-            ...MOCK_DASHBOARD_FULL.recentMeasurements[0],
-            status: 'MYSTERY' as never,
+            ...MOCK_DASHBOARD_FULL.aquariums[0],
+            waterParameters: [
+              {
+                ...MOCK_DASHBOARD_FULL.aquariums[0].waterParameters[0],
+                series: [{ date: '2024-02-28', value: 7.2 }],
+              } as WaterParameterDto,
+            ],
           },
         ],
       };
 
       const vm = mapper.mapDashboardDtoToViewModel(dto);
-      expect(vm.recentMeasurements[0].badge).toBeNull();
-    });
-  });
-
-  describe('recent measurement mapping', () => {
-    it('omits the unit separator when the suffix is empty', () => {
-      const dto = {
-        ...MOCK_DASHBOARD_FULL,
-        recentMeasurements: [
-          {
-            ...MOCK_DASHBOARD_FULL.recentMeasurements[0],
-            unit: 'NONE' as never,
-            value: 42,
-          },
-        ],
-      };
-
-      const vm = mapper.mapDashboardDtoToViewModel(dto);
-      expect(vm.recentMeasurements[0].value).toBe('42');
+      const params = vm.waterParametersByAquariumId['aq-1'];
+      expect(params?.[0].hasChartData).toBe(true);
     });
 
-    it('falls back to an empty unit suffix for unmapped units', () => {
-      const dto = {
-        ...MOCK_DASHBOARD_FULL,
-        recentMeasurements: [
-          {
-            ...MOCK_DASHBOARD_FULL.recentMeasurements[0],
-            unit: 'PSI' as never,
-            value: 9,
-          },
-        ],
-      };
-
-      const vm = mapper.mapDashboardDtoToViewModel(dto);
-      expect(vm.recentMeasurements[0].value).toBe('9');
-    });
-  });
-
-  describe('recent application mapping', () => {
-    it('maps dosage and unit to the value string', () => {
+    it('uses periodLabel directly from the DTO', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
-      expect(vm.recentApplications[0].value).toBe('2 ml');
-    });
-
-    it('keeps recent application badges as null', () => {
-      const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
-      vm.recentApplications.forEach((application) => expect(application.badge).toBeNull());
+      const aq1Params = vm.waterParametersByAquariumId['aq-1'];
+      expect(aq1Params?.[0].periodLabel).toBe('Últimos 7 dias');
     });
   });
 });

@@ -1,12 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 
 import { InfoCardStatus } from '../../../shared/components/info-card/info-card-status.type';
+import { InfoListItemData } from '../../../shared/components/info-list/info-list-item-data.model';
 import { InfoListItemBadge } from '../../../shared/components/info-list-item/info-list-item-badge.model';
 import { InfoListItemStatus } from '../../../shared/components/info-list-item/info-list-item-status.type';
 import { LanguageService } from '../../../shared/services/language.service';
 import { TranslationDictionary } from '../../../shared/types/translation-dictionary.type';
 import {
   AquariumHealthStatus,
+  AquariumSummaryDto,
   DashboardApiDto,
   DashboardAquariumDto,
   MeasurementUnit,
@@ -19,12 +21,14 @@ import {
 } from '../models';
 import { AquariumCardViewModel } from '../models/aquarium-card-view.model';
 import { HomeDashboardViewModel } from '../models/home-dashboard-view.model';
-import {
-  ParameterVariationDirection,
-  WaterParameterCardViewModel,
-} from '../models/water-parameter-card-view.model';
 import { RecentApplicationViewModel } from '../models/recent-application-view.model';
 import { RecentMeasurementViewModel } from '../models/recent-measurement-view.model';
+import { SummaryParameterViewModel } from '../models/summary-parameter-view.model';
+import {
+  ParameterVariationDirection,
+  ParameterVariationViewModel,
+  WaterParameterCardViewModel,
+} from '../models/water-parameter-card-view.model';
 
 @Injectable({ providedIn: 'root' })
 export class HomeDashboardMapper {
@@ -32,26 +36,82 @@ export class HomeDashboardMapper {
 
   mapDashboardDtoToViewModel(dto: DashboardApiDto): HomeDashboardViewModel {
     const t = this.languageService.translation();
+    const waterParametersByAquariumId: Record<string, WaterParameterCardViewModel[]> = {};
+    const summaryParametersByAquariumId: Record<string, SummaryParameterViewModel[]> = {};
+
+    for (const aq of dto.aquariums) {
+      waterParametersByAquariumId[aq.id] = aq.waterParameters.map((p) =>
+        this.mapWaterParameter(p, t),
+      );
+      summaryParametersByAquariumId[aq.id] = this.mapSummaryParameters(aq.summary, t);
+    }
+
     return {
       aquariumCards: dto.aquariums.map((aq) => this.mapAquariumCard(aq, t)),
-      selectedAquariumId: dto.selectedAquarium?.id ?? dto.aquariums[0]?.id ?? null,
-      waterParameters: dto.waterParameters.map((p) => this.mapWaterParameter(p, t)),
+      selectedAquariumId: dto.aquariums[0]?.id ?? null,
+      waterParametersByAquariumId,
+      summaryParametersByAquariumId,
       recentMeasurements: dto.recentMeasurements.map((m) => this.mapRecentMeasurement(m, t)),
       recentApplications: dto.recentApplications.map((a) => this.mapRecentApplication(a)),
     };
+  }
+
+  private mapSummaryParameters(
+    summary: AquariumSummaryDto,
+    t: TranslationDictionary,
+  ): SummaryParameterViewModel[] {
+    return [
+      {
+        key: 'ph',
+        name: t.metricPhLevel,
+        value:
+          summary.ph !== undefined ? this.formatWithUnit(summary.ph.value, summary.ph.unit) : '-',
+        measuredAt: summary.ph !== undefined ? this.formatDateTime(summary.ph.measuredAt) : '',
+      },
+      {
+        key: 'temperature',
+        name: t.metricTemperature,
+        value:
+          summary.temperature !== undefined
+            ? this.formatWithUnit(summary.temperature.value, summary.temperature.unit)
+            : '- °C',
+        measuredAt:
+          summary.temperature !== undefined
+            ? this.formatDateTime(summary.temperature.measuredAt)
+            : '',
+      },
+    ];
+  }
+
+  private formatDateTime(isoTimestamp: string): string {
+    try {
+      return new Date(isoTimestamp).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      });
+    } catch {
+      return '';
+    }
   }
 
   private mapAquariumCard(
     dto: DashboardAquariumDto,
     t: TranslationDictionary,
   ): AquariumCardViewModel {
-    const metrics = [];
-    if (dto.summary.ph !== undefined) {
-      metrics.push({ label: t.metricPhLevel, value: String(dto.summary.ph) });
-    }
-    if (dto.summary.temperature !== undefined) {
-      metrics.push({ label: t.metricTemperature, value: `${dto.summary.temperature}°C` });
-    }
+    const metrics = [
+      {
+        label: t.metricPhLevel,
+        value: dto.summary.ph !== undefined ? dto.summary.ph.value.toFixed(2) : '-',
+      },
+      {
+        label: t.metricTemperature,
+        value:
+          dto.summary.temperature !== undefined
+            ? `${dto.summary.temperature.value.toFixed(2)}°C`
+            : '- °C',
+      },
+    ];
 
     return {
       id: dto.id,
@@ -111,22 +171,105 @@ export class HomeDashboardMapper {
   ): WaterParameterCardViewModel {
     return {
       key: dto.key,
-      name: dto.name,
-      periodLabel: t.periodLastNDays.replace('{{n}}', String(dto.periodDays)),
+      name: this.mapParameterName(dto.name, t),
+      periodLabel: dto.periodLabel,
       variation: this.mapVariation(dto.variation),
       hasChartData: dto.series.length > 0,
+      seriesItems: this.mapSeriesItems(dto.series, dto.unit, t),
     };
   }
 
-  private mapVariation(dto: WaterParameterVariationDto): {
-    displayValue: string;
-    direction: ParameterVariationDirection;
-  } {
+  private mapSeriesItems(
+    series: WaterParameterDto['series'],
+    unit: MeasurementUnit,
+    t: TranslationDictionary,
+  ): InfoListItemData[] {
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterdayStart = new Date(todayStart.getTime() - 86_400_000);
+    const todayEnd = new Date(todayStart.getTime() + 86_400_000 - 1);
+
+    return series
+      .filter((point) => new Date(point.date) <= todayEnd)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 5)
+      .map((point) => ({
+        title: this.formatSeriesDate(point.date, todayStart, yesterdayStart, t),
+        value: this.formatWithUnit(point.value, unit),
+      }));
+  }
+
+  private formatSeriesDate(
+    dateStr: string,
+    todayStart: Date,
+    yesterdayStart: Date,
+    t: TranslationDictionary,
+  ): string {
+    const date = new Date(dateStr);
+    const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    if (dayStart.getTime() === todayStart.getTime()) return t.seriesDateToday;
+    if (dayStart.getTime() === yesterdayStart.getTime()) return t.seriesDateYesterday;
+
+    return date.toLocaleDateString('pt-BR', {
+      weekday: 'short',
+      day: '2-digit',
+      month: '2-digit',
+    });
+  }
+
+  private mapParameterName(name: string, t: TranslationDictionary): string {
+    const map: Record<string, string> = {
+      pH: t.paramNamePh,
+      gH: t.paramNameGh,
+      kH: t.paramNameKh,
+      Nitrate: t.paramNameNitrate,
+      Nitrite: t.paramNameNitrite,
+      Ammonia: t.paramNameAmmonia,
+      Temperature: t.paramNameTemperature,
+      TDS: t.paramNameTds,
+      Copper: t.paramNameCopper,
+      Phosphate: t.paramNamePhosphate,
+      Iron: t.paramNameIron,
+      CO2: t.paramNameCo2,
+      O2: t.paramNameO2,
+      Calcium: t.paramNameCalcium,
+      Silicates: t.paramNameSilicates,
+      'Density / Salinity': t.paramNameDensitySalinity,
+      Magnesium: t.paramNameMagnesium,
+      Iodine: t.paramNameIodine,
+      Molybdenum: t.paramNameMolybdenum,
+      Strontium: t.paramNameStrontium,
+      Potassium: t.paramNamePotassium,
+    };
+    return map[name] ?? name;
+  }
+
+  private mapVariation(dto: WaterParameterVariationDto): ParameterVariationViewModel {
     const direction = this.mapVariationDirection(dto.direction);
     const sign = dto.direction === 'UP' ? '+' : dto.direction === 'DOWN' ? '-' : '';
     const displayValue = `${sign}${this.formatWithUnit(dto.value, dto.unit)}`;
 
-    return { displayValue, direction };
+    const iconMap: Record<ParameterVariationDirection, string> = {
+      up: 'trending_up',
+      down: 'trending_down',
+      stable: 'trending_flat',
+      unknown: '',
+    };
+
+    const iconClassMap: Record<ParameterVariationDirection, string> = {
+      up: 'info-card__metric-icon--up',
+      down: 'info-card__metric-icon--down',
+      stable: '',
+      unknown: '',
+    };
+
+    return {
+      displayValue,
+      direction,
+      icon: iconMap[direction],
+      iconClass: iconClassMap[direction],
+    };
   }
 
   private mapVariationDirection(direction: VariationDirection): ParameterVariationDirection {
@@ -147,6 +290,7 @@ export class HomeDashboardMapper {
       MG_L: 'mg/L',
       DKH: 'dKH',
       DGH: 'dGH',
+      SPECIFIC_GRAVITY: 'sg',
       NONE: '',
     };
     return map[unit] ?? '';
@@ -154,28 +298,50 @@ export class HomeDashboardMapper {
 
   private formatWithUnit(value: number, unit: MeasurementUnit): string {
     const suffix = this.mapUnitSuffix(unit);
-    if (!suffix) return String(value);
+    const formatted = value.toFixed(2);
+    if (!suffix) return formatted;
     const separator = unit === 'CELSIUS' ? '' : ' ';
-    return `${value}${separator}${suffix}`;
+    return `${formatted}${separator}${suffix}`;
   }
 
   private mapRecentMeasurement(
     dto: RecentMeasurementDto,
     t: TranslationDictionary,
   ): RecentMeasurementViewModel {
-    const value = this.formatWithUnit(dto.value, dto.unit);
-
     return {
       id: dto.id,
       aquariumId: dto.aquariumId,
       parameterKey: dto.parameterKey,
       measuredAt: dto.measuredAt,
-      title: dto.parameterName,
+      title: this.mapParameterName(dto.waterParameterName, t),
       subtitle: dto.aquariumName,
-      value,
+      value: this.formatWithUnit(dto.value, dto.unit),
       metadata: this.formatTime(dto.measuredAt),
       badge: this.mapMeasurementBadge(dto.status, t),
     };
+  }
+
+  private mapRecentApplication(dto: RecentApplicationDto): RecentApplicationViewModel {
+    return {
+      id: dto.id,
+      title: dto.productName,
+      subtitle: dto.aquariumName,
+      value: `${dto.amount} ${dto.unit}`,
+      metadata: this.formatTime(dto.appliedAt),
+      badge: null,
+    };
+  }
+
+  private formatTime(isoTimestamp: string): string {
+    try {
+      return new Date(isoTimestamp).toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+    } catch {
+      return '';
+    }
   }
 
   private mapMeasurementBadge(
@@ -190,30 +356,5 @@ export class HomeDashboardMapper {
         UNKNOWN: null,
       };
     return map[status] ?? null;
-  }
-
-  private mapRecentApplication(dto: RecentApplicationDto): RecentApplicationViewModel {
-    return {
-      id: dto.id,
-      aquariumId: dto.aquariumId,
-      title: dto.productName,
-      subtitle: dto.aquariumName,
-      value: `${dto.dosage} ${dto.dosageUnit}`,
-      metadata: this.formatTime(dto.appliedAt),
-      badge: null,
-    };
-  }
-
-  private formatTime(isoTimestamp: string): string {
-    try {
-      const date = new Date(isoTimestamp);
-      return date.toLocaleTimeString('pt-BR', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      });
-    } catch {
-      return '';
-    }
   }
 }
