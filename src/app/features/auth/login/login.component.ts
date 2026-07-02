@@ -73,7 +73,7 @@ export class LoginComponent {
       .subscribe({
         next: (response) => {
           this.authService.setToken(response.accessToken);
-          this.router.navigate(['/']);
+          this.router.navigate(['/home']);
         },
         error: () => {
           this.isLoading.set(false);

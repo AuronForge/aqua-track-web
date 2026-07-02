@@ -1,0 +1,22 @@
+@use '../../../../shared/theme' as theme;
+
+.application-create-page__state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: theme.$aq-space-md;
+  padding: theme.$aq-space-2xl;
+  text-align: center;
+}
+
+.application-create-page__state-icon {
+  font-size: 3rem;
+  color: theme.$aq-color-text-tertiary;
+}
+
+.application-create-page__state-message {
+  margin: 0;
+  font-size: theme.$aq-font-size-md;
+  color: theme.$aq-color-text-secondary;
+}

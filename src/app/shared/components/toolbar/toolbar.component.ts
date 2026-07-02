@@ -16,13 +16,16 @@ import { LanguageSwitcherComponent } from '../language-switcher/language-switche
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToolbarComponent {
+  readonly showBrand = input<boolean>(true);
   readonly pageTitle = input.required<string>();
   readonly pageSubtitle = input<string>('');
   readonly userName = input.required<string>();
   readonly userEmail = input.required<string>();
   readonly userInitials = input.required<string>();
   readonly userAvatarColor = input<AvatarColor>('primary');
+  readonly userPlan = input<string>('');
   readonly selectedLanguage = input.required<LanguageCode>();
+  readonly languageSelectorLabel = input<string>('Select language');
   readonly userMenuItems = input.required<DropdownMenuItem[]>();
 
   readonly languageChange = output<LanguageCode>();

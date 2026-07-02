@@ -1,14 +1,14 @@
 @if (loading()) {
-  <div class="info-list__loading" aria-label="Carregando itens...">
+  <div class="info-list__loading" [attr.aria-label]="loadingLabel()">
     <span class="material-icons-outlined info-list__loading-icon">sync</span>
-    <span>Carregando...</span>
+    <span>{{ loadingLabel() }}</span>
   </div>
 } @else if (isEmpty()) {
   <div class="info-list__empty">
-    <p class="info-list__empty-title">{{ emptyState().title }}</p>
+    <p class="info-list__empty-title">{{ resolvedEmptyState().title }}</p>
 
-    @if (emptyState().description) {
-      <p class="info-list__empty-description">{{ emptyState().description }}</p>
+    @if (resolvedEmptyState().description) {
+      <p class="info-list__empty-description">{{ resolvedEmptyState().description }}</p>
     }
   </div>
 } @else {
@@ -23,6 +23,7 @@
           [badge]="item.badge ?? null"
           [clickable]="clickable()"
           [disabled]="disabled()"
+          [flat]="flat()"
           (itemClick)="onItemClick(item)"
         />
       </li>

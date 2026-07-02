@@ -31,6 +31,7 @@ export class InfoListItemComponent {
   readonly clickable = input<boolean>(false);
   readonly disabled = input<boolean>(false);
   readonly selected = input<boolean>(false);
+  readonly flat = input<boolean>(false);
 
   readonly itemClick = output<void>();
 
@@ -40,6 +41,7 @@ export class InfoListItemComponent {
       this.clickable() ? 'info-list-item--clickable' : '',
       this.disabled() ? 'info-list-item--disabled' : '',
       this.selected() ? 'info-list-item--selected' : '',
+      this.flat() ? 'info-list-item--flat' : '',
     ]
       .filter(Boolean)
       .join(' '),

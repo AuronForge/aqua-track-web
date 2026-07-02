@@ -20,7 +20,22 @@
     </div>
 
     <div class="info-card__body">
-      <p class="info-card__title">{{ title() }}</p>
+      <div class="info-card__title-row">
+        <p class="info-card__title">{{ title() }}</p>
+
+        @if (titleMetric(); as tm) {
+          <div class="info-card__title-metric" [class]="tm.iconClass ?? ''">
+            @if (tm.icon) {
+              <span
+                class="material-icons-outlined info-card__title-metric-icon"
+                aria-hidden="true"
+                >{{ tm.icon }}</span
+              >
+            }
+            <span class="info-card__title-metric-value">{{ tm.value }}</span>
+          </div>
+        }
+      </div>
 
       @if (hasSubtitle()) {
         <p class="info-card__subtitle">
@@ -37,6 +52,8 @@
       }
     </div>
   </div>
+
+  <ng-content />
 
   @if (metrics().length) {
     <div class="info-card__footer">

@@ -35,14 +35,42 @@ export const routes: Routes = [
   },
   {
     path: '',
+    loadComponent: () =>
+      import('./layouts/authenticated-layout/authenticated-layout.component').then(
+        (m) => m.AuthenticatedLayoutComponent,
+      ),
     canMatch: [authCanMatchGuard],
     canActivateChild: [authCanActivateChildGuard],
     children: [
       {
+        path: 'home',
+        loadChildren: () => import('./features/home/home.routes').then((m) => m.HOME_ROUTES),
+      },
+      {
+        path: 'aquariums/new',
+        loadComponent: () =>
+          import('./features/aquarium/pages/aquarium-create-page/aquarium-create-page.component').then(
+            (m) => m.AquariumCreatePageComponent,
+          ),
+      },
+      {
+        path: 'measurements/new',
+        loadComponent: () =>
+          import('./features/measurement/pages/measurement-create-page/measurement-create-page.component').then(
+            (m) => m.MeasurementCreatePageComponent,
+          ),
+      },
+      {
+        path: 'applications/new',
+        loadComponent: () =>
+          import('./features/application/pages/application-create-page/application-create-page.component').then(
+            (m) => m.ApplicationCreatePageComponent,
+          ),
+      },
+      {
         path: '',
         pathMatch: 'full',
-        loadComponent: () =>
-          import('./features/welcome/welcome.component').then((m) => m.WelcomeComponent),
+        redirectTo: 'home',
       },
     ],
   },

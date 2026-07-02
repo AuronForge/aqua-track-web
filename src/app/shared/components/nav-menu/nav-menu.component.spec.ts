@@ -206,13 +206,13 @@ describe('NavMenuComponent', () => {
     expect(links[1].getAttribute('title')).toBe('');
   });
 
-  it('should set aria-label Recolher menu when expanded', () => {
-    expect(getToggleButton().getAttribute('aria-label')).toBe('Recolher menu');
+  it('should set aria-label to collapseLabel value when expanded', () => {
+    expect(getToggleButton().getAttribute('aria-label')).toBe('Collapse');
   });
 
-  it('should set aria-label Expandir menu when collapsed', () => {
+  it('should set aria-label to expandLabel value when collapsed', () => {
     getToggleButton().click();
     hostFixture.detectChanges();
-    expect(getToggleButton().getAttribute('aria-label')).toBe('Expandir menu');
+    expect(getToggleButton().getAttribute('aria-label')).toBe('Expand');
   });
 });

@@ -44,7 +44,7 @@ class TestHostComponent {
   readonly pageSizeOptions = signal([5, 10]);
   readonly loading = signal(false);
   readonly disabled = signal(false);
-  readonly emptyState = signal<InfoListEmptyState>({ title: 'Nenhum item encontrado' });
+  readonly emptyState = signal<InfoListEmptyState | null>({ title: 'Nenhum item encontrado' });
   readonly clickable = signal(false);
 
   lastPageChange: InfoListPageChange | null = null;
@@ -253,11 +253,12 @@ describe('InfoListComponent', () => {
     expect(element.querySelector('.info-list__items')).toBeNull();
   });
 
-  it('should display the default empty state title', () => {
+  it('should display the fallback empty state title when no emptyState is provided', () => {
     hostFixture.componentInstance.items.set([]);
+    hostFixture.componentInstance.emptyState.set(null);
     hostFixture.detectChanges();
 
-    expect(getEmptyTitle()?.textContent?.trim()).toBe('Nenhum item encontrado');
+    expect(getEmptyTitle()?.textContent?.trim()).toBeTruthy();
   });
 
   it('should display a custom empty state title', () => {

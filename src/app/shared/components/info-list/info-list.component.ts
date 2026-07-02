@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 
+import { LanguageService } from '../../services/language.service';
 import { InfoListItemComponent } from '../info-list-item/info-list-item.component';
 import { PaginatorChange } from '../paginator/paginator-change.model';
 import { PaginatorComponent } from '../paginator/paginator.component';
@@ -21,6 +22,9 @@ import { InfoListPageChange } from './info-list-page-change.model';
   },
 })
 export class InfoListComponent {
+  private readonly languageService = inject(LanguageService);
+  private readonly t = this.languageService.translation;
+
   readonly items = input.required<InfoListItemData[]>();
   readonly paginated = input<boolean>(true);
   readonly pageIndex = input<number>(0);
@@ -28,8 +32,16 @@ export class InfoListComponent {
   readonly pageSizeOptions = input<number[]>([5, 10, 20]);
   readonly loading = input<boolean>(false);
   readonly disabled = input<boolean>(false);
-  readonly emptyState = input<InfoListEmptyState>({ title: 'Nenhum item encontrado' });
+  readonly emptyState = input<InfoListEmptyState | null>(null);
   readonly clickable = input<boolean>(false);
+  readonly equalSpacing = input<boolean>(false);
+  readonly flat = input<boolean>(false);
+
+  protected readonly resolvedEmptyState = computed<InfoListEmptyState>(
+    () => this.emptyState() ?? { title: this.t().listEmptyDefault },
+  );
+
+  protected readonly loadingLabel = computed(() => this.t().listLoadingDefault);
 
   readonly pageChange = output<InfoListPageChange>();
   readonly itemClick = output<InfoListItemData>();
@@ -54,6 +66,8 @@ export class InfoListComponent {
       this.disabled() ? 'info-list--disabled' : '',
       this.loading() ? 'info-list--loading' : '',
       this.isEmpty() ? 'info-list--empty' : '',
+      this.equalSpacing() ? 'info-list--equal-spacing' : '',
+      this.flat() ? 'info-list--flat' : '',
     ]
       .filter(Boolean)
       .join(' '),

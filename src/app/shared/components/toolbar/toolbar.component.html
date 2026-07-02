@@ -1,11 +1,13 @@
 <header class="toolbar" role="banner">
   <!-- ── Brand ──────────────────────────────────────────────────────────── -->
-  <div class="toolbar__brand">
-    <div class="toolbar__logo" aria-hidden="true">
-      <img class="toolbar__logo-icon" src="/app-icon.svg" alt="" />
+  @if (showBrand()) {
+    <div class="toolbar__brand">
+      <div class="toolbar__logo" aria-hidden="true">
+        <img class="toolbar__logo-icon" src="/app-icon.svg" alt="" />
+      </div>
+      <span class="toolbar__brand-name">AquaTrack</span>
     </div>
-    <span class="toolbar__brand-name">AquaTrack</span>
-  </div>
+  }
 
   <!-- ── Page info ──────────────────────────────────────────────────────── -->
   <div class="toolbar__page-info">
@@ -18,7 +20,7 @@
   <!-- ── Actions ───────────────────────────────────────────────────────── -->
   <div class="toolbar__actions">
     <app-language-switcher
-      label="Language"
+      [label]="languageSelectorLabel()"
       [selectedLanguage]="selectedLanguage()"
       (languageChange)="languageChange.emit($event)"
     />
@@ -38,6 +40,26 @@
         <div class="toolbar__user-info">
           <span class="toolbar__user-name">{{ userName() }}</span>
           <span class="toolbar__user-email">{{ userEmail() }}</span>
+        </div>
+      </ng-container>
+
+      <ng-container slot="header">
+        <div class="toolbar__menu-header">
+          <app-avatar
+            variant="initials"
+            [color]="userAvatarColor()"
+            size="large"
+            [initials]="userInitials()"
+          />
+          <div class="toolbar__menu-header-info">
+            <span class="toolbar__menu-header-name">{{ userName() }}</span>
+            @if (userPlan()) {
+              <span class="toolbar__menu-plan-badge">
+                <span class="toolbar__menu-plan-dot" aria-hidden="true"></span>
+                {{ userPlan() }}
+              </span>
+            }
+          </div>
         </div>
       </ng-container>
     </app-dropdown-menu>
