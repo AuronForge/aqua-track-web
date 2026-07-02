@@ -147,10 +147,10 @@ describe('HomeDashboardMapper', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
       const card = vm.aquariumCards[0];
 
-      expect(card.metrics).toContainEqual({ label: expect.stringContaining('pH'), value: '7.20' });
+      expect(card.metrics).toContainEqual({ label: expect.stringContaining('pH'), value: '7.2' });
       expect(card.metrics).toContainEqual({
         label: 'Temperatura',
-        value: expect.stringContaining('24.00'),
+        value: expect.stringContaining('24.0'),
       });
     });
 
@@ -169,7 +169,7 @@ describe('HomeDashboardMapper', () => {
       const aq1Params = vm.waterParametersByAquariumId['aq-1'];
       const phParam = aq1Params?.find((p) => p.key === 'ph');
 
-      expect(phParam?.variation.displayValue).toBe('+0.20 pH');
+      expect(phParam?.variation.displayValue).toBe('+0.2 pH');
       expect(phParam?.variation.direction).toBe('up');
     });
 
@@ -270,6 +270,29 @@ describe('HomeDashboardMapper', () => {
       const vm = mapper.mapDashboardDtoToViewModel(MOCK_DASHBOARD_FULL);
       const aq1Params = vm.waterParametersByAquariumId['aq-1'];
       expect(aq1Params?.[0].periodLabel).toBe('Últimos 7 dias');
+    });
+  });
+
+  describe('display preferences', () => {
+    it('excludes parameters where isDisplayed is false', () => {
+      const dto: typeof MOCK_DASHBOARD_FULL = {
+        ...MOCK_DASHBOARD_FULL,
+        aquariums: [
+          {
+            ...MOCK_DASHBOARD_FULL.aquariums[0],
+            waterParameters: [
+              { ...MOCK_DASHBOARD_FULL.aquariums[0].waterParameters[0], isDisplayed: true },
+              { ...MOCK_DASHBOARD_FULL.aquariums[0].waterParameters[1], isDisplayed: false },
+            ],
+          },
+        ],
+      };
+
+      const vm = mapper.mapDashboardDtoToViewModel(dto);
+      const params = vm.waterParametersByAquariumId['aq-1'];
+
+      expect(params).toHaveLength(1);
+      expect(params?.[0].key).toBe(dto.aquariums[0].waterParameters[0].key);
     });
   });
 });

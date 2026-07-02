@@ -48,6 +48,21 @@
   color: theme.$aq-color-text-secondary;
 }
 
+.home-page__add-aquarium-btn {
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.home-page__add-measurement-btn {
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.home-page__add-application-btn {
+  align-self: center;
+  flex-shrink: 0;
+}
+
 // ── Subsection ────────────────────────────────────────────────────────────────
 
 .home-page__subsection {

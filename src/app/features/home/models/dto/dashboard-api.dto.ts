@@ -41,6 +41,7 @@ export interface WaterParameterDto {
   key: string;
   name: string;
   unit: MeasurementUnit;
+  isDisplayed: boolean;
   periodLabel: string;
   variation: WaterParameterVariationDto;
   status: WaterParameterStatus;

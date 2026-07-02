@@ -135,14 +135,17 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
 
     // Home — sections
     homeMyAquariums: 'Meus Aquários',
-    homeMyAquariumsSubtitle: 'Monitor e gerencie todos os seus aquários em um só lugar',
+    homeMyAquariumsSubtitle: 'Monitore e gerencie todos os seus aquários em um só lugar',
+    homeAddAquarium: 'Novo Aquário',
     homeWaterParameters: 'Parâmetros da Água',
     homeVariation: 'Variação',
     homeCurrentValue: 'Valor atual',
     homeRecentMeasurements: 'Medições Recentes',
     homeRecentMeasurementsSubtitle: 'Últimos testes de parâmetros da água',
+    homeAddMeasurement: 'Nova Medição',
     homeRecentApplications: 'Aplicações Recentes',
     homeRecentApplicationsSubtitle: 'Últimas dosagens de produtos',
+    homeAddApplication: 'Nova Aplicação',
 
     // Home — states
     homeNoAquariums: 'Nenhum aquário cadastrado.',
@@ -152,6 +155,21 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     homeMeasurementsEmptyDesc: 'As medições aparecerão aqui após os primeiros testes.',
     homeApplicationsEmptyTitle: 'Nenhuma aplicação recente',
     homeApplicationsEmptyDesc: 'As aplicações de produtos aparecerão aqui.',
+
+    // Aquarium — create page (placeholder)
+    aquariumFormTitle: 'Cadastrar Aquário',
+    aquariumFormComingSoon: 'O formulário de cadastro de aquário estará disponível em breve.',
+    aquariumFormBackToDashboard: 'Voltar para o painel',
+
+    // Measurement — create page (placeholder)
+    measurementFormTitle: 'Nova Medição',
+    measurementFormComingSoon: 'O formulário de cadastro de medição estará disponível em breve.',
+    measurementFormBackToDashboard: 'Voltar para o painel',
+
+    // Application — create page (placeholder)
+    applicationFormTitle: 'Nova Aplicação',
+    applicationFormComingSoon: 'O formulário de cadastro de aplicação estará disponível em breve.',
+    applicationFormBackToDashboard: 'Voltar para o painel',
   },
 
   en: {
@@ -288,13 +306,16 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     // Home — sections
     homeMyAquariums: 'My Aquariums',
     homeMyAquariumsSubtitle: 'Monitor and manage all your aquariums in one place',
+    homeAddAquarium: 'New Aquarium',
     homeWaterParameters: 'Water Parameters',
     homeVariation: 'Variation',
     homeCurrentValue: 'Current value',
     homeRecentMeasurements: 'Recent Measurements',
     homeRecentMeasurementsSubtitle: 'Latest water parameter tests',
+    homeAddMeasurement: 'New Measurement',
     homeRecentApplications: 'Recent Applications',
     homeRecentApplicationsSubtitle: 'Latest product dosages',
+    homeAddApplication: 'New Application',
 
     // Home — states
     homeNoAquariums: 'No aquariums registered.',
@@ -304,6 +325,21 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     homeMeasurementsEmptyDesc: 'Measurements will appear here after the first tests.',
     homeApplicationsEmptyTitle: 'No recent applications',
     homeApplicationsEmptyDesc: 'Product applications will appear here.',
+
+    // Aquarium — create page (placeholder)
+    aquariumFormTitle: 'Register Aquarium',
+    aquariumFormComingSoon: 'The aquarium registration form will be available soon.',
+    aquariumFormBackToDashboard: 'Back to dashboard',
+
+    // Measurement — create page (placeholder)
+    measurementFormTitle: 'New Measurement',
+    measurementFormComingSoon: 'The measurement registration form will be available soon.',
+    measurementFormBackToDashboard: 'Back to dashboard',
+
+    // Application — create page (placeholder)
+    applicationFormTitle: 'New Application',
+    applicationFormComingSoon: 'The application registration form will be available soon.',
+    applicationFormBackToDashboard: 'Back to dashboard',
   },
 
   es: {
@@ -441,13 +477,16 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     // Home — sections
     homeMyAquariums: 'Mis Acuarios',
     homeMyAquariumsSubtitle: 'Monitorea y gestiona todos tus acuarios en un solo lugar',
+    homeAddAquarium: 'Nuevo Acuario',
     homeWaterParameters: 'Parámetros del Agua',
     homeVariation: 'Variación',
     homeCurrentValue: 'Valor actual',
     homeRecentMeasurements: 'Mediciones Recientes',
     homeRecentMeasurementsSubtitle: 'Últimas pruebas de parámetros del agua',
+    homeAddMeasurement: 'Nueva Medición',
     homeRecentApplications: 'Aplicaciones Recientes',
     homeRecentApplicationsSubtitle: 'Últimas dosis de productos',
+    homeAddApplication: 'Nueva Aplicación',
 
     // Home — states
     homeNoAquariums: 'No hay acuarios registrados.',
@@ -457,5 +496,21 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     homeMeasurementsEmptyDesc: 'Las mediciones aparecerán aquí después de las primeras pruebas.',
     homeApplicationsEmptyTitle: 'Sin aplicaciones recientes',
     homeApplicationsEmptyDesc: 'Las aplicaciones de productos aparecerán aquí.',
+
+    // Aquarium — create page (placeholder)
+    aquariumFormTitle: 'Registrar Acuario',
+    aquariumFormComingSoon: 'El formulario de registro de acuarios estará disponible pronto.',
+    aquariumFormBackToDashboard: 'Volver al panel',
+
+    // Measurement — create page (placeholder)
+    measurementFormTitle: 'Nueva Medición',
+    measurementFormComingSoon: 'El formulario de registro de mediciones estará disponible pronto.',
+    measurementFormBackToDashboard: 'Volver al panel',
+
+    // Application — create page (placeholder)
+    applicationFormTitle: 'Nueva Aplicación',
+    applicationFormComingSoon:
+      'El formulario de registro de aplicaciones estará disponible pronto.',
+    applicationFormBackToDashboard: 'Volver al panel',
   },
 };

@@ -40,9 +40,9 @@ export class HomeDashboardMapper {
     const summaryParametersByAquariumId: Record<string, SummaryParameterViewModel[]> = {};
 
     for (const aq of dto.aquariums) {
-      waterParametersByAquariumId[aq.id] = aq.waterParameters.map((p) =>
-        this.mapWaterParameter(p, t),
-      );
+      waterParametersByAquariumId[aq.id] = aq.waterParameters
+        .filter((p) => p.isDisplayed)
+        .map((p) => this.mapWaterParameter(p, t));
       summaryParametersByAquariumId[aq.id] = this.mapSummaryParameters(aq.summary, t);
     }
 
@@ -102,13 +102,13 @@ export class HomeDashboardMapper {
     const metrics = [
       {
         label: t.metricPhLevel,
-        value: dto.summary.ph !== undefined ? dto.summary.ph.value.toFixed(2) : '-',
+        value: dto.summary.ph !== undefined ? dto.summary.ph.value.toFixed(1) : '-',
       },
       {
         label: t.metricTemperature,
         value:
           dto.summary.temperature !== undefined
-            ? `${dto.summary.temperature.value.toFixed(2)}°C`
+            ? `${dto.summary.temperature.value.toFixed(1)}°C`
             : '- °C',
       },
     ];
@@ -248,7 +248,7 @@ export class HomeDashboardMapper {
   private mapVariation(dto: WaterParameterVariationDto): ParameterVariationViewModel {
     const direction = this.mapVariationDirection(dto.direction);
     const sign = dto.direction === 'UP' ? '+' : dto.direction === 'DOWN' ? '-' : '';
-    const displayValue = `${sign}${this.formatWithUnit(dto.value, dto.unit)}`;
+    const displayValue = `${sign}${this.formatWithUnit(Math.abs(dto.value), dto.unit)}`;
 
     const iconMap: Record<ParameterVariationDirection, string> = {
       up: 'trending_up',
@@ -296,9 +296,14 @@ export class HomeDashboardMapper {
     return map[unit] ?? '';
   }
 
+  private mapDecimalPlaces(unit: MeasurementUnit): number {
+    const oneDecimalUnits: MeasurementUnit[] = ['PH', 'CELSIUS', 'DKH', 'DGH'];
+    return oneDecimalUnits.includes(unit) ? 1 : 2;
+  }
+
   private formatWithUnit(value: number, unit: MeasurementUnit): string {
     const suffix = this.mapUnitSuffix(unit);
-    const formatted = value.toFixed(2);
+    const formatted = value.toFixed(this.mapDecimalPlaces(unit));
     if (!suffix) return formatted;
     const separator = unit === 'CELSIUS' ? '' : ' ';
     return `${formatted}${separator}${suffix}`;

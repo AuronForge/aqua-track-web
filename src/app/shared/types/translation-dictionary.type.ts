@@ -129,13 +129,16 @@ export interface TranslationDictionary {
   // Home — sections
   readonly homeMyAquariums: string;
   readonly homeMyAquariumsSubtitle: string;
+  readonly homeAddAquarium: string;
   readonly homeWaterParameters: string;
   readonly homeVariation: string;
   readonly homeCurrentValue: string;
   readonly homeRecentMeasurements: string;
   readonly homeRecentMeasurementsSubtitle: string;
+  readonly homeAddMeasurement: string;
   readonly homeRecentApplications: string;
   readonly homeRecentApplicationsSubtitle: string;
+  readonly homeAddApplication: string;
 
   // Shared — list states
   readonly listEmptyDefault: string;
@@ -149,4 +152,19 @@ export interface TranslationDictionary {
   readonly homeMeasurementsEmptyDesc: string;
   readonly homeApplicationsEmptyTitle: string;
   readonly homeApplicationsEmptyDesc: string;
+
+  // Aquarium — create page (placeholder)
+  readonly aquariumFormTitle: string;
+  readonly aquariumFormComingSoon: string;
+  readonly aquariumFormBackToDashboard: string;
+
+  // Measurement — create page (placeholder)
+  readonly measurementFormTitle: string;
+  readonly measurementFormComingSoon: string;
+  readonly measurementFormBackToDashboard: string;
+
+  // Application — create page (placeholder)
+  readonly applicationFormTitle: string;
+  readonly applicationFormComingSoon: string;
+  readonly applicationFormBackToDashboard: string;
 }

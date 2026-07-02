@@ -6,6 +6,17 @@
         <h2 id="aquariums-title" class="home-page__section-title">{{ t().homeMyAquariums }}</h2>
         <p class="home-page__section-subtitle">{{ t().homeMyAquariumsSubtitle }}</p>
       </div>
+      <a
+        aqButton
+        variant="flat"
+        color="primary"
+        size="medium"
+        class="home-page__add-aquarium-btn"
+        routerLink="/aquariums/new"
+      >
+        <span class="material-icons">add</span>
+        {{ t().homeAddAquarium }}
+      </a>
     </div>
 
     <!-- Loading -->
@@ -124,6 +135,17 @@
               <p class="home-page__section-subtitle">{{ t().homeRecentMeasurementsSubtitle }}</p>
             </div>
           </div>
+          <a
+            aqButton
+            variant="flat"
+            color="primary"
+            size="small"
+            class="home-page__add-measurement-btn"
+            routerLink="/measurements/new"
+          >
+            <span class="material-icons">add</span>
+            {{ t().homeAddMeasurement }}
+          </a>
         </div>
 
         <aq-info-list
@@ -154,6 +176,17 @@
               <p class="home-page__section-subtitle">{{ t().homeRecentApplicationsSubtitle }}</p>
             </div>
           </div>
+          <a
+            aqButton
+            variant="flat"
+            color="primary"
+            size="small"
+            class="home-page__add-application-btn"
+            routerLink="/applications/new"
+          >
+            <span class="material-icons">add</span>
+            {{ t().homeAddApplication }}
+          </a>
         </div>
 
         <aq-info-list

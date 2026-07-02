@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { computed, signal } from '@angular/core';
+import { provideRouter } from '@angular/router';
 
 import { HomePageComponent } from './home-page.component';
 import { HomeDashboardFacade } from '../../facades/home-dashboard.facade';
@@ -64,6 +65,7 @@ async function createFixture(
   await TestBed.configureTestingModule({
     imports: [HomePageComponent],
     providers: [
+      provideRouter([]),
       { provide: HomeDashboardFacade, useValue: facadeMock },
       { provide: PageTitleService, useValue: buildPageTitleMock() },
       { provide: LanguageService, useValue: buildLanguageServiceMock() },
@@ -94,6 +96,7 @@ describe('HomePageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [HomePageComponent],
       providers: [
+        provideRouter([]),
         { provide: HomeDashboardFacade, useValue: buildFacadeMock() },
         { provide: PageTitleService, useValue: pageTitleMock },
         { provide: LanguageService, useValue: buildLanguageServiceMock('en') },
@@ -113,6 +116,7 @@ describe('HomePageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [HomePageComponent],
       providers: [
+        provideRouter([]),
         { provide: HomeDashboardFacade, useValue: buildFacadeMock() },
         { provide: PageTitleService, useValue: pageTitleMock },
         { provide: LanguageService, useValue: buildLanguageServiceMock('pt') },
