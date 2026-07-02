@@ -1,0 +1,55 @@
+<div
+  class="dropdown-menu"
+  [class.dropdown-menu--open]="isOpen()"
+  [class.dropdown-menu--top]="isTopPlacement()"
+>
+  <button
+    aqButton
+    variant="basic"
+    color="tertiary"
+    type="button"
+    class="dropdown-menu__trigger"
+    [attr.aria-expanded]="isOpen()"
+    aria-haspopup="menu"
+    (click)="toggle($event)"
+  >
+    <ng-content select="[slot='trigger']"></ng-content>
+    @if (showChevron()) {
+      <span class="material-icons dropdown-menu__chevron" aria-hidden="true">expand_more</span>
+    }
+  </button>
+
+  @if (isOpen()) {
+    <div [class]="panelClass()" role="menu" aria-orientation="vertical">
+      <ng-content select="[slot='header']"></ng-content>
+
+      @if (items().length) {
+        <ul class="dropdown-menu__list" role="presentation">
+          @for (item of items(); track item.id) {
+            @if (item.hasDividerBefore) {
+              <li class="dropdown-menu__divider" role="separator" aria-hidden="true"></li>
+            }
+            <li role="none">
+              <button
+                type="button"
+                class="dropdown-menu__item"
+                [class.dropdown-menu__item--destructive]="item.isDestructive"
+                [class.dropdown-menu__item--disabled]="item.disabled"
+                [disabled]="item.disabled || null"
+                role="menuitem"
+                (click)="onItemClick(item, $event)"
+              >
+                @if (item.icon) {
+                  <span class="material-icons dropdown-menu__item-icon" aria-hidden="true">
+                    {{ item.icon }}
+                  </span>
+                }
+                <span class="dropdown-menu__item-label">{{ item.label }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  }
+</div>

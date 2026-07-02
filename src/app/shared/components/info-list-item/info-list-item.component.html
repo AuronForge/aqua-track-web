@@ -1,0 +1,23 @@
+<div class="info-list-item__main">
+  <div class="info-list-item__header">
+    <span class="info-list-item__title">{{ title() }}</span>
+
+    @if (badge(); as b) {
+      <aq-badge class="info-list-item__badge" [color]="badgeColor()" variant="filled" size="small">
+        {{ b.label }}
+      </aq-badge>
+    }
+  </div>
+
+  @if (subtitle()) {
+    <p class="info-list-item__subtitle">{{ subtitle() }}</p>
+  }
+</div>
+
+<div class="info-list-item__aside">
+  <span class="info-list-item__value">{{ value() }}</span>
+
+  @if (metadata()) {
+    <span class="info-list-item__metadata">{{ metadata() }}</span>
+  }
+</div>

@@ -1,0 +1,38 @@
+<div class="paginator__size">
+  <span class="paginator__size-label">Itens por página</span>
+  <aq-input-select
+    size="compact"
+    [options]="pageSizeSelectOptions()"
+    [selectedOption]="selectedSizeOption()"
+    [disabled]="disabled()"
+    (selectionChange)="onSizeChange($event)"
+  />
+</div>
+
+<div class="paginator__nav">
+  <span class="paginator__info" aria-live="polite">
+    {{ pageStart() }}–{{ pageEnd() }} de {{ totalItems() }}
+  </span>
+
+  <div class="paginator__controls">
+    <button
+      class="paginator__button"
+      type="button"
+      aria-label="Página anterior"
+      [disabled]="!hasPreviousPage()"
+      (click)="onPrevious()"
+    >
+      <span class="material-icons-outlined">chevron_left</span>
+    </button>
+
+    <button
+      class="paginator__button"
+      type="button"
+      aria-label="Próxima página"
+      [disabled]="!hasNextPage()"
+      (click)="onNext()"
+    >
+      <span class="material-icons-outlined">chevron_right</span>
+    </button>
+  </div>
+</div>

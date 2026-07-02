@@ -1,0 +1,40 @@
+<div
+  class="language-switcher"
+  [attr.aria-label]="label()"
+  [class.language-switcher--open]="isMenuOpen()"
+>
+  <button
+    type="button"
+    class="language-switcher__trigger"
+    [attr.aria-expanded]="isMenuOpen()"
+    [attr.aria-label]="label()"
+    (click)="toggleMenu($event)"
+  >
+    <span class="language-switcher__trigger-icon" aria-hidden="true">
+      <span class="language-switcher__trigger-globe"></span>
+    </span>
+    <span class="language-switcher__trigger-text">{{ selectedLanguageOption().triggerLabel }}</span>
+  </button>
+
+  @if (isMenuOpen()) {
+    <div class="language-switcher__menu">
+      <p class="language-switcher__menu-title">{{ label() }}</p>
+      @for (language of languages; track language.code) {
+        <button
+          type="button"
+          class="language-switcher__option"
+          [class.language-switcher__option--active]="selectedLanguage() === language.code"
+          (click)="selectLanguage(language.code, $event)"
+        >
+          <span class="language-switcher__option-copy">
+            <span class="language-switcher__option-primary">{{ language.primaryLabel }}</span>
+            <span class="language-switcher__option-secondary">{{ language.secondaryLabel }}</span>
+          </span>
+          @if (selectedLanguage() === language.code) {
+            <span class="language-switcher__option-check" aria-hidden="true">&#10003;</span>
+          }
+        </button>
+      }
+    </div>
+  }
+</div>

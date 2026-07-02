@@ -1,0 +1,350 @@
+<section class="showcase__section">
+  <h2 class="showcase__section-title">Info Card</h2>
+  <p class="showcase__section-desc">
+    Card informativo genérico e reutilizável para exibição de dados resumidos. Suporta ícone
+    opcional, badge de status com duas variações semânticas (<code>attention</code> e
+    <code>stable</code>), título, subtítulo, linha divisória e uma lista dinâmica de métricas com
+    label e valor. Todo conteúdo textual é fornecido pelo consumidor, tornando o componente
+    agnóstico ao domínio e compatível com múltiplos idiomas.
+  </p>
+
+  <h3 class="showcase__group-title">Como usar</h3>
+  <div class="showcase__usage">
+    <aq-code-block language="typescript" [code]="codeTs" />
+    <aq-code-block language="html" [code]="codeHtml" />
+  </div>
+
+  <h3 class="showcase__group-title">Propriedades</h3>
+  <div class="showcase__props">
+    <table class="showcase__props-table">
+      <thead>
+        <tr>
+          <th>Input / Output</th>
+          <th>Tipo</th>
+          <th>Padrão</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="showcase__props-name">title</span>
+            <span class="showcase__props-required">required</span>
+          </td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Título principal do card</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">status</span></td>
+          <td><span class="showcase__props-type">'stable' | 'attention'</span></td>
+          <td><span class="showcase__props-default">'stable'</span></td>
+          <td>Define a cor semântica do badge de status</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">statusLabel</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">''</span></td>
+          <td>Texto exibido dentro do badge de status</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">icon</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">''</span></td>
+          <td>Nome do ícone Material exibido no cabeçalho</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">iconFamily</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">'material-icons-outlined'</span></td>
+          <td>Classe CSS da família de ícones</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">subtitleLabel</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">''</span></td>
+          <td>Rótulo da linha de subtítulo</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">subtitleValue</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">''</span></td>
+          <td>Valor exibido ao lado do rótulo de subtítulo</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">metrics</span></td>
+          <td><span class="showcase__props-type">InfoCardMetric[]</span></td>
+          <td><span class="showcase__props-default">[]</span></td>
+          <td>Lista de métricas <code>&#123; label, value &#125;</code> no rodapé do card</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">clickable</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">false</span></td>
+          <td>Torna o card interativo com <code>role="button"</code> e foco via teclado</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">fillContainer</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">false</span></td>
+          <td>Expande o card para preencher a altura do container pai</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">cardClick</span>
+            <span class="showcase__props-output">output</span>
+          </td>
+          <td><span class="showcase__props-type">EventEmitter&lt;void&gt;</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Emitido ao clicar no card (apenas quando <code>clickable=true</code>)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="showcase__group-title">Clickable</h3>
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">clickable=true — interativo, focável via teclado</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded"
+      >
+        <aq-info-card
+          [clickable]="true"
+          icon="water_drop"
+          status="stable"
+          statusLabel="Estável"
+          title="Aquário Principal"
+          subtitleLabel="Água Doce"
+          subtitleValue="150L"
+          [metrics]="infoCardPhMetrics"
+        />
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">clickable=false (default) — apenas informativo</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded"
+      >
+        <aq-info-card
+          [clickable]="false"
+          icon="water_drop"
+          status="stable"
+          statusLabel="Estável"
+          title="Aquário Principal"
+          subtitleLabel="Água Doce"
+          subtitleValue="150L"
+          [metrics]="infoCardPhMetrics"
+        />
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Variações de status</h3>
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Atenção</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded"
+      >
+        <aq-info-card
+          [clickable]="true"
+          icon="water_drop"
+          status="attention"
+          statusLabel="Atenção"
+          title="Paisagismo Plantado"
+          subtitleLabel="Plantado"
+          subtitleValue="120L"
+          [metrics]="infoCardPhMetrics"
+        />
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Estável</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded"
+      >
+        <aq-info-card
+          [clickable]="true"
+          icon="water_drop"
+          status="stable"
+          statusLabel="Estável"
+          title="Aquário de Recife"
+          subtitleLabel="Água Salgada"
+          subtitleValue="200L"
+          [metrics]="infoCardSalinityMetrics"
+        />
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Variações de ícone</h3>
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Com ícone</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded"
+      >
+        <aq-info-card
+          [clickable]="true"
+          icon="waves"
+          status="stable"
+          statusLabel="Estável"
+          title="Aquário Comunitário"
+          subtitleLabel="Água Doce"
+          subtitleValue="300L"
+          [metrics]="infoCardPhMetrics"
+        />
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Sem ícone</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded"
+      >
+        <aq-info-card
+          [clickable]="true"
+          status="stable"
+          statusLabel="Estável"
+          title="Aquário Comunitário"
+          subtitleLabel="Água Doce"
+          subtitleValue="300L"
+          [metrics]="infoCardPhMetrics"
+        />
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Variações de badge</h3>
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Com badge</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded"
+      >
+        <aq-info-card
+          [clickable]="true"
+          icon="water_drop"
+          status="attention"
+          statusLabel="Atenção"
+          title="Lago Ornamental"
+          subtitleLabel="Plantado"
+          subtitleValue="80L"
+          [metrics]="infoCardPhMetrics"
+        />
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Sem badge (statusLabel vazio)</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded"
+      >
+        <aq-info-card
+          [clickable]="true"
+          icon="water_drop"
+          status="attention"
+          title="Lago Ornamental"
+          subtitleLabel="Plantado"
+          subtitleValue="80L"
+          [metrics]="infoCardPhMetrics"
+        />
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Variações de métricas</h3>
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Duas métricas</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded"
+      >
+        <aq-info-card
+          [clickable]="true"
+          icon="water_drop"
+          status="stable"
+          statusLabel="Estável"
+          title="Aquário Principal"
+          subtitleLabel="Água Salgada"
+          subtitleValue="200L"
+          [metrics]="infoCardSalinityMetrics"
+        />
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Uma métrica</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded"
+      >
+        <aq-info-card
+          [clickable]="true"
+          icon="water_drop"
+          status="stable"
+          statusLabel="Estável"
+          title="Aquário Principal"
+          subtitleLabel="Água Salgada"
+          subtitleValue="200L"
+          [metrics]="infoCardSingleMetric"
+        />
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Sem métricas</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded"
+      >
+        <aq-info-card
+          [clickable]="true"
+          icon="water_drop"
+          status="stable"
+          statusLabel="Estável"
+          title="Aquário Principal"
+          subtitleLabel="Água Salgada"
+          subtitleValue="200L"
+        />
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Configuração mínima</h3>
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Apenas título (obrigatório)</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded"
+      >
+        <aq-info-card [clickable]="true" title="Aquário sem dados" />
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Tamanho controlado pelo consumidor</h3>
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">25% × 230 px</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded showcase__card-stage--fit-content showcase__card-stage--borderless"
+      >
+        <div class="showcase__info-card-frame">
+          <aq-info-card
+            [clickable]="true"
+            [fillContainer]="true"
+            icon="water_drop"
+            status="attention"
+            statusLabel="Atenção"
+            title="Paisagismo Plantado"
+            subtitleLabel="Plantado"
+            subtitleValue="120L"
+            [metrics]="infoCardPhMetrics"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
