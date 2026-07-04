@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AvatarColor } from '../../ui/avatar/avatar-color.type';
+import { AvatarComponent } from '../../ui/avatar/avatar.component';
 import { DropdownMenuItem } from '../../ui/dropdown-menu/dropdown-menu-item.model';
 import { DropdownMenuComponent } from '../../ui/dropdown-menu/dropdown-menu.component';
 import { LanguageCode } from '../../types/language-code.type';
@@ -23,6 +24,7 @@ const STUB_MENU_ITEMS: DropdownMenuItem[] = [
       [userName]="userName()"
       [userEmail]="userEmail()"
       [userInitials]="userInitials()"
+      [userAvatarUrl]="userAvatarUrl()"
       [userAvatarColor]="userAvatarColor()"
       [selectedLanguage]="selectedLanguage()"
       [userMenuItems]="userMenuItems()"
@@ -37,6 +39,7 @@ class TestHostComponent {
   readonly userName = signal<string>('Admin AquaTrack');
   readonly userEmail = signal<string>('admin@aquatrack.com');
   readonly userInitials = signal<string>('AA');
+  readonly userAvatarUrl = signal<string | null>(null);
   readonly userAvatarColor = signal<AvatarColor>('primary');
   readonly selectedLanguage = signal<LanguageCode>('pt');
   readonly userMenuItems = signal<DropdownMenuItem[]>(STUB_MENU_ITEMS);
@@ -69,6 +72,11 @@ describe('ToolbarComponent', () => {
   function getDropdownMenu(): DropdownMenuComponent {
     return hostFixture.debugElement.query((de) => de.name === 'app-dropdown-menu')
       .componentInstance as DropdownMenuComponent;
+  }
+
+  function getTriggerAvatar(): AvatarComponent {
+    return hostFixture.debugElement.query((de) => de.name === 'app-avatar')
+      .componentInstance as AvatarComponent;
   }
 
   beforeEach(async () => {
@@ -163,6 +171,22 @@ describe('ToolbarComponent', () => {
 
     const userEmail = element.querySelector('.toolbar__user-email');
     expect(userEmail?.textContent?.trim()).toBe('joao@example.com');
+  });
+
+  it('should render initials avatars when there is no avatar url', () => {
+    const triggerAvatar = getTriggerAvatar();
+
+    expect(triggerAvatar.variant()).toBe('initials');
+  });
+
+  it('should render circular avatars when an avatar url is provided', () => {
+    hostFixture.componentInstance.userAvatarUrl.set('https://cdn.example.com/avatar.png');
+    hostFixture.detectChanges();
+
+    const triggerAvatar = getTriggerAvatar();
+
+    expect(triggerAvatar.variant()).toBe('circular');
+    expect(triggerAvatar.src()).toBe('https://cdn.example.com/avatar.png');
   });
 
   // ── Actions section ───────────────────────────────────────────────────────

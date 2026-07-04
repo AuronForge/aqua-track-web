@@ -1,0 +1,100 @@
+@use '../../theme' as theme;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.settings-card__surface {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-lg;
+  width: 100%;
+  padding: theme.$aq-space-lg;
+  background: theme.$aq-color-surface;
+  border: 1px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-md;
+  box-shadow: theme.$aq-shadow-card;
+}
+
+:host(.settings-card--danger) .settings-card__surface {
+  border-color: rgb(217 48 37 / 35%);
+  background: rgb(217 48 37 / 3%);
+}
+
+.settings-card__header {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-sm;
+}
+
+.settings-card__icon-container {
+  display: grid;
+  place-items: center;
+  width: theme.$aq-size-icon-container-md;
+  height: theme.$aq-size-icon-container-md;
+  background: theme.$aq-color-surface-accent;
+  border-radius: theme.$aq-radius-sm;
+  flex-shrink: 0;
+}
+
+:host(.settings-card--danger) .settings-card__icon-container {
+  background: rgb(217 48 37 / 12%);
+}
+
+.settings-card__icon {
+  font-size: theme.$aq-size-icon-md;
+  color: theme.$aq-color-accent;
+}
+
+:host(.settings-card--danger) .settings-card__icon {
+  color: theme.$aq-color-error;
+}
+
+.settings-card__heading {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-2xs;
+}
+
+.settings-card__title {
+  margin: 0;
+  font-family: theme.$aq-font-family-heading;
+  font-size: theme.$aq-font-size-xl;
+  font-weight: theme.$aq-font-weight-bold;
+  color: theme.$aq-color-text-primary;
+  line-height: theme.$aq-line-height-tight;
+}
+
+.settings-card__subtitle {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  color: theme.$aq-color-text-secondary;
+}
+
+.settings-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-md;
+}
+
+.settings-card__body:empty {
+  display: none;
+}
+
+.settings-card__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.settings-card__actions:empty {
+  display: none;
+}
+
+@media (width <= 640px) {
+  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+  .settings-card__actions ::ng-deep > * {
+    width: 100%;
+  }
+}

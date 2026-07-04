@@ -21,6 +21,7 @@ export interface UserApiDto {
   readonly name: string;
   readonly email: string;
   readonly phone: string | null;
+  readonly birthDate: string | null;
   readonly avatarUrl: string | null;
   readonly role: string;
   readonly plan: string;

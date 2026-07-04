@@ -32,10 +32,12 @@
     >
       <ng-container slot="trigger">
         <app-avatar
-          variant="initials"
+          [variant]="userAvatarVariant()"
           [color]="userAvatarColor()"
           size="normal"
           [initials]="userInitials()"
+          [src]="userAvatarUrl() ?? ''"
+          [alt]="userName()"
         />
         <div class="toolbar__user-info">
           <span class="toolbar__user-name">{{ userName() }}</span>
@@ -46,10 +48,12 @@
       <ng-container slot="header">
         <div class="toolbar__menu-header">
           <app-avatar
-            variant="initials"
+            [variant]="userAvatarVariant()"
             [color]="userAvatarColor()"
             size="large"
             [initials]="userInitials()"
+            [src]="userAvatarUrl() ?? ''"
+            [alt]="userName()"
           />
           <div class="toolbar__menu-header-info">
             <span class="toolbar__menu-header-name">{{ userName() }}</span>

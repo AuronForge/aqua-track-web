@@ -47,6 +47,11 @@ export const routes: Routes = [
         loadChildren: () => import('./features/home/home.routes').then((m) => m.HOME_ROUTES),
       },
       {
+        path: 'profile',
+        loadChildren: () =>
+          import('./features/profile/profile.routes').then((m) => m.PROFILE_ROUTES),
+      },
+      {
         path: 'aquariums/new',
         loadComponent: () =>
           import('./features/aquarium/pages/aquarium-create-page/aquarium-create-page.component').then(
