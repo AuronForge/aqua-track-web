@@ -1,0 +1,157 @@
+<section class="showcase__section">
+  <h2 class="showcase__section-title">Modal</h2>
+  <p class="showcase__section-desc">
+    Infraestrutura de modal baseada em serviço, com renderização em overlay, integração reativa com
+    a camada atual de internacionalização e suporte a template ou componente dinâmico.
+  </p>
+
+  <h3 class="showcase__group-title">Como usar</h3>
+  <div class="showcase__usage">
+    <aq-code-block language="typescript" [code]="codeTs" />
+    <aq-code-block language="html" [code]="codeHtml" />
+  </div>
+
+  <h3 class="showcase__group-title">Serviço</h3>
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Simples</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <button aqButton type="button" color="primary" (click)="openSimpleModal()">
+          Abrir modal simples
+        </button>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Título + descrição + actions</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <button aqButton type="button" color="error" (click)="openActionsModal()">
+          Abrir modal de ação crítica
+        </button>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Componente dinâmico</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <button aqButton type="button" color="secondary" (click)="openDynamicModal()">
+          Abrir conteúdo dinâmico
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Fechamento</h3>
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Backdrop habilitado</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <button aqButton type="button" color="primary" (click)="openBackdropClosableModal()">
+          Permitir clique fora
+        </button>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Backdrop bloqueado</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <button aqButton type="button" color="warning" (click)="openLockedBackdropModal()">
+          Bloquear clique fora
+        </button>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Action sem auto close</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <button aqButton type="button" color="secondary" (click)="openManualCloseModal()">
+          Manter aberto após action
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Tamanhos</h3>
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Small</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <button aqButton type="button" color="primary" (click)="openSizedModal('small')">
+          Abrir small
+        </button>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Medium</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <button aqButton type="button" color="primary" (click)="openSizedModal('medium')">
+          Abrir medium
+        </button>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Large</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <button aqButton type="button" color="primary" (click)="openSizedModal('large')">
+          Abrir large
+        </button>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Fullscreen</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <button aqButton type="button" color="primary" (click)="openSizedModal('fullscreen')">
+          Abrir fullscreen
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Estados</h3>
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Action desabilitada</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <button aqButton type="button" color="warning" (click)="openDisabledActionModal()">
+          Abrir action desabilitada
+        </button>
+      </div>
+    </div>
+
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">Idioma atual</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <p class="modal-showcase__language-note">
+          Idioma selecionado: <strong>{{ currentLanguage() }}</strong
+          >. Os exemplos com <code>titleKey</code>, <code>descriptionKey</code> e
+          <code>labelKey</code> usam a tradução ativa do app.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p class="showcase__event-log">
+    <strong>Último evento:</strong>
+    {{ lastEvent() }}
+  </p>
+
+  <ng-template #simpleTemplate>
+    <p class="modal-showcase__content">
+      O modal mantém o usuário no contexto da ação atual, com comunicação clara e fechamento
+      previsível.
+    </p>
+  </ng-template>
+
+  <ng-template #actionsTemplate>
+    <div class="modal-showcase__content">
+      <p>
+        Em ações críticas, o modal deve evitar fechamento acidental e usar rótulos específicos para
+        reduzir ambiguidade.
+      </p>
+      <p>Este exemplo usa chaves de tradução do Aqua Track para o título, descrição e botões.</p>
+    </div>
+  </ng-template>
+</section>
