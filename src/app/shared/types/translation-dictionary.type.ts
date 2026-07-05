@@ -183,11 +183,14 @@ export interface TranslationDictionary {
   readonly profileChangeAvatar: string;
   readonly profileAvatarInvalidType: string;
   readonly profileAvatarTooLarge: string;
+  readonly profileAvatarUploadSuccess: string;
   readonly profileAvatarUploadError: string;
   readonly profileEmailAddressLabel: string;
   readonly profileContactPhoneLabel: string;
   readonly profileContactPhoneInvalid: string;
   readonly profileMemberSince: string;
+  readonly profileSaveSuccessMessage: string;
+  readonly profileSaveErrorMessage: string;
   readonly profileSaveChanges: string;
   readonly profileSavingLabel: string;
 

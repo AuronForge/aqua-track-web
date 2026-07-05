@@ -4,6 +4,8 @@ import { Subject, of, throwError } from 'rxjs';
 
 import { UserApiDto } from '../../../core/users/models/user-api.dto';
 import { UserService } from '../../../core/users/services/user.service';
+import { FeedbackMessageService } from '../../../shared/services/feedback-message.service';
+import { LanguageService } from '../../../shared/services/language.service';
 import { ProfileMapper } from '../mappers/profile.mapper';
 import { ProfileFacade } from './profile.facade';
 
@@ -48,6 +50,10 @@ describe('ProfileFacade', () => {
     updatePreferences: jest.Mock;
     updateAvatar: jest.Mock;
   };
+  let feedbackMessageService: {
+    showSuccess: jest.Mock;
+    showError: jest.Mock;
+  };
 
   beforeEach(() => {
     userService = {
@@ -57,9 +63,19 @@ describe('ProfileFacade', () => {
       updatePreferences: jest.fn().mockReturnValue(of(mockUser)),
       updateAvatar: jest.fn().mockReturnValue(of(mockUser)),
     };
+    feedbackMessageService = {
+      showSuccess: jest.fn(),
+      showError: jest.fn(),
+    };
 
     TestBed.configureTestingModule({
-      providers: [ProfileFacade, ProfileMapper, { provide: UserService, useValue: userService }],
+      providers: [
+        ProfileFacade,
+        ProfileMapper,
+        LanguageService,
+        { provide: UserService, useValue: userService },
+        { provide: FeedbackMessageService, useValue: feedbackMessageService },
+      ],
     });
 
     facade = TestBed.inject(ProfileFacade);
@@ -151,6 +167,10 @@ describe('ProfileFacade', () => {
       expect(facade.savingProfile()).toBe(false);
       expect(facade.profileSaveSuccess()).toBe(true);
       expect(facade.profileSaveError()).toBeNull();
+      expect(feedbackMessageService.showSuccess).toHaveBeenCalledWith(
+        'Perfil atualizado com sucesso.',
+        { hasIcon: true, horizontalPosition: 'top', verticalPosition: 'end' },
+      );
     });
 
     it('should flag an error when updateProfile fails', () => {
@@ -165,7 +185,13 @@ describe('ProfileFacade', () => {
 
       expect(facade.savingProfile()).toBe(false);
       expect(facade.profileSaveSuccess()).toBe(false);
-      expect(facade.profileSaveError()).toBeTruthy();
+      expect(facade.profileSaveError()).toBe(
+        'Não foi possível salvar as alterações. Tente novamente.',
+      );
+      expect(feedbackMessageService.showError).toHaveBeenCalledWith(
+        'Não foi possível salvar as alterações. Tente novamente.',
+        { hasIcon: true, horizontalPosition: 'top', verticalPosition: 'end' },
+      );
     });
   });
 
@@ -229,6 +255,10 @@ describe('ProfileFacade', () => {
       expect(facade.avatarPreviewUrl()).toBeNull();
       expect(facade.avatarUploading()).toBe(false);
       expect(facade.avatarUploadError()).toBe(false);
+      expect(feedbackMessageService.showSuccess).toHaveBeenCalledWith(
+        'Avatar atualizado com sucesso.',
+        { hasIcon: true, horizontalPosition: 'top', verticalPosition: 'end' },
+      );
       expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:preview-url');
     });
 
@@ -243,6 +273,10 @@ describe('ProfileFacade', () => {
       expect(facade.avatarUploading()).toBe(false);
       expect(facade.avatarUploadError()).toBe(true);
       expect(facade.avatarPreviewUrl()).toBeNull();
+      expect(feedbackMessageService.showError).toHaveBeenCalledWith(
+        'Não foi possível atualizar o avatar. Tente novamente.',
+        { hasIcon: true, horizontalPosition: 'top', verticalPosition: 'end' },
+      );
       expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:preview-url');
     });
 

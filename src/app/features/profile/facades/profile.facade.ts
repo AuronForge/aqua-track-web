@@ -2,6 +2,8 @@ import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { UserService } from '../../../core/users/services/user.service';
+import { FeedbackMessageService } from '../../../shared/services/feedback-message.service';
+import { LanguageService } from '../../../shared/services/language.service';
 import { ProfileMapper } from '../mappers/profile.mapper';
 import { MOCK_AQUARIUM_OPTIONS, MOCK_PROFILE_SECURITY } from '../mocks/profile.mock';
 import { ProfileInformationFormValue } from '../models/profile-information-form-value.model';
@@ -12,8 +14,11 @@ export class ProfileFacade {
   private readonly userService = inject(UserService);
   private readonly mapper = inject(ProfileMapper);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly feedbackMessageService = inject(FeedbackMessageService);
+  private readonly languageService = inject(LanguageService);
 
   private readonly currentUser = this.userService.currentUser;
+  private readonly t = this.languageService.translation;
 
   readonly userLoaded = computed(() => this.currentUser() !== null);
 
@@ -81,10 +86,20 @@ export class ProfileFacade {
         next: () => {
           this._savingProfile.set(false);
           this._profileSaveSuccess.set(true);
+          this.feedbackMessageService.showSuccess(this.t().profileSaveSuccessMessage, {
+            hasIcon: true,
+            horizontalPosition: 'top',
+            verticalPosition: 'end',
+          });
         },
         error: () => {
           this._savingProfile.set(false);
-          this._profileSaveError.set('Não foi possível salvar as alterações. Tente novamente.');
+          this._profileSaveError.set(this.t().profileSaveErrorMessage);
+          this.feedbackMessageService.showError(this.t().profileSaveErrorMessage, {
+            hasIcon: true,
+            horizontalPosition: 'top',
+            verticalPosition: 'end',
+          });
         },
       });
   }
@@ -105,7 +120,7 @@ export class ProfileFacade {
         error: () => {
           this._savingPreferences.set(false);
           this._preferencesSaveError.set(
-            'Não foi possível salvar as preferências. Tente novamente.',
+            'NÃ£o foi possÃ­vel salvar as preferÃªncias. Tente novamente.',
           );
         },
       });
@@ -126,12 +141,22 @@ export class ProfileFacade {
       .subscribe({
         next: () => {
           this._avatarUploading.set(false);
+          this.feedbackMessageService.showSuccess(this.t().profileAvatarUploadSuccess, {
+            hasIcon: true,
+            horizontalPosition: 'top',
+            verticalPosition: 'end',
+          });
           this._avatarPreviewUrl.set(null);
           URL.revokeObjectURL(previewUrl);
         },
         error: () => {
           this._avatarUploading.set(false);
           this._avatarUploadError.set(true);
+          this.feedbackMessageService.showError(this.t().profileAvatarUploadError, {
+            hasIcon: true,
+            horizontalPosition: 'top',
+            verticalPosition: 'end',
+          });
           this._avatarPreviewUrl.set(null);
           URL.revokeObjectURL(previewUrl);
         },
