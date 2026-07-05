@@ -1,0 +1,21 @@
+@use '../../../../shared/theme' as theme;
+
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-xl;
+}
+
+.profile-page__cards {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-lg;
+}
+
+.profile-page__loading {
+  padding: theme.$aq-space-2xl;
+  text-align: center;
+  color: theme.$aq-color-text-secondary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-md;
+}

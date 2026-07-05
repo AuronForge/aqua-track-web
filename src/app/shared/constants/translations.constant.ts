@@ -170,6 +170,68 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     applicationFormTitle: 'Nova Aplicação',
     applicationFormComingSoon: 'O formulário de cadastro de aplicação estará disponível em breve.',
     applicationFormBackToDashboard: 'Voltar para o painel',
+
+    // Shared — actions
+    cancelLabel: 'Cancelar',
+
+    // Profile — page
+    profilePageSubtitle: 'Gerencie as configurações e preferências da sua conta',
+    profileLoading: 'Carregando perfil...',
+
+    // Profile — information card
+    profileInformationTitle: 'Informações do Perfil',
+    profileInformationSubtitle: 'Atualize seus dados pessoais',
+    profilePictureLabel: 'Foto de Perfil',
+    profilePictureHint:
+      'Clique no seu avatar para enviar ou recortar uma nova foto. JPG, PNG ou GIF. Tamanho máximo 5MB.',
+    profileChangeAvatar: 'Trocar Avatar',
+    profileAvatarInvalidType: 'Escolha uma imagem JPG, PNG ou GIF.',
+    profileAvatarTooLarge: 'A imagem deve ter no máximo 5MB.',
+    profileAvatarUploadError: 'Não foi possível atualizar o avatar. Tente novamente.',
+    profileEmailAddressLabel: 'E-mail',
+    profileContactPhoneLabel: 'Telefone de contato',
+    profileContactPhoneInvalid: 'Informe um telefone vÃ¡lido.',
+    profileMemberSince: 'Membro desde',
+    profileSaveChanges: 'Salvar Alterações',
+    profileSavingLabel: 'Salvando...',
+
+    // Profile — account security card
+    accountSecurityTitle: 'Segurança da Conta',
+    accountSecuritySubtitle: 'Gerencie sua senha e sessões',
+    profilePasswordLastChanged: 'Alterada em',
+    changePasswordButton: 'Alterar Senha',
+    profilePasswordChangeUnavailable:
+      'A alteração de senha ainda não está disponível — entre em contato com o suporte.',
+    profileLastLogin: 'Último Login',
+
+    // Profile — preferences card
+    preferencesTitle: 'Preferências',
+    preferencesSubtitle: 'Personalize sua experiência',
+    preferencesUnitsGroup: 'Unidades',
+    preferencesTemperatureLabel: 'Temperatura',
+    preferencesTemperatureHint: 'Exibir temperatura em',
+    preferencesConcentrationLabel: 'Concentração',
+    preferencesConcentrationHint: 'Exibir concentração em',
+    preferencesDefaultSettingsGroup: 'Configurações Padrão',
+    preferencesDefaultAquariumLabel: 'Aquário Padrão',
+    preferencesDefaultAquariumHint: 'Usado para medições rápidas',
+    preferencesSelectAquariumPlaceholder: 'Selecione um aquário',
+    preferencesNotificationsGroup: 'Notificações',
+    preferencesEmailAlertsLabel: 'Alertas por E-mail',
+    preferencesEmailAlertsHint: 'Receber notificações por e-mail para alertas críticos',
+    profileSavePreferences: 'Salvar Preferências',
+
+    // Profile — danger zone card
+    dangerZoneTitle: 'Zona de Perigo',
+    dangerZoneSubtitle: 'Ações irreversíveis e destrutivas',
+    deleteAccountLabel: 'Excluir Conta',
+    deleteAccountMessage:
+      'Depois de excluir sua conta, não há como voltar atrás. Todos os seus aquários, medições, vida aquática e histórico de produtos serão permanentemente excluídos dos nossos servidores.',
+    deleteAccountWarning: 'Esta ação não pode ser desfeita.',
+    deleteAccountUnavailable:
+      'A exclusão de conta ainda não está disponível — entre em contato com o suporte.',
+    deleteAccountConfirmWord: 'EXCLUIR',
+    deleteAccountConfirmWordLabel: 'Digite EXCLUIR para confirmar',
   },
 
   en: {
@@ -340,6 +402,66 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     applicationFormTitle: 'New Application',
     applicationFormComingSoon: 'The application registration form will be available soon.',
     applicationFormBackToDashboard: 'Back to dashboard',
+
+    // Shared — actions
+    cancelLabel: 'Cancel',
+
+    // Profile — page
+    profilePageSubtitle: 'Manage your account settings and preferences',
+    profileLoading: 'Loading profile...',
+
+    // Profile — information card
+    profileInformationTitle: 'Profile Information',
+    profileInformationSubtitle: 'Update your personal details',
+    profilePictureLabel: 'Profile Picture',
+    profilePictureHint:
+      'Click on your avatar to upload or crop a new picture. JPG, PNG or GIF. Max size 5MB.',
+    profileChangeAvatar: 'Change Avatar',
+    profileAvatarInvalidType: 'Please choose a JPG, PNG or GIF image.',
+    profileAvatarTooLarge: 'Image must be smaller than 5MB.',
+    profileAvatarUploadError: 'Could not update avatar. Please try again.',
+    profileEmailAddressLabel: 'Email Address',
+    profileContactPhoneLabel: 'Contact Phone',
+    profileContactPhoneInvalid: 'Please enter a valid phone number.',
+    profileMemberSince: 'Member since',
+    profileSaveChanges: 'Save Changes',
+    profileSavingLabel: 'Saving...',
+
+    // Profile — account security card
+    accountSecurityTitle: 'Account Security',
+    accountSecuritySubtitle: 'Manage your password and sessions',
+    profilePasswordLastChanged: 'Last changed on',
+    changePasswordButton: 'Change Password',
+    profilePasswordChangeUnavailable: "Password changes aren't available yet — contact support.",
+    profileLastLogin: 'Last Login',
+
+    // Profile — preferences card
+    preferencesTitle: 'Preferences',
+    preferencesSubtitle: 'Customize your experience',
+    preferencesUnitsGroup: 'Units',
+    preferencesTemperatureLabel: 'Temperature',
+    preferencesTemperatureHint: 'Display temperature in',
+    preferencesConcentrationLabel: 'Concentration',
+    preferencesConcentrationHint: 'Display concentration in',
+    preferencesDefaultSettingsGroup: 'Default Settings',
+    preferencesDefaultAquariumLabel: 'Default Aquarium',
+    preferencesDefaultAquariumHint: 'Used for quick measurements',
+    preferencesSelectAquariumPlaceholder: 'Select an aquarium',
+    preferencesNotificationsGroup: 'Notifications',
+    preferencesEmailAlertsLabel: 'Email Alerts',
+    preferencesEmailAlertsHint: 'Receive email notifications for critical alerts',
+    profileSavePreferences: 'Save Preferences',
+
+    // Profile — danger zone card
+    dangerZoneTitle: 'Danger Zone',
+    dangerZoneSubtitle: 'Irreversible and destructive actions',
+    deleteAccountLabel: 'Delete Account',
+    deleteAccountMessage:
+      'Once you delete your account, there is no going back. All your aquariums, measurements, livestock, and product history will be permanently deleted from our servers.',
+    deleteAccountWarning: 'This action cannot be undone.',
+    deleteAccountUnavailable: "Account deletion isn't available yet — contact support.",
+    deleteAccountConfirmWord: 'DELETE',
+    deleteAccountConfirmWordLabel: 'Type DELETE to confirm',
   },
 
   es: {
@@ -512,5 +634,67 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     applicationFormComingSoon:
       'El formulario de registro de aplicaciones estará disponible pronto.',
     applicationFormBackToDashboard: 'Volver al panel',
+
+    // Shared — actions
+    cancelLabel: 'Cancelar',
+
+    // Profile — page
+    profilePageSubtitle: 'Gestiona la configuración y las preferencias de tu cuenta',
+    profileLoading: 'Cargando perfil...',
+
+    // Profile — information card
+    profileInformationTitle: 'Información del Perfil',
+    profileInformationSubtitle: 'Actualiza tus datos personales',
+    profilePictureLabel: 'Foto de Perfil',
+    profilePictureHint:
+      'Haz clic en tu avatar para subir o recortar una nueva foto. JPG, PNG o GIF. Tamaño máximo 5MB.',
+    profileChangeAvatar: 'Cambiar Avatar',
+    profileAvatarInvalidType: 'Elige una imagen JPG, PNG o GIF.',
+    profileAvatarTooLarge: 'La imagen debe tener un máximo de 5MB.',
+    profileAvatarUploadError: 'No se pudo actualizar el avatar. Inténtalo de nuevo.',
+    profileEmailAddressLabel: 'Correo Electrónico',
+    profileContactPhoneLabel: 'Teléfono de contacto',
+    profileContactPhoneInvalid: 'Introduce un teléfono válido.',
+    profileMemberSince: 'Miembro desde',
+    profileSaveChanges: 'Guardar Cambios',
+    profileSavingLabel: 'Guardando...',
+
+    // Profile — account security card
+    accountSecurityTitle: 'Seguridad de la Cuenta',
+    accountSecuritySubtitle: 'Gestiona tu contraseña y sesiones',
+    profilePasswordLastChanged: 'Cambiada el',
+    changePasswordButton: 'Cambiar Contraseña',
+    profilePasswordChangeUnavailable:
+      'El cambio de contraseña aún no está disponible — contacta con soporte.',
+    profileLastLogin: 'Último Inicio de Sesión',
+
+    // Profile — preferences card
+    preferencesTitle: 'Preferencias',
+    preferencesSubtitle: 'Personaliza tu experiencia',
+    preferencesUnitsGroup: 'Unidades',
+    preferencesTemperatureLabel: 'Temperatura',
+    preferencesTemperatureHint: 'Mostrar temperatura en',
+    preferencesConcentrationLabel: 'Concentración',
+    preferencesConcentrationHint: 'Mostrar concentración en',
+    preferencesDefaultSettingsGroup: 'Configuración Predeterminada',
+    preferencesDefaultAquariumLabel: 'Acuario Predeterminado',
+    preferencesDefaultAquariumHint: 'Usado para mediciones rápidas',
+    preferencesSelectAquariumPlaceholder: 'Selecciona un acuario',
+    preferencesNotificationsGroup: 'Notificaciones',
+    preferencesEmailAlertsLabel: 'Alertas por Correo',
+    preferencesEmailAlertsHint: 'Recibir notificaciones por correo para alertas críticas',
+    profileSavePreferences: 'Guardar Preferencias',
+
+    // Profile — danger zone card
+    dangerZoneTitle: 'Zona de Peligro',
+    dangerZoneSubtitle: 'Acciones irreversibles y destructivas',
+    deleteAccountLabel: 'Eliminar Cuenta',
+    deleteAccountMessage:
+      'Una vez que elimines tu cuenta, no hay vuelta atrás. Todos tus acuarios, mediciones, vida acuática e historial de productos se eliminarán permanentemente de nuestros servidores.',
+    deleteAccountWarning: 'Esta acción no se puede deshacer.',
+    deleteAccountUnavailable:
+      'La eliminación de cuenta aún no está disponible — contacta con soporte.',
+    deleteAccountConfirmWord: 'ELIMINAR',
+    deleteAccountConfirmWordLabel: 'Escribe ELIMINAR para confirmar',
   },
 };

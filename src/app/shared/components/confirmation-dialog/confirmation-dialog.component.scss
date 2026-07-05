@@ -1,0 +1,79 @@
+@use '../../theme' as theme;
+
+:host {
+  display: block;
+}
+
+.confirmation-dialog__surface {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-md;
+  width: min(28rem, calc(100vw - 2rem));
+  padding: theme.$aq-space-lg;
+  background: theme.$aq-color-surface;
+  border-radius: theme.$aq-radius-md;
+  box-shadow: theme.$aq-shadow-card;
+}
+
+.confirmation-dialog__surface--danger {
+  border-top: 4px solid theme.$aq-color-error;
+}
+
+.confirmation-dialog__title {
+  margin: 0;
+  font-family: theme.$aq-font-family-heading;
+  font-size: theme.$aq-font-size-xl;
+  font-weight: theme.$aq-font-weight-bold;
+  color: theme.$aq-color-text-primary;
+}
+
+.confirmation-dialog__message {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-md;
+  color: theme.$aq-color-text-secondary;
+  line-height: theme.$aq-line-height-base;
+}
+
+.confirmation-dialog__field {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-2xs;
+}
+
+.confirmation-dialog__field-label {
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-medium;
+  color: theme.$aq-color-text-primary;
+}
+
+.confirmation-dialog__input {
+  border: 1px solid theme.$aq-color-border-strong;
+  border-radius: theme.$aq-radius-sm;
+  padding: theme.$aq-space-sm;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-md;
+  color: theme.$aq-color-text-primary;
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+  }
+}
+
+.confirmation-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: theme.$aq-space-sm;
+}
+
+@media (width <= 480px) {
+  .confirmation-dialog__actions {
+    flex-direction: column-reverse;
+  }
+
+  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+  .confirmation-dialog__actions ::ng-deep > * {
+    width: 100%;
+  }
+}

@@ -1,0 +1,103 @@
+<aq-settings-card
+  icon="settings"
+  [title]="t().preferencesTitle"
+  [subtitle]="t().preferencesSubtitle"
+>
+  <div class="preferences-card__group">
+    <h3 class="preferences-card__group-title">{{ t().preferencesUnitsGroup }}</h3>
+
+    <div class="preferences-card__item">
+      <div class="preferences-card__item-copy">
+        <span class="material-icons-outlined preferences-card__item-icon" aria-hidden="true"
+          >thermostat</span
+        >
+        <div>
+          <p class="preferences-card__item-title">{{ t().preferencesTemperatureLabel }}</p>
+          <p class="preferences-card__item-subtitle">{{ t().preferencesTemperatureHint }}</p>
+        </div>
+      </div>
+      <aq-segmented-control
+        [options]="temperatureOptions"
+        [value]="form.controls.temperatureUnit.value"
+        [ariaLabel]="t().preferencesTemperatureHint"
+        (valueChange)="onTemperatureUnitChange($event)"
+      />
+    </div>
+
+    <div class="preferences-card__item">
+      <div class="preferences-card__item-copy">
+        <span class="material-icons-outlined preferences-card__item-icon" aria-hidden="true"
+          >water_drop</span
+        >
+        <div>
+          <p class="preferences-card__item-title">{{ t().preferencesConcentrationLabel }}</p>
+          <p class="preferences-card__item-subtitle">{{ t().preferencesConcentrationHint }}</p>
+        </div>
+      </div>
+      <aq-segmented-control
+        [options]="concentrationOptions"
+        [value]="form.controls.concentrationUnit.value"
+        [ariaLabel]="t().preferencesConcentrationHint"
+        (valueChange)="onConcentrationUnitChange($event)"
+      />
+    </div>
+  </div>
+
+  <div class="preferences-card__group">
+    <h3 class="preferences-card__group-title">{{ t().preferencesDefaultSettingsGroup }}</h3>
+
+    <div class="preferences-card__item">
+      <div class="preferences-card__item-copy">
+        <span class="material-icons-outlined preferences-card__item-icon" aria-hidden="true"
+          >waves</span
+        >
+        <div>
+          <p class="preferences-card__item-title">{{ t().preferencesDefaultAquariumLabel }}</p>
+          <p class="preferences-card__item-subtitle">{{ t().preferencesDefaultAquariumHint }}</p>
+        </div>
+      </div>
+      <aq-input-select
+        [options]="aquariumOptions()"
+        [selectedOption]="selectedAquariumOption()"
+        [placeholder]="t().preferencesSelectAquariumPlaceholder"
+        (selectionChange)="onDefaultAquariumChange($event)"
+      />
+    </div>
+  </div>
+
+  <div class="preferences-card__group">
+    <h3 class="preferences-card__group-title">{{ t().preferencesNotificationsGroup }}</h3>
+
+    <div class="preferences-card__item">
+      <div class="preferences-card__item-copy">
+        <span class="material-icons-outlined preferences-card__item-icon" aria-hidden="true"
+          >mail</span
+        >
+        <div>
+          <p class="preferences-card__item-title">{{ t().preferencesEmailAlertsLabel }}</p>
+          <p class="preferences-card__item-subtitle">{{ t().preferencesEmailAlertsHint }}</p>
+        </div>
+      </div>
+      <aq-switch
+        [checked]="form.controls.emailAlertsEnabled.value"
+        [ariaLabel]="t().preferencesEmailAlertsLabel"
+        (checkedChange)="onEmailAlertsChange($event)"
+      />
+    </div>
+  </div>
+
+  @if (error()) {
+    <p class="preferences-card__error" role="alert">{{ error() }}</p>
+  }
+
+  <button
+    slot="actions"
+    aqButton
+    type="button"
+    [disabled]="form.pristine || saving()"
+    (click)="submit()"
+  >
+    <span class="material-icons-outlined" aria-hidden="true">save</span>
+    {{ saving() ? t().profileSavingLabel : t().profileSavePreferences }}
+  </button>
+</aq-settings-card>

@@ -1,0 +1,41 @@
+<div
+  class="confirmation-dialog__surface"
+  [class.confirmation-dialog__surface--danger]="data.tone === 'danger'"
+  role="alertdialog"
+  aria-modal="true"
+  aria-labelledby="confirmation-dialog-title"
+  aria-describedby="confirmation-dialog-message"
+>
+  <h2 id="confirmation-dialog-title" class="confirmation-dialog__title">{{ data.title }}</h2>
+  <p id="confirmation-dialog-message" class="confirmation-dialog__message">{{ data.message }}</p>
+
+  @if (data.confirmWord) {
+    <label class="confirmation-dialog__field">
+      <span class="confirmation-dialog__field-label">
+        {{ data.confirmWordLabel }}
+      </span>
+      <input
+        type="text"
+        class="confirmation-dialog__input"
+        [value]="confirmText()"
+        (input)="onConfirmTextInput($event)"
+        autocomplete="off"
+      />
+    </label>
+  }
+
+  <div class="confirmation-dialog__actions">
+    <button aqButton type="button" variant="stroked" color="tertiary" (click)="cancel()">
+      {{ data.cancelLabel }}
+    </button>
+    <button
+      aqButton
+      type="button"
+      [color]="data.tone === 'danger' ? 'error' : 'primary'"
+      [disabled]="isConfirmDisabled()"
+      (click)="confirm()"
+    >
+      {{ data.confirmLabel }}
+    </button>
+  </div>
+</div>

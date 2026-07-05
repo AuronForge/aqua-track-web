@@ -1,0 +1,41 @@
+<div class="profile-page">
+  @if (facade.user(); as user) {
+    @if (facade.preferences(); as preferences) {
+      <div class="profile-page__cards">
+        <app-profile-information-card
+          [user]="user"
+          [saving]="facade.savingProfile()"
+          [saveSuccess]="facade.profileSaveSuccess()"
+          [error]="facade.profileSaveError()"
+          [avatarPreviewUrl]="facade.avatarPreviewUrl()"
+          [avatarUploading]="facade.avatarUploading()"
+          [avatarUploadError]="facade.avatarUploadError()"
+          (saveProfile)="onSaveProfile($event)"
+          (avatarFileSelected)="onAvatarFileSelected($event)"
+        />
+
+        <app-account-security-card
+          [security]="facade.security()"
+          [passwordChangeUnavailable]="facade.passwordChangeUnavailable()"
+          (changePasswordRequested)="onChangePasswordRequested()"
+        />
+
+        <app-preferences-card
+          [preferences]="preferences"
+          [aquariumOptions]="facade.aquariumOptions()"
+          [saving]="facade.savingPreferences()"
+          [saveSuccess]="facade.preferencesSaveSuccess()"
+          [error]="facade.preferencesSaveError()"
+          (savePreferences)="onSavePreferences($event)"
+        />
+
+        <app-danger-zone-card
+          [unavailable]="facade.deleteAccountUnavailable()"
+          (deleteAccountRequested)="onDeleteAccountRequested()"
+        />
+      </div>
+    }
+  } @else {
+    <div class="profile-page__loading" role="status">{{ t().profileLoading }}</div>
+  }
+</div>

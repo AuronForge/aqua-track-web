@@ -24,6 +24,12 @@ export class ComponentsShowcaseComponent {
       icon: 'expand_circle_down',
       route: '/components/dropdown-menu',
     },
+    {
+      id: 'feedback-message',
+      label: 'Feedback Message',
+      icon: 'announcement',
+      route: '/components/feedback-message',
+    },
     { id: 'info-card', label: 'Info Card', icon: 'info', route: '/components/info-card' },
     {
       id: 'info-list-item',

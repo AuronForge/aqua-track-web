@@ -47,6 +47,11 @@ export const routes: Routes = [
         loadChildren: () => import('./features/home/home.routes').then((m) => m.HOME_ROUTES),
       },
       {
+        path: 'profile',
+        loadChildren: () =>
+          import('./features/profile/profile.routes').then((m) => m.PROFILE_ROUTES),
+      },
+      {
         path: 'aquariums/new',
         loadComponent: () =>
           import('./features/aquarium/pages/aquarium-create-page/aquarium-create-page.component').then(
@@ -122,6 +127,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/components-showcase/pages/chip/chip-showcase.component').then(
             (m) => m.ChipShowcaseComponent,
+          ),
+      },
+      {
+        path: 'feedback-message',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/feedback-message/feedback-message-showcase.component').then(
+            (m) => m.FeedbackMessageShowcaseComponent,
           ),
       },
       {

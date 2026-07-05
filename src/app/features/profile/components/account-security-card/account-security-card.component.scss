@@ -1,0 +1,67 @@
+@use '../../../../shared/theme' as theme;
+
+:host {
+  display: block;
+}
+
+.account-security-card__row {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-md;
+  padding: theme.$aq-space-md;
+  background: theme.$aq-color-surface-muted;
+  border-radius: theme.$aq-radius-sm;
+  flex-wrap: wrap;
+}
+
+.account-security-card__row--success {
+  background: rgb(45 138 78 / 10%);
+}
+
+.account-security-card__row-icon {
+  font-size: theme.$aq-size-icon-md;
+  color: theme.$aq-color-text-secondary;
+}
+
+.account-security-card__row-icon--success {
+  color: theme.$aq-color-success;
+}
+
+.account-security-card__row-copy {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-2xs;
+  flex: 1;
+}
+
+.account-security-card__row-title {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-md;
+  font-weight: theme.$aq-font-weight-semibold;
+  color: theme.$aq-color-text-primary;
+}
+
+.account-security-card__row-value {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  color: theme.$aq-color-text-secondary;
+}
+
+.account-security-card__notice {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  color: theme.$aq-color-text-tertiary;
+}
+
+@media (width <= 640px) {
+  .account-security-card__row {
+    align-items: flex-start;
+  }
+
+  .account-security-card__change-password-btn {
+    width: 100%;
+  }
+}

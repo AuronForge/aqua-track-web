@@ -1,0 +1,48 @@
+<aq-settings-card
+  icon="shield"
+  [title]="t().accountSecurityTitle"
+  [subtitle]="t().accountSecuritySubtitle"
+>
+  <div class="account-security-card__row">
+    <span class="material-icons-outlined account-security-card__row-icon" aria-hidden="true"
+      >lock</span
+    >
+    <div class="account-security-card__row-copy">
+      <p class="account-security-card__row-title">{{ t().passwordLabel }}</p>
+      <p class="account-security-card__row-value">
+        {{ t().profilePasswordLastChanged }}
+        {{ security().passwordLastChangedAt | date: 'longDate' : '' : locale() }}
+      </p>
+    </div>
+    <button
+      aqButton
+      type="button"
+      variant="stroked"
+      color="tertiary"
+      class="account-security-card__change-password-btn"
+      (click)="requestPasswordChange()"
+    >
+      {{ t().changePasswordButton }}
+    </button>
+  </div>
+
+  @if (passwordChangeUnavailable()) {
+    <p class="account-security-card__notice" role="status">
+      {{ t().profilePasswordChangeUnavailable }}
+    </p>
+  }
+
+  <div class="account-security-card__row account-security-card__row--success">
+    <span
+      class="material-icons-outlined account-security-card__row-icon account-security-card__row-icon--success"
+      aria-hidden="true"
+      >check_circle</span
+    >
+    <div class="account-security-card__row-copy">
+      <p class="account-security-card__row-title">{{ t().profileLastLogin }}</p>
+      <p class="account-security-card__row-value">
+        {{ security().lastLoginAt | date: 'medium' : '' : locale() }}
+      </p>
+    </div>
+  </div>
+</aq-settings-card>

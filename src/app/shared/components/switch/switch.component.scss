@@ -1,0 +1,45 @@
+@use '../../theme' as theme;
+
+:host {
+  display: inline-flex;
+}
+
+.switch__track {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 2.75rem;
+  height: 1.5rem;
+  border: 0;
+  border-radius: theme.$aq-radius-pill;
+  padding: 0.1875rem;
+  background: theme.$aq-color-border-strong;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.switch__track--checked {
+  background: theme.$aq-color-success;
+}
+
+.switch__thumb {
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 50%;
+  background: theme.$aq-color-surface;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
+  transition: transform 150ms ease;
+}
+
+.switch__track--checked .switch__thumb {
+  transform: translateX(1.25rem);
+}

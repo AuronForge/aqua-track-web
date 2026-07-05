@@ -1,0 +1,24 @@
+<div class="settings-card__surface">
+  <div class="settings-card__header">
+    @if (icon()) {
+      <div class="settings-card__icon-container" aria-hidden="true">
+        <span class="material-icons-outlined settings-card__icon">{{ icon() }}</span>
+      </div>
+    }
+
+    <div class="settings-card__heading">
+      <p class="settings-card__title">{{ title() }}</p>
+      @if (subtitle()) {
+        <p class="settings-card__subtitle">{{ subtitle() }}</p>
+      }
+    </div>
+  </div>
+
+  <div class="settings-card__body">
+    <ng-content />
+  </div>
+
+  <div class="settings-card__actions">
+    <ng-content select="[slot=actions]" />
+  </div>
+</div>

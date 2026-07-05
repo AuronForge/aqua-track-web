@@ -1,0 +1,38 @@
+<aq-settings-card
+  icon="warning"
+  [title]="t().dangerZoneTitle"
+  [subtitle]="t().dangerZoneSubtitle"
+  tone="danger"
+>
+  <div class="danger-zone-card__block">
+    <div class="danger-zone-card__block-header">
+      <span class="material-icons-outlined danger-zone-card__block-icon" aria-hidden="true"
+        >warning</span
+      >
+      <p class="danger-zone-card__block-title">{{ t().deleteAccountLabel }}</p>
+    </div>
+
+    <p class="danger-zone-card__block-message">
+      {{ t().deleteAccountMessage }}
+    </p>
+    <p class="danger-zone-card__block-warning">{{ t().deleteAccountWarning }}</p>
+
+    @if (unavailable()) {
+      <p class="danger-zone-card__notice" role="status">
+        {{ t().deleteAccountUnavailable }}
+      </p>
+    }
+  </div>
+
+  <button
+    slot="actions"
+    aqButton
+    type="button"
+    color="error"
+    class="danger-zone-card__delete-btn"
+    (click)="requestDeleteAccount()"
+  >
+    <span class="material-icons-outlined" aria-hidden="true">warning</span>
+    {{ t().deleteAccountLabel }}
+  </button>
+</aq-settings-card>

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 
 import { AvatarColor } from '../../ui/avatar/avatar-color.type';
 import { AvatarComponent } from '../../ui/avatar/avatar.component';
+import { AvatarVariant } from '../../ui/avatar/avatar-variant.type';
 import { DropdownMenuItem } from '../../ui/dropdown-menu/dropdown-menu-item.model';
 import { DropdownMenuComponent } from '../../ui/dropdown-menu/dropdown-menu.component';
 import { LanguageCode } from '../../types/language-code.type';
@@ -22,6 +23,7 @@ export class ToolbarComponent {
   readonly userName = input.required<string>();
   readonly userEmail = input.required<string>();
   readonly userInitials = input.required<string>();
+  readonly userAvatarUrl = input<string | null>(null);
   readonly userAvatarColor = input<AvatarColor>('primary');
   readonly userPlan = input<string>('');
   readonly selectedLanguage = input.required<LanguageCode>();
@@ -30,4 +32,8 @@ export class ToolbarComponent {
 
   readonly languageChange = output<LanguageCode>();
   readonly userMenuItemClick = output<DropdownMenuItem>();
+
+  protected userAvatarVariant(): AvatarVariant {
+    return this.userAvatarUrl() ? 'circular' : 'initials';
+  }
 }

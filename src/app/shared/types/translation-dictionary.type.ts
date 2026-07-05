@@ -167,4 +167,62 @@ export interface TranslationDictionary {
   readonly applicationFormTitle: string;
   readonly applicationFormComingSoon: string;
   readonly applicationFormBackToDashboard: string;
+
+  // Shared — actions
+  readonly cancelLabel: string;
+
+  // Profile — page
+  readonly profilePageSubtitle: string;
+  readonly profileLoading: string;
+
+  // Profile — information card
+  readonly profileInformationTitle: string;
+  readonly profileInformationSubtitle: string;
+  readonly profilePictureLabel: string;
+  readonly profilePictureHint: string;
+  readonly profileChangeAvatar: string;
+  readonly profileAvatarInvalidType: string;
+  readonly profileAvatarTooLarge: string;
+  readonly profileAvatarUploadError: string;
+  readonly profileEmailAddressLabel: string;
+  readonly profileContactPhoneLabel: string;
+  readonly profileContactPhoneInvalid: string;
+  readonly profileMemberSince: string;
+  readonly profileSaveChanges: string;
+  readonly profileSavingLabel: string;
+
+  // Profile — account security card
+  readonly accountSecurityTitle: string;
+  readonly accountSecuritySubtitle: string;
+  readonly profilePasswordLastChanged: string;
+  readonly changePasswordButton: string;
+  readonly profilePasswordChangeUnavailable: string;
+  readonly profileLastLogin: string;
+
+  // Profile — preferences card
+  readonly preferencesTitle: string;
+  readonly preferencesSubtitle: string;
+  readonly preferencesUnitsGroup: string;
+  readonly preferencesTemperatureLabel: string;
+  readonly preferencesTemperatureHint: string;
+  readonly preferencesConcentrationLabel: string;
+  readonly preferencesConcentrationHint: string;
+  readonly preferencesDefaultSettingsGroup: string;
+  readonly preferencesDefaultAquariumLabel: string;
+  readonly preferencesDefaultAquariumHint: string;
+  readonly preferencesSelectAquariumPlaceholder: string;
+  readonly preferencesNotificationsGroup: string;
+  readonly preferencesEmailAlertsLabel: string;
+  readonly preferencesEmailAlertsHint: string;
+  readonly profileSavePreferences: string;
+
+  // Profile — danger zone card
+  readonly dangerZoneTitle: string;
+  readonly dangerZoneSubtitle: string;
+  readonly deleteAccountLabel: string;
+  readonly deleteAccountMessage: string;
+  readonly deleteAccountWarning: string;
+  readonly deleteAccountUnavailable: string;
+  readonly deleteAccountConfirmWord: string;
+  readonly deleteAccountConfirmWordLabel: string;
 }

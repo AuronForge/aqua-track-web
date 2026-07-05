@@ -11,6 +11,7 @@ import { DropdownMenuItem } from '../../shared/ui/dropdown-menu/dropdown-menu-it
 import { NavMenuItem } from '../../shared/components/nav-menu/nav-menu-item.model';
 import { LanguageCode } from '../../shared/types/language-code.type';
 import { LanguageService } from '../../shared/services/language.service';
+import { buildInitials } from '../../shared/utils/build-initials.util';
 
 @Component({
   selector: 'app-authenticated-layout',
@@ -33,7 +34,8 @@ export class AuthenticatedLayoutComponent {
 
   protected readonly userName = computed(() => this.currentUser()?.name ?? 'Usuário');
   protected readonly userEmail = computed(() => this.currentUser()?.email ?? '');
-  protected readonly userInitials = computed(() => this.buildInitials(this.currentUser()?.name));
+  protected readonly userInitials = computed(() => buildInitials(this.currentUser()?.name));
+  protected readonly userAvatarUrl = computed(() => this.currentUser()?.avatarUrl ?? null);
   protected readonly userPlan = computed(() => this.currentUser()?.plan ?? '');
 
   protected readonly userMenuItems = computed<DropdownMenuItem[]>(() => {
@@ -89,13 +91,11 @@ export class AuthenticatedLayoutComponent {
       this.userService.clearCurrentUser();
       this.authService.clearToken();
       this.router.navigate(['/login']);
+      return;
     }
-  }
 
-  private buildInitials(name?: string): string {
-    if (!name) return 'U';
-    const words = name.trim().split(/\s+/);
-    if (words.length === 1) return words[0].charAt(0).toUpperCase();
-    return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
+    if (item.id === 'profile') {
+      this.router.navigate(['/profile']);
+    }
   }
 }

@@ -1,0 +1,47 @@
+@use '../../theme' as theme;
+
+:host {
+  display: inline-flex;
+}
+
+.segmented-control__group {
+  display: inline-flex;
+  gap: theme.$aq-space-2xs;
+  padding: theme.$aq-space-2xs;
+  background: theme.$aq-color-surface-muted;
+  border: 1px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-pill;
+}
+
+.segmented-control__option {
+  border: 0;
+  border-radius: theme.$aq-radius-pill;
+  padding: theme.$aq-space-xs theme.$aq-space-md;
+  background: transparent;
+  color: theme.$aq-color-text-secondary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-semibold;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &:hover:not(:disabled, .segmented-control__option--selected) {
+    color: theme.$aq-color-text-primary;
+  }
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+  }
+}
+
+.segmented-control__option--selected {
+  background: theme.$aq-color-primary;
+  color: theme.$aq-color-surface;
+}
