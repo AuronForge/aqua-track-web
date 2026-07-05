@@ -1,0 +1,17 @@
+<div class="feedback-message__surface">
+  <div class="feedback-message__content">
+    @if (showIcon() && iconPosition() === 'start') {
+      <span class="material-icons feedback-message__icon" aria-hidden="true">
+        {{ resolvedIconName() }}
+      </span>
+    }
+
+    <span class="feedback-message__label">{{ label() }}</span>
+
+    @if (showIcon() && iconPosition() === 'end') {
+      <span class="material-icons feedback-message__icon" aria-hidden="true">
+        {{ resolvedIconName() }}
+      </span>
+    }
+  </div>
+</div>

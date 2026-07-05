@@ -1,0 +1,17 @@
+@if (stackedMessages().length) {
+  <div class="feedback-message-container">
+    @for (message of stackedMessages(); track message.id) {
+      <aq-feedback-message
+        [label]="message.label"
+        [horizontalPosition]="message.horizontalPosition ?? 'top'"
+        [verticalPosition]="message.verticalPosition ?? 'center'"
+        [type]="message.type ?? 'information'"
+        [displayDurationMs]="message.displayDurationMs ?? 5000"
+        [stackIndex]="message.stackIndex"
+        [hasIcon]="message.hasIcon ?? false"
+        [iconName]="message.iconName ?? ''"
+        [iconPosition]="message.iconPosition ?? 'start'"
+      />
+    }
+  </div>
+}

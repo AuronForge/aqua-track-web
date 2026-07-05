@@ -130,6 +130,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'feedback-message',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/feedback-message/feedback-message-showcase.component').then(
+            (m) => m.FeedbackMessageShowcaseComponent,
+          ),
+      },
+      {
         path: 'info-card',
         loadComponent: () =>
           import('./features/components-showcase/pages/info-card/info-card-showcase.component').then(
