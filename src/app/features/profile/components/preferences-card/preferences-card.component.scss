@@ -1,0 +1,76 @@
+@use '../../../../shared/theme' as theme;
+
+:host {
+  display: block;
+}
+
+.preferences-card__group {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-sm;
+}
+
+.preferences-card__group-title {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-xs;
+  font-weight: theme.$aq-font-weight-bold;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: theme.$aq-color-text-tertiary;
+}
+
+.preferences-card__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: theme.$aq-space-md;
+  padding: theme.$aq-space-md;
+  background: theme.$aq-color-surface-muted;
+  border-radius: theme.$aq-radius-sm;
+  flex-wrap: wrap;
+}
+
+.preferences-card__item-copy {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-sm;
+}
+
+.preferences-card__item-icon {
+  font-size: theme.$aq-size-icon-md;
+  color: theme.$aq-color-text-secondary;
+  flex-shrink: 0;
+}
+
+.preferences-card__item-title {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-md;
+  font-weight: theme.$aq-font-weight-semibold;
+  color: theme.$aq-color-text-primary;
+}
+
+.preferences-card__item-subtitle {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  color: theme.$aq-color-text-secondary;
+}
+
+.preferences-card__error {
+  color: theme.$aq-color-error;
+  font-size: theme.$aq-font-size-sm;
+}
+
+@media (width <= 640px) {
+  .preferences-card__item {
+    align-items: flex-start;
+  }
+
+  .preferences-card__item > aq-segmented-control,
+  .preferences-card__item > aq-input-select,
+  .preferences-card__item > aq-switch {
+    width: 100%;
+  }
+}

@@ -1,0 +1,31 @@
+@use '../../showcase-page';
+
+.showcase__card-stage--feedback {
+  position: relative;
+  display: block;
+  min-height: 12rem;
+  overflow: hidden;
+}
+
+.showcase__card-stage--service-demo {
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.showcase__card-stage--docs {
+  display: block;
+}
+
+.showcase__doc-item {
+  max-width: 58rem;
+  color: #243041;
+  font:
+    400 0.92rem/1.6 Aptos,
+    'Segoe UI',
+    'Trebuchet MS',
+    sans-serif;
+
+  &:not(:last-child) {
+    margin-bottom: 0.75rem;
+  }
+}

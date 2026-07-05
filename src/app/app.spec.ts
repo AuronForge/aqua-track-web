@@ -31,6 +31,13 @@ describe('App', () => {
     expect(compiled.querySelector('router-outlet')).not.toBeNull();
   });
 
+  it('should render the feedback message container', () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('aq-feedback-message-container')).not.toBeNull();
+  });
+
   it('should expose application providers', () => {
     expect(appConfig.providers?.length).toBeGreaterThan(0);
   });

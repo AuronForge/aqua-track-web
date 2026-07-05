@@ -4,10 +4,17 @@ import {
   provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
+import localePt from '@angular/common/locales/pt';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
+
+registerLocaleData(localePt, 'pt');
+registerLocaleData(localePt, 'pt-BR');
+registerLocaleData(localeEs, 'es');
 
 export const appConfig: ApplicationConfig = {
   providers: [

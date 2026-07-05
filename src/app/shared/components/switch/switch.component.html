@@ -1,0 +1,12 @@
+<button
+  type="button"
+  class="switch__track"
+  [class.switch__track--checked]="checked()"
+  role="switch"
+  [attr.aria-checked]="checked()"
+  [attr.aria-label]="ariaLabel()"
+  [disabled]="disabled() || null"
+  (click)="toggle()"
+>
+  <span class="switch__thumb" aria-hidden="true"></span>
+</button>
