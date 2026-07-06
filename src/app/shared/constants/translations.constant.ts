@@ -173,6 +173,7 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
 
     // Shared — actions
     cancelLabel: 'Cancelar',
+    modalCloseLabel: 'Fechar modal',
 
     // Profile — page
     profilePageSubtitle: 'Gerencie as configurações e preferências da sua conta',
@@ -408,6 +409,7 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
 
     // Shared — actions
     cancelLabel: 'Cancel',
+    modalCloseLabel: 'Close modal',
 
     // Profile — page
     profilePageSubtitle: 'Manage your account settings and preferences',
@@ -643,6 +645,7 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
 
     // Shared — actions
     cancelLabel: 'Cancelar',
+    modalCloseLabel: 'Cerrar modal',
 
     // Profile — page
     profilePageSubtitle: 'Gestiona la configuración y las preferencias de tu cuenta',

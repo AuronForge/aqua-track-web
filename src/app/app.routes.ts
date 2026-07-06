@@ -116,6 +116,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'modal',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/modal/modal-showcase.component').then(
+            (m) => m.ModalShowcaseComponent,
+          ),
+      },
+      {
         path: 'avatar',
         loadComponent: () =>
           import('./features/components-showcase/pages/avatar/avatar-showcase.component').then(

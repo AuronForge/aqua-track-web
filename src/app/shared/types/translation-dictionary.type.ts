@@ -170,6 +170,7 @@ export interface TranslationDictionary {
 
   // Shared — actions
   readonly cancelLabel: string;
+  readonly modalCloseLabel: string;
 
   // Profile — page
   readonly profilePageSubtitle: string;
