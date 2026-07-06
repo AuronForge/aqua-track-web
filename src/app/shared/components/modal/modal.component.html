@@ -1,0 +1,81 @@
+<div
+  class="modal__surface"
+  [class]="surfaceClass()"
+  [attr.role]="config.role"
+  aria-modal="true"
+  [attr.aria-labelledby]="titleText() ? titleId : null"
+  [attr.aria-describedby]="descriptionText() ? descriptionId : null"
+  cdkTrapFocus
+  [cdkTrapFocusAutoCapture]="true"
+>
+  @if (hasHeader()) {
+    <header class="modal__header">
+      <div class="modal__heading">
+        @if (titleText()) {
+          <h2 class="modal__title" [id]="titleId">{{ titleText() }}</h2>
+        }
+
+        @if (descriptionText()) {
+          <p class="modal__description" [id]="descriptionId">{{ descriptionText() }}</p>
+        }
+      </div>
+
+      @if (config.showCloseButton) {
+        <button
+          aqButton
+          type="button"
+          variant="icon"
+          color="tertiary"
+          class="modal__close-button"
+          [attr.aria-label]="closeAriaLabel()"
+          (click)="onCloseButtonClick()"
+        >
+          <span class="material-icons" aria-hidden="true">close</span>
+        </button>
+      }
+    </header>
+  }
+
+  <div class="modal__body">
+    @if (config.contentTemplate) {
+      <ng-container
+        *ngTemplateOutlet="config.contentTemplate; context: templateContext()"
+      ></ng-container>
+    } @else if (config.contentComponent) {
+      <ng-container
+        *ngComponentOutlet="config.contentComponent; inputs: componentInputs()"
+      ></ng-container>
+    }
+  </div>
+
+  @if (hasFooter()) {
+    <footer class="modal__footer">
+      <div class="modal__actions">
+        @for (action of config.actions; track action.id) {
+          <button
+            aqButton
+            type="button"
+            [variant]="action.variant ?? 'flat'"
+            [color]="action.color ?? 'primary'"
+            [disabled]="action.disabled ?? false"
+            (click)="onActionClick(action)"
+          >
+            @if (action.iconName && action.iconPosition !== 'end') {
+              <span class="material-icons modal__action-icon" aria-hidden="true">
+                {{ action.iconName }}
+              </span>
+            }
+
+            {{ resolveActionLabel(action) }}
+
+            @if (action.iconName && action.iconPosition === 'end') {
+              <span class="material-icons modal__action-icon" aria-hidden="true">
+                {{ action.iconName }}
+              </span>
+            }
+          </button>
+        }
+      </div>
+    </footer>
+  }
+</div>

@@ -1,0 +1,147 @@
+@use '../../theme' as theme;
+
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  min-height: 100vh;
+  padding: theme.$aq-space-lg;
+}
+
+.modal__surface {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-lg;
+  width: min(100%, 42rem);
+  max-height: calc(100vh - 2 * theme.$aq-space-lg);
+  padding: theme.$aq-space-xl;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgb(248 251 253 / 96%) 0%, rgb(255 255 255 / 100%) 100%),
+    theme.$aq-color-surface;
+  border: 1px solid rgb(201 215 229 / 65%);
+  border-radius: theme.$aq-radius-lg;
+  box-shadow:
+    0 30px 60px -34px rgb(18 63 97 / 30%),
+    0 16px 32px -24px rgb(36 48 65 / 34%);
+}
+
+.modal__surface--small {
+  width: min(100%, 28rem);
+}
+
+.modal__surface--medium {
+  width: min(100%, 42rem);
+}
+
+.modal__surface--large {
+  width: min(100%, 56rem);
+}
+
+.modal__surface--fullscreen {
+  width: 100%;
+  max-width: 100%;
+  max-height: 100vh;
+  min-height: 100vh;
+  border-radius: 0;
+}
+
+.modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: theme.$aq-space-md;
+}
+
+.modal__heading {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: theme.$aq-space-xs;
+}
+
+.modal__title {
+  margin: 0;
+  font-family: theme.$aq-font-family-heading;
+  font-size: 1.35rem;
+  font-weight: theme.$aq-font-weight-bold;
+  line-height: 1.2;
+  color: theme.$aq-color-text-primary;
+}
+
+.modal__description {
+  margin: 0;
+  font-size: theme.$aq-font-size-md;
+  line-height: theme.$aq-line-height-loose;
+  color: theme.$aq-color-text-secondary;
+}
+
+.modal__close-button {
+  flex-shrink: 0;
+}
+
+.modal__body {
+  overflow: auto;
+  font-size: theme.$aq-font-size-md;
+  line-height: theme.$aq-line-height-loose;
+  color: theme.$aq-color-text-primary;
+}
+
+.modal__footer {
+  border-top: 1px solid rgb(201 215 229 / 55%);
+  padding-top: theme.$aq-space-md;
+}
+
+.modal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: theme.$aq-space-sm;
+}
+
+.modal__action-icon {
+  font-size: 1.1rem;
+}
+
+@media (width <= 768px) {
+  :host {
+    padding: theme.$aq-space-md;
+  }
+
+  .modal__surface {
+    padding: theme.$aq-space-lg;
+    max-height: calc(100vh - 2 * theme.$aq-space-md);
+  }
+}
+
+@media (width <= 560px) {
+  :host {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal__surface {
+    width: 100%;
+    max-height: min(100vh, 100dvh);
+    padding: theme.$aq-space-lg;
+    border-right: none;
+    border-bottom: none;
+    border-left: none;
+    border-radius: theme.$aq-radius-lg theme.$aq-radius-lg 0 0;
+  }
+
+  .modal__surface--fullscreen {
+    border-radius: 0;
+  }
+
+  .modal__actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .modal__actions > button[aqButton] {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,18 @@
+<div class="modal-showcase-dynamic-content">
+  <p class="modal-showcase-dynamic-content__eyebrow">Componente dinâmico</p>
+  <h3 class="modal-showcase-dynamic-content__title">{{ heading() }}</h3>
+
+  @if (modalData?.note) {
+    <p class="modal-showcase-dynamic-content__note">{{ modalData?.note }}</p>
+  }
+
+  <ul class="modal-showcase-dynamic-content__list">
+    @for (item of items(); track item) {
+      <li>{{ item }}</li>
+    }
+  </ul>
+
+  <button aqButton type="button" color="secondary" (click)="closeFromContent()">
+    Fechar a partir do conteúdo
+  </button>
+</div>

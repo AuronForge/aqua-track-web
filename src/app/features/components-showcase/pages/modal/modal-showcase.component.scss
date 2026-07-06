@@ -1,0 +1,17 @@
+@use '../../showcase-page';
+@use '../../../../shared/theme' as theme;
+
+.modal-showcase__content {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-sm;
+
+  p {
+    margin: 0;
+  }
+}
+
+.modal-showcase__language-note {
+  margin: 0;
+  color: theme.$aq-color-text-secondary;
+}
