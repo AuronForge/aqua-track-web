@@ -2,6 +2,8 @@
   <aside class="layout__sidebar">
     <app-nav-menu
       [items]="navItems()"
+      [userRoles]="userRoles()"
+      [userPlan]="userPlan()"
       [collapseLabel]="languageService.translation().navCollapse"
       [expandLabel]="languageService.translation().navExpand"
       [homeAriaLabel]="languageService.translation().navGoHome"

@@ -142,6 +142,24 @@ describe('AuthenticatedLayoutComponent', () => {
     expect(text).toContain('admin@aquatrack.com');
   });
 
+  it('should hide the help user menu item while it is not ready', async () => {
+    const { fixture } = await createFixture();
+    const items = fixture.componentInstance['userMenuItems']();
+
+    expect(items.some((item) => item.id === 'help')).toBe(false);
+  });
+
+  it('should show only ready navigation items in the sidebar', async () => {
+    const { fixture } = await createFixture();
+    const text = fixture.nativeElement.textContent;
+
+    expect(text).toContain('Dashboard');
+    expect(text).not.toContain('Aquariums');
+    expect(text).not.toContain('Measurements');
+    expect(text).not.toContain('Alerts');
+    expect(text).not.toContain('Settings');
+  });
+
   it('should fall back to defaults when there is no current user', async () => {
     const userService = userServiceMock();
     userService.currentUser.set(null);
