@@ -1,11 +1,10 @@
 import { Component, computed, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { LanguageService } from '../../../../shared/services/language.service';
-import { TRANSLATIONS } from '../../../../shared/constants/translations.constant';
-import { LanguageCode } from '../../../../shared/types/language-code.type';
 import { InputSelectOption } from '../../../../shared/components/select/input-select-option.model';
+import { TRANSLATIONS } from '../../../../shared/constants/translations.constant';
+import { LanguageService } from '../../../../shared/services/language.service';
+import { LanguageCode } from '../../../../shared/types/language-code.type';
 import { ProfilePreferences } from '../../models/profile-preferences.model';
 import { ProfilePreferencesFormValue } from '../../models/profile-preferences-form-value.model';
 import { PreferencesCardComponent } from './preferences-card.component';
@@ -17,10 +16,15 @@ const buildLanguageServiceMock = (lang: LanguageCode = 'en') => ({
 });
 
 const PREFERENCES: ProfilePreferences = {
+  preferredLanguage: 'pt',
   temperatureUnit: 'celsius',
   concentrationUnit: 'mgL',
-  defaultAquariumId: null,
   emailAlertsEnabled: true,
+  phAlertsEnabled: true,
+  temperatureAlertsEnabled: true,
+  ammoniaAlertsEnabled: true,
+  nitriteAlertsEnabled: true,
+  nitrateAlertsEnabled: true,
 };
 
 const AQUARIUM_OPTIONS: InputSelectOption[] = [
@@ -54,15 +58,13 @@ class TestHostComponent {
 describe('PreferencesCardComponent', () => {
   let hostFixture: ComponentFixture<TestHostComponent>;
   let element: HTMLElement;
-  let overlayContainer: OverlayContainer;
-  let overlayEl: HTMLElement;
 
   function getSegmentedControls(): HTMLElement[] {
     return Array.from(element.querySelectorAll('aq-segmented-control'));
   }
 
-  function getSwitch(): HTMLButtonElement {
-    return element.querySelector('.switch__track') as HTMLButtonElement;
+  function getSwitches(): HTMLButtonElement[] {
+    return Array.from(element.querySelectorAll('.switch__track')) as HTMLButtonElement[];
   }
 
   function getSaveButton(): HTMLButtonElement {
@@ -75,22 +77,16 @@ describe('PreferencesCardComponent', () => {
       providers: [{ provide: LanguageService, useValue: buildLanguageServiceMock() }],
     }).compileComponents();
 
-    overlayContainer = TestBed.inject(OverlayContainer);
-    overlayEl = overlayContainer.getContainerElement();
-
     hostFixture = TestBed.createComponent(TestHostComponent);
     hostFixture.detectChanges();
     element = hostFixture.nativeElement;
   });
 
-  afterEach(() => {
-    overlayContainer.ngOnDestroy();
-  });
-
   it('should render its labels in the current language', () => {
     expect(element.textContent).toContain('Preferences');
-    expect(element.textContent).toContain('Default Aquarium');
+    expect(element.textContent).toContain('Preferred Language');
     expect(element.textContent).toContain('Email Alerts');
+    expect(element.textContent).toContain('pH Alerts');
   });
 
   it('should render its labels in Portuguese when the language is pt', async () => {
@@ -104,23 +100,48 @@ describe('PreferencesCardComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent).toContain('Preferências');
-    expect(fixture.nativeElement.textContent).toContain('Aquário Padrão');
+    expect(fixture.nativeElement.textContent).toContain('Idioma Preferido');
+    expect(fixture.nativeElement.textContent).toContain('Alertas de Nitrito');
   });
 
   it('should initialize the form from the preferences input', () => {
-    const [temperatureControl] = getSegmentedControls();
+    const [languageControl, temperatureControl] = getSegmentedControls();
+
+    expect(
+      languageControl.querySelector('.segmented-control__option--selected')?.textContent?.trim(),
+    ).toBe('BR');
     expect(
       temperatureControl.querySelector('.segmented-control__option--selected')?.textContent?.trim(),
     ).toBe('°C');
-    expect(getSwitch().getAttribute('aria-checked')).toBe('true');
+    expect(getSwitches()).toHaveLength(6);
+    expect(
+      getSwitches().every((switchButton) => switchButton.getAttribute('aria-checked') === 'true'),
+    ).toBe(true);
   });
 
   it('should disable the save button while the form is pristine', () => {
     expect(getSaveButton().disabled).toBe(true);
   });
 
+  it('should update the preferred language and enable save when changed', () => {
+    const [, englishButton] = getSegmentedControls()[0].querySelectorAll(
+      '.segmented-control__option',
+    );
+
+    (englishButton as HTMLButtonElement).click();
+    hostFixture.detectChanges();
+
+    expect(getSaveButton().disabled).toBe(false);
+
+    getSaveButton().click();
+
+    expect(hostFixture.componentInstance.saved()).toEqual(
+      expect.objectContaining({ preferredLanguage: 'en' }),
+    );
+  });
+
   it('should update the temperature unit and enable save when changed', () => {
-    const [, fahrenheitButton] = getSegmentedControls()[0].querySelectorAll(
+    const [, fahrenheitButton] = getSegmentedControls()[1].querySelectorAll(
       '.segmented-control__option',
     );
 
@@ -137,39 +158,27 @@ describe('PreferencesCardComponent', () => {
     );
   });
 
-  it('should toggle email alerts and emit the updated value on save', () => {
-    getSwitch().click();
+  it('should toggle parameter alerts and emit the updated value on save', () => {
+    const switches = getSwitches();
+    switches[1].click();
+    switches[3].click();
     hostFixture.detectChanges();
 
-    expect(getSwitch().getAttribute('aria-checked')).toBe('false');
+    expect(switches[1].getAttribute('aria-checked')).toBe('false');
+    expect(switches[3].getAttribute('aria-checked')).toBe('false');
 
     getSaveButton().click();
 
     expect(hostFixture.componentInstance.saved()).toEqual(
-      expect.objectContaining({ emailAlertsEnabled: false }),
-    );
-  });
-
-  it('should update the default aquarium selection through aq-input-select', () => {
-    const trigger = element.querySelector('.input-select__trigger') as HTMLButtonElement;
-    trigger.click();
-    hostFixture.detectChanges();
-
-    const option = overlayEl.querySelector('.input-select__option') as HTMLElement;
-    option.click();
-    hostFixture.detectChanges();
-
-    expect(getSaveButton().disabled).toBe(false);
-
-    getSaveButton().click();
-
-    expect(hostFixture.componentInstance.saved()).toEqual(
-      expect.objectContaining({ defaultAquariumId: 'aquarium-1' }),
+      expect.objectContaining({
+        phAlertsEnabled: false,
+        ammoniaAlertsEnabled: false,
+      }),
     );
   });
 
   it('should update the concentration unit and enable save when changed', () => {
-    const [, ppmButton] = getSegmentedControls()[1].querySelectorAll('.segmented-control__option');
+    const [, ppmButton] = getSegmentedControls()[2].querySelectorAll('.segmented-control__option');
 
     (ppmButton as HTMLButtonElement).click();
     hostFixture.detectChanges();
@@ -184,7 +193,7 @@ describe('PreferencesCardComponent', () => {
   });
 
   it('should mark the form as pristine again once saveSuccess becomes true', () => {
-    getSwitch().click();
+    getSwitches()[0].click();
     hostFixture.detectChanges();
 
     expect(getSaveButton().disabled).toBe(false);
@@ -196,7 +205,7 @@ describe('PreferencesCardComponent', () => {
   });
 
   it('should disable the save button while saving', () => {
-    getSwitch().click();
+    getSwitches()[0].click();
     hostFixture.componentInstance.saving.set(true);
     hostFixture.detectChanges();
 

@@ -30,7 +30,7 @@ const mockUser: UserApiDto = {
     timezone: 'America/Sao_Paulo',
     theme: 'system',
     temperatureUnit: 'CELSIUS',
-    measurementUnit: 'MG_L',
+    concentrationUnit: 'MG_L',
     notificationsEnabled: true,
     phAlertEnabled: true,
     temperatureAlertEnabled: true,

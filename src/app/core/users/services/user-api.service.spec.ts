@@ -3,6 +3,8 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 
 import { UserApiService } from './user-api.service';
+import { ChangePasswordRequestDto } from '../models/change-password-request.dto';
+import { RequestAccountDeletionDto } from '../models/request-account-deletion.dto';
 import { UserApiDto } from '../models/user-api.dto';
 
 const mockUser: UserApiDto = {
@@ -12,9 +14,15 @@ const mockUser: UserApiDto = {
   phone: null,
   birthDate: '1990-05-12',
   avatarUrl: null,
+  passwordChangedAt: '2026-06-02T12:00:00.000Z',
+  lastLoginAt: '2026-07-07T23:25:28.149Z',
   role: 'USER',
   plan: 'FREE',
   status: 'ACTIVE',
+  accountDeletionRequestedAt: null,
+  accountDeletionReason: null,
+  accountDeletionConfirmedAt: null,
+  accountDeletionConfirmedBy: null,
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-01-01T00:00:00.000Z',
   deletedAt: null,
@@ -25,7 +33,7 @@ const mockUser: UserApiDto = {
     timezone: 'America/Sao_Paulo',
     theme: 'system',
     temperatureUnit: 'CELSIUS',
-    measurementUnit: 'METRIC',
+    concentrationUnit: 'METRIC',
     notificationsEnabled: true,
     phAlertEnabled: true,
     temperatureAlertEnabled: true,
@@ -92,21 +100,27 @@ describe('UserApiService', () => {
     req.flush(mockUser);
   });
 
-  it('should PATCH /users/me/preferences with the preferences payload', () => {
+  it('should PUT /me/preferences with the preferences payload', () => {
     const payload = {
-      temperatureUnit: 'CELSIUS',
-      measurementUnit: 'MG_L',
+      language: 'pt-BR',
+      temperatureUnit: 'celsius',
+      concentrationUnit: 'mg/ml',
       notificationsEnabled: true,
+      phAlertEnabled: true,
+      temperatureAlertEnabled: true,
+      ammoniaAlertEnabled: true,
+      nitriteAlertEnabled: true,
+      nitrateAlertEnabled: true,
     };
 
     service.updatePreferences(payload).subscribe((res) => {
-      expect(res).toEqual(mockUser);
+      expect(res).toEqual(mockUser.preferences);
     });
 
-    const req = httpMock.expectOne('http://localhost:3000/users/me/preferences');
-    expect(req.request.method).toBe('PATCH');
+    const req = httpMock.expectOne('http://localhost:3000/me/preferences');
+    expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual(payload);
-    req.flush(mockUser);
+    req.flush(mockUser.preferences);
   });
 
   it('should PATCH /users/me/avatar with a multipart FormData payload', () => {
@@ -134,6 +148,47 @@ describe('UserApiService', () => {
     expect(req.request.method).toBe('PATCH');
     expect(req.request.body).toBeInstanceOf(FormData);
     expect((req.request.body as FormData).get('avatar')).toBe(file);
+    req.flush(updatedUser);
+  });
+
+  it('should PATCH /users/me/password with the password payload', () => {
+    const payload: ChangePasswordRequestDto = {
+      email: 'test@example.com',
+      name: 'Test User',
+      birthDate: '1990-05-12',
+      currentPassword: 'Current@123',
+      newPassword: 'NewPassword@123',
+    };
+
+    service.changePassword(payload).subscribe((res) => {
+      expect(res).toBeNull();
+    });
+
+    const req = httpMock.expectOne('http://localhost:3000/users/me/password');
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual(payload);
+    req.flush(null);
+  });
+
+  it('should PATCH /users/me/delete-request with the optional reason payload', () => {
+    const payload: RequestAccountDeletionDto = {
+      reason: 'I no longer need the account.',
+    };
+    const updatedUser: UserApiDto = {
+      ...mockUser,
+      status: 'INACTIVE',
+      accountDeletionRequestedAt: '2026-07-07T23:25:47.101Z',
+      accountDeletionReason: 'I no longer need the account.',
+      updatedAt: '2026-07-07T23:25:47.102Z',
+    };
+
+    service.requestAccountDeletion(payload).subscribe((res) => {
+      expect(res).toEqual(updatedUser);
+    });
+
+    const req = httpMock.expectOne('http://localhost:3000/users/me/delete-request');
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual(payload);
     req.flush(updatedUser);
   });
 });

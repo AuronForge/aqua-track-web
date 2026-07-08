@@ -8,6 +8,7 @@ const mockUser: UserApiDto = {
   phone: null,
   birthDate: '1990-05-12',
   avatarUrl: null,
+  passwordChangedAt: '2026-06-02T12:00:00.000Z',
   role: 'USER',
   plan: 'FREE',
   status: 'ACTIVE',
@@ -21,7 +22,7 @@ const mockUser: UserApiDto = {
     timezone: 'America/Sao_Paulo',
     theme: 'system',
     temperatureUnit: 'CELSIUS',
-    measurementUnit: 'MG_L',
+    concentrationUnit: 'MG_L',
     notificationsEnabled: true,
     phAlertEnabled: true,
     temperatureAlertEnabled: true,
@@ -62,10 +63,15 @@ describe('ProfileMapper', () => {
       const result = mapper.mapUserToProfilePreferences(mockUser);
 
       expect(result).toEqual({
+        preferredLanguage: 'pt',
         temperatureUnit: 'celsius',
         concentrationUnit: 'mgL',
-        defaultAquariumId: null,
         emailAlertsEnabled: true,
+        phAlertsEnabled: true,
+        temperatureAlertsEnabled: true,
+        ammoniaAlertsEnabled: true,
+        nitriteAlertsEnabled: true,
+        nitrateAlertsEnabled: true,
       });
     });
 
@@ -75,7 +81,7 @@ describe('ProfileMapper', () => {
         preferences: {
           ...mockUser.preferences,
           temperatureUnit: 'FAHRENHEIT',
-          measurementUnit: 'PPM',
+          concentrationUnit: 'PPM',
           notificationsEnabled: false,
         },
       };
@@ -84,7 +90,26 @@ describe('ProfileMapper', () => {
 
       expect(result.temperatureUnit).toBe('fahrenheit');
       expect(result.concentrationUnit).toBe('ppm');
+      expect(result.preferredLanguage).toBe('pt');
       expect(result.emailAlertsEnabled).toBe(false);
+      expect(result.phAlertsEnabled).toBe(true);
+    });
+
+    it('should map lowercase celsius and ppm returned by the API', () => {
+      const dto: UserApiDto = {
+        ...mockUser,
+        preferences: {
+          ...mockUser.preferences,
+          temperatureUnit: 'celsius',
+          concentrationUnit: 'ppm',
+        },
+      };
+
+      const result = mapper.mapUserToProfilePreferences(dto);
+
+      expect(result.preferredLanguage).toBe('pt');
+      expect(result.temperatureUnit).toBe('celsius');
+      expect(result.concentrationUnit).toBe('ppm');
     });
 
     it('should default to celsius/mgL for unknown raw unit values', () => {
@@ -92,13 +117,15 @@ describe('ProfileMapper', () => {
         ...mockUser,
         preferences: {
           ...mockUser.preferences,
+          language: 'fr-FR',
           temperatureUnit: 'UNKNOWN',
-          measurementUnit: 'METRIC',
+          concentrationUnit: 'METRIC',
         },
       };
 
       const result = mapper.mapUserToProfilePreferences(dto);
 
+      expect(result.preferredLanguage).toBe('pt');
       expect(result.temperatureUnit).toBe('celsius');
       expect(result.concentrationUnit).toBe('mgL');
     });
@@ -106,17 +133,31 @@ describe('ProfileMapper', () => {
 
   describe('mapPreferencesFormToRequest', () => {
     it('should map the form value back to the update request DTO', () => {
-      const result = mapper.mapPreferencesFormToRequest({
-        temperatureUnit: 'fahrenheit',
-        concentrationUnit: 'ppm',
-        defaultAquariumId: 'aquarium-1',
-        emailAlertsEnabled: false,
-      });
+      const result = mapper.mapPreferencesFormToRequest(
+        {
+          preferredLanguage: 'en',
+          temperatureUnit: 'fahrenheit',
+          concentrationUnit: 'ppm',
+          emailAlertsEnabled: false,
+          phAlertsEnabled: true,
+          temperatureAlertsEnabled: false,
+          ammoniaAlertsEnabled: true,
+          nitriteAlertsEnabled: false,
+          nitrateAlertsEnabled: true,
+        },
+        'en-US',
+      );
 
       expect(result).toEqual({
-        temperatureUnit: 'FAHRENHEIT',
-        measurementUnit: 'PPM',
+        language: 'en-US',
+        temperatureUnit: 'fahrenheit',
+        concentrationUnit: 'ppm',
         notificationsEnabled: false,
+        phAlertEnabled: true,
+        temperatureAlertEnabled: false,
+        ammoniaAlertEnabled: true,
+        nitriteAlertEnabled: false,
+        nitrateAlertEnabled: true,
       });
     });
   });

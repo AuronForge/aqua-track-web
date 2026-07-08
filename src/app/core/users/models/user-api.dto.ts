@@ -5,7 +5,7 @@ export interface UserPreferencesDto {
   readonly timezone: string;
   readonly theme: string;
   readonly temperatureUnit: string;
-  readonly measurementUnit: string;
+  readonly concentrationUnit: string;
   readonly notificationsEnabled: boolean;
   readonly phAlertEnabled: boolean;
   readonly temperatureAlertEnabled: boolean;
@@ -23,9 +23,15 @@ export interface UserApiDto {
   readonly phone: string | null;
   readonly birthDate: string | null;
   readonly avatarUrl: string | null;
+  readonly passwordChangedAt: string | null;
+  readonly lastLoginAt?: string | null;
   readonly role: string;
   readonly plan: string;
   readonly status: string;
+  readonly accountDeletionRequestedAt?: string | null;
+  readonly accountDeletionReason?: string | null;
+  readonly accountDeletionConfirmedAt?: string | null;
+  readonly accountDeletionConfirmedBy?: string | null;
   readonly createdAt: string;
   readonly updatedAt: string;
   readonly deletedAt: string | null;

@@ -1,23 +1,15 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
-import { InputSelectChangeEvent } from '../../../../shared/components/select/input-select-change-event.model';
-import { InputSelectComponent } from '../../../../shared/components/select/input-select.component';
+import { LANGUAGE_OPTIONS } from '../../../../shared/constants/language-options.constant';
 import { InputSelectOption } from '../../../../shared/components/select/input-select-option.model';
 import { SegmentedControlOption } from '../../../../shared/components/segmented-control/segmented-control-option.model';
 import { SegmentedControlComponent } from '../../../../shared/components/segmented-control/segmented-control.component';
 import { SettingsCardComponent } from '../../../../shared/components/settings-card/settings-card.component';
 import { SwitchComponent } from '../../../../shared/components/switch/switch.component';
 import { LanguageService } from '../../../../shared/services/language.service';
+import { LanguageCode } from '../../../../shared/types/language-code.type';
 import { ConcentrationUnit } from '../../models/concentration-unit.type';
 import { ProfilePreferences } from '../../models/profile-preferences.model';
 import { ProfilePreferencesFormValue } from '../../models/profile-preferences-form-value.model';
@@ -33,16 +25,23 @@ const CONCENTRATION_OPTIONS: SegmentedControlOption[] = [
   { value: 'ppm', label: 'ppm' },
 ];
 
+const LANGUAGE_OPTIONS_SEGMENTED: SegmentedControlOption[] = LANGUAGE_OPTIONS.map((language) => ({
+  value: language.code,
+  label: language.triggerLabel,
+}));
+
+type AlertControlName =
+  | 'emailAlertsEnabled'
+  | 'phAlertsEnabled'
+  | 'temperatureAlertsEnabled'
+  | 'ammoniaAlertsEnabled'
+  | 'nitriteAlertsEnabled'
+  | 'nitrateAlertsEnabled';
+
 @Component({
   selector: 'app-preferences-card',
   standalone: true,
-  imports: [
-    ButtonComponent,
-    InputSelectComponent,
-    SegmentedControlComponent,
-    SettingsCardComponent,
-    SwitchComponent,
-  ],
+  imports: [ButtonComponent, SegmentedControlComponent, SettingsCardComponent, SwitchComponent],
   templateUrl: './preferences-card.component.html',
   styleUrl: './preferences-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -61,17 +60,18 @@ export class PreferencesCardComponent {
 
   protected readonly temperatureOptions = TEMPERATURE_OPTIONS;
   protected readonly concentrationOptions = CONCENTRATION_OPTIONS;
+  protected readonly languageOptions = LANGUAGE_OPTIONS_SEGMENTED;
 
   readonly form = new FormGroup({
+    preferredLanguage: new FormControl<LanguageCode>('pt', { nonNullable: true }),
     temperatureUnit: new FormControl<TemperatureUnit>('celsius', { nonNullable: true }),
     concentrationUnit: new FormControl<ConcentrationUnit>('mgL', { nonNullable: true }),
-    defaultAquariumId: new FormControl<string | null>(null),
     emailAlertsEnabled: new FormControl(false, { nonNullable: true }),
-  });
-
-  protected readonly selectedAquariumOption = computed<InputSelectOption | null>(() => {
-    const id = this.form.controls.defaultAquariumId.value;
-    return this.aquariumOptions().find((option) => option.id === id) ?? null;
+    phAlertsEnabled: new FormControl(false, { nonNullable: true }),
+    temperatureAlertsEnabled: new FormControl(false, { nonNullable: true }),
+    ammoniaAlertsEnabled: new FormControl(false, { nonNullable: true }),
+    nitriteAlertsEnabled: new FormControl(false, { nonNullable: true }),
+    nitrateAlertsEnabled: new FormControl(false, { nonNullable: true }),
   });
 
   constructor() {
@@ -98,14 +98,14 @@ export class PreferencesCardComponent {
     this.form.controls.concentrationUnit.markAsDirty();
   }
 
-  protected onDefaultAquariumChange(event: InputSelectChangeEvent): void {
-    this.form.controls.defaultAquariumId.setValue(event.option.id);
-    this.form.controls.defaultAquariumId.markAsDirty();
+  protected onPreferredLanguageChange(value: string): void {
+    this.form.controls.preferredLanguage.setValue(value as LanguageCode);
+    this.form.controls.preferredLanguage.markAsDirty();
   }
 
-  protected onEmailAlertsChange(checked: boolean): void {
-    this.form.controls.emailAlertsEnabled.setValue(checked);
-    this.form.controls.emailAlertsEnabled.markAsDirty();
+  protected onAlertToggleChange(controlName: AlertControlName, checked: boolean): void {
+    this.form.controls[controlName].setValue(checked);
+    this.form.controls[controlName].markAsDirty();
   }
 
   protected submit(): void {

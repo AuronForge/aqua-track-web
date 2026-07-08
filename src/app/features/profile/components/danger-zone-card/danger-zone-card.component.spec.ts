@@ -57,11 +57,11 @@ describe('DangerZoneCardComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent).toContain('Zona de Perigo');
-    expect(fixture.nativeElement.textContent).toContain('Excluir Conta');
+    expect(fixture.nativeElement.textContent).toContain('Solicitar Exclusão');
   });
 
   it('should render the danger copy', () => {
-    expect(element.textContent).toContain('Delete Account');
+    expect(element.textContent).toContain('Request Deletion');
     expect(element.textContent).toContain('This action cannot be undone.');
   });
 
@@ -84,5 +84,7 @@ describe('DangerZoneCardComponent', () => {
     hostFixture.detectChanges();
 
     expect(element.querySelector('.danger-zone-card__notice')).not.toBeNull();
+    expect(element.textContent).toContain('Your deletion request has already been sent.');
+    expect(getDeleteButton().disabled).toBe(true);
   });
 });

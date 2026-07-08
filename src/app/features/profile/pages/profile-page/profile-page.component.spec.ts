@@ -1,23 +1,25 @@
 import { computed, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
 
 import { PageTitleService } from '../../../../core/page-title/page-title.service';
-import { ConfirmationDialogService } from '../../../../shared/services/confirmation-dialog.service';
-import { LanguageService } from '../../../../shared/services/language.service';
 import { TRANSLATIONS } from '../../../../shared/constants/translations.constant';
+import { LanguageService } from '../../../../shared/services/language.service';
 import { LanguageCode } from '../../../../shared/types/language-code.type';
 import { ProfileFacade } from '../../facades/profile.facade';
+import { ProfilePreferences } from '../../models/profile-preferences.model';
 import { ProfileSecurity } from '../../models/profile-security.model';
 import { ProfileUser } from '../../models/profile-user.model';
-import { ProfilePreferences } from '../../models/profile-preferences.model';
 import { ProfilePageComponent } from './profile-page.component';
 
-const buildLanguageServiceMock = (lang: LanguageCode = 'en') => ({
-  selectedLanguage: signal(lang),
-  translation: computed(() => TRANSLATIONS[lang]),
-  setLanguage: jest.fn(),
-});
+const buildLanguageServiceMock = (lang: LanguageCode = 'en') => {
+  const selectedLanguage = signal<LanguageCode>(lang);
+
+  return {
+    selectedLanguage,
+    translation: computed(() => TRANSLATIONS[selectedLanguage()]),
+    setLanguage: jest.fn(),
+  };
+};
 
 const USER: ProfileUser = {
   id: 'user-id',
@@ -31,10 +33,15 @@ const USER: ProfileUser = {
 };
 
 const PREFERENCES: ProfilePreferences = {
+  preferredLanguage: 'pt',
   temperatureUnit: 'celsius',
   concentrationUnit: 'mgL',
-  defaultAquariumId: null,
   emailAlertsEnabled: true,
+  phAlertsEnabled: true,
+  temperatureAlertsEnabled: true,
+  ammoniaAlertsEnabled: true,
+  nitriteAlertsEnabled: true,
+  nitrateAlertsEnabled: true,
 };
 
 const SECURITY: ProfileSecurity = {
@@ -45,6 +52,7 @@ const SECURITY: ProfileSecurity = {
 describe('ProfilePageComponent', () => {
   let fixture: ComponentFixture<ProfilePageComponent>;
   let element: HTMLElement;
+  let languageService: ReturnType<typeof buildLanguageServiceMock>;
   let facade: {
     user: ReturnType<typeof signal<ProfileUser | null>>;
     preferences: ReturnType<typeof signal<ProfilePreferences | null>>;
@@ -60,19 +68,18 @@ describe('ProfilePageComponent', () => {
     preferencesSaveSuccess: ReturnType<typeof signal<boolean>>;
     preferencesSaveError: ReturnType<typeof signal<string | null>>;
     passwordChangeUnavailable: ReturnType<typeof signal<boolean>>;
-    deleteAccountUnavailable: ReturnType<typeof signal<boolean>>;
+    deleteAccountRequestPending: ReturnType<typeof signal<boolean>>;
     loadProfile: jest.Mock;
     saveProfile: jest.Mock;
     requestAvatarChange: jest.Mock;
     savePreferences: jest.Mock;
     requestPasswordChange: jest.Mock;
-    confirmDeleteAccount: jest.Mock;
+    requestDeleteAccount: jest.Mock;
   };
   let pageTitleService: { set: jest.Mock };
-  let confirmationDialogService: { confirm: jest.Mock };
 
-  function createFixture() {
-    facade = {
+  function createFacade() {
+    return {
       user: signal<ProfileUser | null>(null),
       preferences: signal<ProfilePreferences | null>(null),
       security: signal(SECURITY),
@@ -87,25 +94,27 @@ describe('ProfilePageComponent', () => {
       preferencesSaveSuccess: signal(false),
       preferencesSaveError: signal(null),
       passwordChangeUnavailable: signal(false),
-      deleteAccountUnavailable: signal(false),
+      deleteAccountRequestPending: signal(false),
       loadProfile: jest.fn(),
       saveProfile: jest.fn(),
       requestAvatarChange: jest.fn(),
       savePreferences: jest.fn(),
       requestPasswordChange: jest.fn(),
-      confirmDeleteAccount: jest.fn(),
+      requestDeleteAccount: jest.fn(),
     };
+  }
 
+  function createFixture(lang: LanguageCode = 'en') {
+    facade = createFacade();
     pageTitleService = { set: jest.fn() };
-    confirmationDialogService = { confirm: jest.fn().mockReturnValue(of(true)) };
+    languageService = buildLanguageServiceMock(lang);
 
     TestBed.configureTestingModule({
       imports: [ProfilePageComponent],
       providers: [
         { provide: ProfileFacade, useValue: facade },
         { provide: PageTitleService, useValue: pageTitleService },
-        { provide: ConfirmationDialogService, useValue: confirmationDialogService },
-        { provide: LanguageService, useValue: buildLanguageServiceMock() },
+        { provide: LanguageService, useValue: languageService },
       ],
     });
 
@@ -122,6 +131,18 @@ describe('ProfilePageComponent', () => {
       'Manage your account settings and preferences',
     );
     expect(facade.loadProfile).toHaveBeenCalled();
+  });
+
+  it('should update the page title when the language changes', () => {
+    pageTitleService.set.mockClear();
+
+    languageService.selectedLanguage.set('pt');
+    fixture.detectChanges();
+
+    expect(pageTitleService.set).toHaveBeenCalledWith(
+      'Meu Perfil',
+      'Gerencie as configurações e preferências da sua conta',
+    );
   });
 
   it('should show a loading state while the user is not loaded', () => {
@@ -183,70 +204,21 @@ describe('ProfilePageComponent', () => {
       expect(facade.requestPasswordChange).toHaveBeenCalled();
     });
 
-    it('should open a confirmation dialog and only call confirmDeleteAccount when confirmed', () => {
+    it('should delegate deleteAccountRequested events to the facade', () => {
       fixture.componentInstance['onDeleteAccountRequested']();
 
-      expect(confirmationDialogService.confirm).toHaveBeenCalledWith(
-        expect.objectContaining({ tone: 'danger', confirmWord: 'DELETE' }),
-      );
-      expect(facade.confirmDeleteAccount).toHaveBeenCalled();
-    });
-
-    it('should not call confirmDeleteAccount when the dialog is cancelled', () => {
-      confirmationDialogService.confirm.mockReturnValue(of(false));
-
-      fixture.componentInstance['onDeleteAccountRequested']();
-
-      expect(facade.confirmDeleteAccount).not.toHaveBeenCalled();
+      expect(facade.requestDeleteAccount).toHaveBeenCalled();
     });
   });
 
   it('should set the page title using the current language translation', () => {
     TestBed.resetTestingModule();
-
-    facade = {
-      user: signal<ProfileUser | null>(null),
-      preferences: signal<ProfilePreferences | null>(null),
-      security: signal(SECURITY),
-      aquariumOptions: signal([]),
-      savingProfile: signal(false),
-      profileSaveSuccess: signal(false),
-      profileSaveError: signal(null),
-      avatarPreviewUrl: signal(null),
-      avatarUploading: signal(false),
-      avatarUploadError: signal(false),
-      savingPreferences: signal(false),
-      preferencesSaveSuccess: signal(false),
-      preferencesSaveError: signal(null),
-      passwordChangeUnavailable: signal(false),
-      deleteAccountUnavailable: signal(false),
-      loadProfile: jest.fn(),
-      saveProfile: jest.fn(),
-      requestAvatarChange: jest.fn(),
-      savePreferences: jest.fn(),
-      requestPasswordChange: jest.fn(),
-      confirmDeleteAccount: jest.fn(),
-    };
-    pageTitleService = { set: jest.fn() };
-    confirmationDialogService = { confirm: jest.fn().mockReturnValue(of(true)) };
-
-    TestBed.configureTestingModule({
-      imports: [ProfilePageComponent],
-      providers: [
-        { provide: ProfileFacade, useValue: facade },
-        { provide: PageTitleService, useValue: pageTitleService },
-        { provide: ConfirmationDialogService, useValue: confirmationDialogService },
-        { provide: LanguageService, useValue: buildLanguageServiceMock('pt') },
-      ],
-    });
-
-    const ptFixture = TestBed.createComponent(ProfilePageComponent);
-    ptFixture.detectChanges();
+    createFixture('pt');
 
     expect(pageTitleService.set).toHaveBeenCalledWith(
       'Meu Perfil',
       'Gerencie as configurações e preferências da sua conta',
     );
-    expect(ptFixture.nativeElement.textContent).toContain('Carregando perfil...');
+    expect(fixture.nativeElement.textContent).toContain('Carregando perfil...');
   });
 });

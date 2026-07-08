@@ -19,7 +19,7 @@
 
     @if (unavailable()) {
       <p class="danger-zone-card__notice" role="status">
-        {{ t().deleteAccountUnavailable }}
+        {{ t().deleteAccountRequestPending }}
       </p>
     }
   </div>
@@ -30,9 +30,10 @@
     type="button"
     color="error"
     class="danger-zone-card__delete-btn"
+    [disabled]="unavailable()"
     (click)="requestDeleteAccount()"
   >
     <span class="material-icons-outlined" aria-hidden="true">warning</span>
-    {{ t().deleteAccountLabel }}
+    {{ t().deleteAccountRequestLabel }}
   </button>
 </aq-settings-card>
