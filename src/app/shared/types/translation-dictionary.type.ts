@@ -204,8 +204,36 @@ export interface TranslationDictionary {
   readonly profileLastLogin: string;
 
   // Profile — preferences card
+  readonly changePasswordModalTitle: string;
+  readonly changePasswordModalSubtitle: string;
+  readonly changePasswordCurrentPasswordLabel: string;
+  readonly changePasswordCurrentPasswordPlaceholder: string;
+  readonly changePasswordNewPasswordLabel: string;
+  readonly changePasswordNewPasswordPlaceholder: string;
+  readonly changePasswordConfirmNewPasswordLabel: string;
+  readonly changePasswordConfirmNewPasswordPlaceholder: string;
+  readonly changePasswordRequirementsTitle: string;
+  readonly changePasswordRequirementMinLength: string;
+  readonly changePasswordRequirementUppercase: string;
+  readonly changePasswordRequirementNumber: string;
+  readonly changePasswordRequirementSpecial: string;
+  readonly changePasswordUpdateLabel: string;
+  readonly changePasswordUpdatingLabel: string;
+  readonly changePasswordSuccessMessage: string;
+  readonly changePasswordErrorMessage: string;
+  readonly changePasswordCurrentPasswordIncorrect: string;
+  readonly changePasswordNewPasswordDifferent: string;
+  readonly changePasswordRequirementsError: string;
+  readonly changePasswordShowCurrentPassword: string;
+  readonly changePasswordHideCurrentPassword: string;
+  readonly changePasswordShowNewPassword: string;
+  readonly changePasswordHideNewPassword: string;
+  readonly changePasswordShowConfirmPassword: string;
+  readonly changePasswordHideConfirmPassword: string;
   readonly preferencesTitle: string;
   readonly preferencesSubtitle: string;
+  readonly preferencesLanguageLabel: string;
+  readonly preferencesLanguageHint: string;
   readonly preferencesUnitsGroup: string;
   readonly preferencesTemperatureLabel: string;
   readonly preferencesTemperatureHint: string;
@@ -218,15 +246,35 @@ export interface TranslationDictionary {
   readonly preferencesNotificationsGroup: string;
   readonly preferencesEmailAlertsLabel: string;
   readonly preferencesEmailAlertsHint: string;
+  readonly preferencesPhAlertsLabel: string;
+  readonly preferencesPhAlertsHint: string;
+  readonly preferencesTemperatureAlertsLabel: string;
+  readonly preferencesTemperatureAlertsHint: string;
+  readonly preferencesAmmoniaAlertsLabel: string;
+  readonly preferencesAmmoniaAlertsHint: string;
+  readonly preferencesNitriteAlertsLabel: string;
+  readonly preferencesNitriteAlertsHint: string;
+  readonly preferencesNitrateAlertsLabel: string;
+  readonly preferencesNitrateAlertsHint: string;
   readonly profileSavePreferences: string;
 
   // Profile — danger zone card
   readonly dangerZoneTitle: string;
   readonly dangerZoneSubtitle: string;
   readonly deleteAccountLabel: string;
+  readonly deleteAccountRequestLabel: string;
   readonly deleteAccountMessage: string;
   readonly deleteAccountWarning: string;
-  readonly deleteAccountUnavailable: string;
+  readonly deleteAccountRequestPending: string;
   readonly deleteAccountConfirmWord: string;
   readonly deleteAccountConfirmWordLabel: string;
+  readonly deleteAccountRequestModalTitle: string;
+  readonly deleteAccountRequestModalSubtitle: string;
+  readonly deleteAccountRequestReasonLabel: string;
+  readonly deleteAccountRequestReasonPlaceholder: string;
+  readonly deleteAccountRequestReasonHint: string;
+  readonly deleteAccountRequestSubmitLabel: string;
+  readonly deleteAccountRequestSubmittingLabel: string;
+  readonly deleteAccountRequestSuccessMessage: string;
+  readonly deleteAccountRequestErrorMessage: string;
 }

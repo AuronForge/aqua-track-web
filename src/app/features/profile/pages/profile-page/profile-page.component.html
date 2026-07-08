@@ -30,7 +30,7 @@
         />
 
         <app-danger-zone-card
-          [unavailable]="facade.deleteAccountUnavailable()"
+          [unavailable]="facade.deleteAccountRequestPending()"
           (deleteAccountRequested)="onDeleteAccountRequested()"
         />
       </div>

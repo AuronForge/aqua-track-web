@@ -4,6 +4,26 @@
   [subtitle]="t().preferencesSubtitle"
 >
   <div class="preferences-card__group">
+    <div class="preferences-card__item">
+      <div class="preferences-card__item-copy">
+        <span class="material-icons-outlined preferences-card__item-icon" aria-hidden="true"
+          >language</span
+        >
+        <div>
+          <p class="preferences-card__item-title">{{ t().preferencesLanguageLabel }}</p>
+          <p class="preferences-card__item-subtitle">{{ t().preferencesLanguageHint }}</p>
+        </div>
+      </div>
+      <aq-segmented-control
+        [options]="languageOptions"
+        [value]="form.controls.preferredLanguage.value"
+        [ariaLabel]="t().preferencesLanguageLabel"
+        (valueChange)="onPreferredLanguageChange($event)"
+      />
+    </div>
+  </div>
+
+  <div class="preferences-card__group">
     <h3 class="preferences-card__group-title">{{ t().preferencesUnitsGroup }}</h3>
 
     <div class="preferences-card__item">
@@ -44,28 +64,6 @@
   </div>
 
   <div class="preferences-card__group">
-    <h3 class="preferences-card__group-title">{{ t().preferencesDefaultSettingsGroup }}</h3>
-
-    <div class="preferences-card__item">
-      <div class="preferences-card__item-copy">
-        <span class="material-icons-outlined preferences-card__item-icon" aria-hidden="true"
-          >waves</span
-        >
-        <div>
-          <p class="preferences-card__item-title">{{ t().preferencesDefaultAquariumLabel }}</p>
-          <p class="preferences-card__item-subtitle">{{ t().preferencesDefaultAquariumHint }}</p>
-        </div>
-      </div>
-      <aq-input-select
-        [options]="aquariumOptions()"
-        [selectedOption]="selectedAquariumOption()"
-        [placeholder]="t().preferencesSelectAquariumPlaceholder"
-        (selectionChange)="onDefaultAquariumChange($event)"
-      />
-    </div>
-  </div>
-
-  <div class="preferences-card__group">
     <h3 class="preferences-card__group-title">{{ t().preferencesNotificationsGroup }}</h3>
 
     <div class="preferences-card__item">
@@ -81,7 +79,92 @@
       <aq-switch
         [checked]="form.controls.emailAlertsEnabled.value"
         [ariaLabel]="t().preferencesEmailAlertsLabel"
-        (checkedChange)="onEmailAlertsChange($event)"
+        (checkedChange)="onAlertToggleChange('emailAlertsEnabled', $event)"
+      />
+    </div>
+
+    <div class="preferences-card__item">
+      <div class="preferences-card__item-copy">
+        <span class="material-icons-outlined preferences-card__item-icon" aria-hidden="true"
+          >science</span
+        >
+        <div>
+          <p class="preferences-card__item-title">{{ t().preferencesPhAlertsLabel }}</p>
+          <p class="preferences-card__item-subtitle">{{ t().preferencesPhAlertsHint }}</p>
+        </div>
+      </div>
+      <aq-switch
+        [checked]="form.controls.phAlertsEnabled.value"
+        [ariaLabel]="t().preferencesPhAlertsLabel"
+        (checkedChange)="onAlertToggleChange('phAlertsEnabled', $event)"
+      />
+    </div>
+
+    <div class="preferences-card__item">
+      <div class="preferences-card__item-copy">
+        <span class="material-icons-outlined preferences-card__item-icon" aria-hidden="true"
+          >device_thermostat</span
+        >
+        <div>
+          <p class="preferences-card__item-title">{{ t().preferencesTemperatureAlertsLabel }}</p>
+          <p class="preferences-card__item-subtitle">{{ t().preferencesTemperatureAlertsHint }}</p>
+        </div>
+      </div>
+      <aq-switch
+        [checked]="form.controls.temperatureAlertsEnabled.value"
+        [ariaLabel]="t().preferencesTemperatureAlertsLabel"
+        (checkedChange)="onAlertToggleChange('temperatureAlertsEnabled', $event)"
+      />
+    </div>
+
+    <div class="preferences-card__item">
+      <div class="preferences-card__item-copy">
+        <span class="material-icons-outlined preferences-card__item-icon" aria-hidden="true"
+          >warning</span
+        >
+        <div>
+          <p class="preferences-card__item-title">{{ t().preferencesAmmoniaAlertsLabel }}</p>
+          <p class="preferences-card__item-subtitle">{{ t().preferencesAmmoniaAlertsHint }}</p>
+        </div>
+      </div>
+      <aq-switch
+        [checked]="form.controls.ammoniaAlertsEnabled.value"
+        [ariaLabel]="t().preferencesAmmoniaAlertsLabel"
+        (checkedChange)="onAlertToggleChange('ammoniaAlertsEnabled', $event)"
+      />
+    </div>
+
+    <div class="preferences-card__item">
+      <div class="preferences-card__item-copy">
+        <span class="material-icons-outlined preferences-card__item-icon" aria-hidden="true"
+          >warning_amber</span
+        >
+        <div>
+          <p class="preferences-card__item-title">{{ t().preferencesNitriteAlertsLabel }}</p>
+          <p class="preferences-card__item-subtitle">{{ t().preferencesNitriteAlertsHint }}</p>
+        </div>
+      </div>
+      <aq-switch
+        [checked]="form.controls.nitriteAlertsEnabled.value"
+        [ariaLabel]="t().preferencesNitriteAlertsLabel"
+        (checkedChange)="onAlertToggleChange('nitriteAlertsEnabled', $event)"
+      />
+    </div>
+
+    <div class="preferences-card__item">
+      <div class="preferences-card__item-copy">
+        <span class="material-icons-outlined preferences-card__item-icon" aria-hidden="true"
+          >priority_high</span
+        >
+        <div>
+          <p class="preferences-card__item-title">{{ t().preferencesNitrateAlertsLabel }}</p>
+          <p class="preferences-card__item-subtitle">{{ t().preferencesNitrateAlertsHint }}</p>
+        </div>
+      </div>
+      <aq-switch
+        [checked]="form.controls.nitrateAlertsEnabled.value"
+        [ariaLabel]="t().preferencesNitrateAlertsLabel"
+        (checkedChange)="onAlertToggleChange('nitrateAlertsEnabled', $event)"
       />
     </div>
   </div>

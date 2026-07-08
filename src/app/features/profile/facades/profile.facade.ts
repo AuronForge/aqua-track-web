@@ -1,13 +1,21 @@
-import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
+﻿import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Observable, map, tap } from 'rxjs';
 
+import { ChangePasswordRequestDto } from '../../../core/users/models/change-password-request.dto';
+import { RequestAccountDeletionDto } from '../../../core/users/models/request-account-deletion.dto';
 import { UserService } from '../../../core/users/services/user.service';
+import { LANGUAGE_API_LOCALE_MAP } from '../../../shared/constants/language-locale.constant';
+import { ModalService } from '../../../shared/services/modal.service';
 import { FeedbackMessageService } from '../../../shared/services/feedback-message.service';
 import { LanguageService } from '../../../shared/services/language.service';
+import { ChangePasswordModalComponent } from '../components/change-password-modal/change-password-modal.component';
+import { DeleteAccountRequestModalComponent } from '../components/delete-account-request-modal/delete-account-request-modal.component';
 import { ProfileMapper } from '../mappers/profile.mapper';
 import { MOCK_AQUARIUM_OPTIONS, MOCK_PROFILE_SECURITY } from '../mocks/profile.mock';
 import { ProfileInformationFormValue } from '../models/profile-information-form-value.model';
 import { ProfilePreferencesFormValue } from '../models/profile-preferences-form-value.model';
+import { ProfileSecurity } from '../models/profile-security.model';
 
 @Injectable()
 export class ProfileFacade {
@@ -16,6 +24,7 @@ export class ProfileFacade {
   private readonly destroyRef = inject(DestroyRef);
   private readonly feedbackMessageService = inject(FeedbackMessageService);
   private readonly languageService = inject(LanguageService);
+  private readonly modalService = inject(ModalService);
 
   private readonly currentUser = this.userService.currentUser;
   private readonly t = this.languageService.translation;
@@ -32,7 +41,18 @@ export class ProfileFacade {
     return dto ? this.mapper.mapUserToProfilePreferences(dto) : null;
   });
 
-  readonly security = signal(MOCK_PROFILE_SECURITY).asReadonly();
+  private readonly _securityOverride = signal<string | null>(null);
+  readonly security = computed<ProfileSecurity>(() => {
+    const dto = this.currentUser();
+
+    return {
+      passwordLastChangedAt:
+        this._securityOverride() ??
+        dto?.passwordChangedAt ??
+        MOCK_PROFILE_SECURITY.passwordLastChangedAt,
+      lastLoginAt: MOCK_PROFILE_SECURITY.lastLoginAt,
+    };
+  });
   readonly aquariumOptions = signal(MOCK_AQUARIUM_OPTIONS).asReadonly();
 
   private readonly _savingProfile = signal(false);
@@ -55,13 +75,15 @@ export class ProfileFacade {
   private readonly _avatarUploading = signal(false);
   private readonly _avatarUploadError = signal(false);
   private readonly _passwordChangeUnavailable = signal(false);
-  private readonly _deleteAccountUnavailable = signal(false);
-
   readonly avatarPreviewUrl = this._avatarPreviewUrl.asReadonly();
   readonly avatarUploading = this._avatarUploading.asReadonly();
   readonly avatarUploadError = this._avatarUploadError.asReadonly();
   readonly passwordChangeUnavailable = this._passwordChangeUnavailable.asReadonly();
-  readonly deleteAccountUnavailable = this._deleteAccountUnavailable.asReadonly();
+  readonly deleteAccountRequestPending = computed(() => {
+    const user = this.currentUser();
+
+    return Boolean(user?.accountDeletionRequestedAt) || user?.status === 'INACTIVE';
+  });
 
   loadProfile(): void {
     if (this.currentUser()) return;
@@ -110,17 +132,23 @@ export class ProfileFacade {
     this._preferencesSaveSuccess.set(false);
 
     this.userService
-      .updatePreferences(this.mapper.mapPreferencesFormToRequest(value))
+      .updatePreferences(
+        this.mapper.mapPreferencesFormToRequest(
+          value,
+          LANGUAGE_API_LOCALE_MAP[value.preferredLanguage],
+        ),
+      )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this._savingPreferences.set(false);
           this._preferencesSaveSuccess.set(true);
+          this.languageService.setLanguage(value.preferredLanguage);
         },
         error: () => {
           this._savingPreferences.set(false);
           this._preferencesSaveError.set(
-            'NÃ£o foi possÃ­vel salvar as preferÃªncias. Tente novamente.',
+            'Não foi possível salvar as preferências. Tente novamente.',
           );
         },
       });
@@ -164,10 +192,55 @@ export class ProfileFacade {
   }
 
   requestPasswordChange(): void {
-    this._passwordChangeUnavailable.set(true);
+    const currentUser = this.currentUser();
+
+    if (!currentUser?.email || !currentUser.name || !currentUser.birthDate) {
+      this.feedbackMessageService.showError(this.t().changePasswordErrorMessage, {
+        hasIcon: true,
+        horizontalPosition: 'top',
+        verticalPosition: 'end',
+      });
+      return;
+    }
+
+    this.modalService.open({
+      size: 'medium',
+      closeOnBackdropClick: false,
+      closeOnEscape: true,
+      contentComponent: ChangePasswordModalComponent,
+      contentComponentInputs: {
+        userIdentity: {
+          email: currentUser.email,
+          name: currentUser.name,
+          birthDate: currentUser.birthDate,
+        },
+        submitChangePassword: this.submitPasswordChange,
+      },
+    });
   }
 
-  confirmDeleteAccount(): void {
-    this._deleteAccountUnavailable.set(true);
+  requestDeleteAccount(): void {
+    if (this.deleteAccountRequestPending()) return;
+
+    this.modalService.open({
+      size: 'medium',
+      closeOnBackdropClick: false,
+      closeOnEscape: true,
+      contentComponent: DeleteAccountRequestModalComponent,
+      contentComponentInputs: {
+        submitDeleteAccountRequest: this.submitDeleteAccountRequest,
+      },
+    });
   }
+
+  private readonly submitPasswordChange = (payload: ChangePasswordRequestDto): Observable<void> =>
+    this.userService.changePassword(payload).pipe(
+      tap(() => {
+        this._securityOverride.set(new Date().toISOString());
+      }),
+    );
+
+  private readonly submitDeleteAccountRequest = (
+    payload: RequestAccountDeletionDto,
+  ): Observable<void> => this.userService.requestAccountDeletion(payload).pipe(map(() => void 0));
 }

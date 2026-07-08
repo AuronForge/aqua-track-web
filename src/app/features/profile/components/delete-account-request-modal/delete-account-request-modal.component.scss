@@ -1,0 +1,133 @@
+.delete-account-request-modal {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.delete-account-request-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border, #d7e1ee);
+}
+
+.delete-account-request-modal__header-copy {
+  display: flex;
+  gap: 0.875rem;
+  align-items: flex-start;
+}
+
+.delete-account-request-modal__icon {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-error, #d64545) 10%, white);
+  color: var(--color-error, #d64545);
+}
+
+.delete-account-request-modal__icon .material-icons-outlined {
+  font-size: 1.375rem;
+}
+
+.delete-account-request-modal__heading {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.delete-account-request-modal__title {
+  margin: 0;
+  font-size: 2rem;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--color-text-primary, #24334b);
+}
+
+.delete-account-request-modal__subtitle {
+  margin: 0;
+  color: var(--color-text-secondary, #667894);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.delete-account-request-modal__close-button {
+  flex-shrink: 0;
+}
+
+.delete-account-request-modal__form {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.delete-account-request-modal__field {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.delete-account-request-modal__label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #24334b);
+}
+
+.delete-account-request-modal__textarea {
+  width: 100%;
+  min-height: 8rem;
+  resize: vertical;
+  border-radius: 1.25rem;
+  border: 1px solid var(--color-border, #d7e1ee);
+  padding: 1rem 1.125rem;
+  font: inherit;
+  color: var(--color-text-primary, #24334b);
+  background: var(--color-surface, #fff);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.delete-account-request-modal__textarea:focus-visible {
+  outline: none;
+  border-color: var(--color-primary, #0b5470);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary, #0b5470) 16%, transparent);
+}
+
+.delete-account-request-modal__textarea:disabled {
+  background: var(--color-surface-muted, #f6f8fb);
+  cursor: not-allowed;
+}
+
+.delete-account-request-modal__hint {
+  margin: 0;
+  color: var(--color-text-secondary, #667894);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.delete-account-request-modal__submit-error {
+  margin: 0;
+  color: var(--color-error, #d64545);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.delete-account-request-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+@media (width <= 640px) {
+  .delete-account-request-modal__title {
+    font-size: 1.75rem;
+  }
+
+  .delete-account-request-modal__footer {
+    flex-direction: column-reverse;
+  }
+
+  .delete-account-request-modal__footer button[aqButton] {
+    width: 100%;
+  }
+}

@@ -1,0 +1,78 @@
+<div class="delete-account-request-modal">
+  <header class="delete-account-request-modal__header">
+    <div class="delete-account-request-modal__header-copy">
+      <div class="delete-account-request-modal__icon" aria-hidden="true">
+        <span class="material-icons-outlined">warning</span>
+      </div>
+
+      <div class="delete-account-request-modal__heading">
+        <h2 class="delete-account-request-modal__title">
+          {{ t().deleteAccountRequestModalTitle }}
+        </h2>
+        <p class="delete-account-request-modal__subtitle">
+          {{ t().deleteAccountRequestModalSubtitle }}
+        </p>
+      </div>
+    </div>
+
+    <button
+      aqButton
+      type="button"
+      variant="icon"
+      color="tertiary"
+      class="delete-account-request-modal__close-button"
+      [attr.aria-label]="t().modalCloseLabel"
+      (click)="close('close-button')"
+    >
+      <span class="material-icons-outlined" aria-hidden="true">close</span>
+    </button>
+  </header>
+
+  <form class="delete-account-request-modal__form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="delete-account-request-modal__field">
+      <label class="delete-account-request-modal__label" for="delete-account-request-reason">
+        {{ t().deleteAccountRequestReasonLabel }}
+      </label>
+
+      <textarea
+        #reasonInput
+        id="delete-account-request-reason"
+        class="delete-account-request-modal__textarea"
+        formControlName="reason"
+        rows="5"
+        [placeholder]="t().deleteAccountRequestReasonPlaceholder"
+        [attr.aria-describedby]="'delete-account-request-reason-hint'"
+      ></textarea>
+
+      <p id="delete-account-request-reason-hint" class="delete-account-request-modal__hint">
+        {{ t().deleteAccountRequestReasonHint }}
+      </p>
+    </div>
+
+    @if (submissionError()) {
+      <p class="delete-account-request-modal__submit-error" role="alert">{{ submissionError() }}</p>
+    }
+
+    <footer class="delete-account-request-modal__footer">
+      <button
+        aqButton
+        type="button"
+        variant="stroked"
+        color="tertiary"
+        [disabled]="isSubmitting()"
+        (click)="close('cancel')"
+      >
+        {{ t().cancelLabel }}
+      </button>
+
+      <button aqButton type="submit" color="error" [disabled]="isSubmitting()">
+        <span class="material-icons-outlined" aria-hidden="true">warning</span>
+        {{
+          isSubmitting()
+            ? t().deleteAccountRequestSubmittingLabel
+            : t().deleteAccountRequestSubmitLabel
+        }}
+      </button>
+    </footer>
+  </form>
+</div>

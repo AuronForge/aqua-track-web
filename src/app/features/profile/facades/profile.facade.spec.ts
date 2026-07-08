@@ -6,6 +6,9 @@ import { UserApiDto } from '../../../core/users/models/user-api.dto';
 import { UserService } from '../../../core/users/services/user.service';
 import { FeedbackMessageService } from '../../../shared/services/feedback-message.service';
 import { LanguageService } from '../../../shared/services/language.service';
+import { ModalService } from '../../../shared/services/modal.service';
+import { ChangePasswordModalComponent } from '../components/change-password-modal/change-password-modal.component';
+import { DeleteAccountRequestModalComponent } from '../components/delete-account-request-modal/delete-account-request-modal.component';
 import { ProfileMapper } from '../mappers/profile.mapper';
 import { ProfileFacade } from './profile.facade';
 
@@ -16,9 +19,15 @@ const mockUser: UserApiDto = {
   phone: null,
   birthDate: '1990-05-12',
   avatarUrl: null,
+  passwordChangedAt: '2026-06-02T12:00:00.000Z',
+  lastLoginAt: '2026-07-07T23:25:28.149Z',
   role: 'USER',
   plan: 'FREE',
   status: 'ACTIVE',
+  accountDeletionRequestedAt: null,
+  accountDeletionReason: null,
+  accountDeletionConfirmedAt: null,
+  accountDeletionConfirmedBy: null,
   createdAt: '2024-01-15T00:00:00.000Z',
   updatedAt: '2024-01-15T00:00:00.000Z',
   deletedAt: null,
@@ -29,7 +38,7 @@ const mockUser: UserApiDto = {
     timezone: 'America/Sao_Paulo',
     theme: 'system',
     temperatureUnit: 'CELSIUS',
-    measurementUnit: 'MG_L',
+    concentrationUnit: 'MG_L',
     notificationsEnabled: true,
     phAlertEnabled: true,
     temperatureAlertEnabled: true,
@@ -49,10 +58,15 @@ describe('ProfileFacade', () => {
     updateProfile: jest.Mock;
     updatePreferences: jest.Mock;
     updateAvatar: jest.Mock;
+    changePassword: jest.Mock;
+    requestAccountDeletion: jest.Mock;
   };
   let feedbackMessageService: {
     showSuccess: jest.Mock;
     showError: jest.Mock;
+  };
+  let modalService: {
+    open: jest.Mock;
   };
 
   beforeEach(() => {
@@ -62,10 +76,15 @@ describe('ProfileFacade', () => {
       updateProfile: jest.fn().mockReturnValue(of(mockUser)),
       updatePreferences: jest.fn().mockReturnValue(of(mockUser)),
       updateAvatar: jest.fn().mockReturnValue(of(mockUser)),
+      changePassword: jest.fn().mockReturnValue(of(void 0)),
+      requestAccountDeletion: jest.fn().mockReturnValue(of(mockUser)),
     };
     feedbackMessageService = {
       showSuccess: jest.fn(),
       showError: jest.fn(),
+    };
+    modalService = {
+      open: jest.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -75,6 +94,7 @@ describe('ProfileFacade', () => {
         LanguageService,
         { provide: UserService, useValue: userService },
         { provide: FeedbackMessageService, useValue: feedbackMessageService },
+        { provide: ModalService, useValue: modalService },
       ],
     });
 
@@ -100,6 +120,7 @@ describe('ProfileFacade', () => {
     });
 
     it('should expose mocked security info and aquarium options', () => {
+      expect(facade.security().passwordLastChangedAt).toBeTruthy();
       expect(facade.security().lastLoginAt).toBeTruthy();
       expect(facade.aquariumOptions().length).toBeGreaterThan(0);
     });
@@ -111,6 +132,7 @@ describe('ProfileFacade', () => {
       expect(facade.savingPreferences()).toBe(false);
       expect(facade.preferencesSaveError()).toBeNull();
       expect(facade.preferencesSaveSuccess()).toBe(false);
+      expect(facade.deleteAccountRequestPending()).toBe(false);
     });
   });
 
@@ -145,6 +167,8 @@ describe('ProfileFacade', () => {
       expect(facade.preferences()).toEqual(
         expect.objectContaining({ temperatureUnit: 'celsius', concentrationUnit: 'mgL' }),
       );
+      expect(facade.preferences()?.preferredLanguage).toBe('pt');
+      expect(facade.security().passwordLastChangedAt).toBe('2026-06-02T12:00:00.000Z');
       expect(facade.userLoaded()).toBe(true);
     });
   });
@@ -197,29 +221,48 @@ describe('ProfileFacade', () => {
 
   describe('savePreferences', () => {
     it('should map the form value and call updatePreferences', () => {
+      const setLanguageSpy = jest.spyOn(TestBed.inject(LanguageService), 'setLanguage');
+
       facade.savePreferences({
+        preferredLanguage: 'en',
         temperatureUnit: 'fahrenheit',
         concentrationUnit: 'ppm',
-        defaultAquariumId: 'aquarium-1',
         emailAlertsEnabled: false,
+        phAlertsEnabled: true,
+        temperatureAlertsEnabled: false,
+        ammoniaAlertsEnabled: true,
+        nitriteAlertsEnabled: false,
+        nitrateAlertsEnabled: true,
       });
 
       expect(userService.updatePreferences).toHaveBeenCalledWith({
-        temperatureUnit: 'FAHRENHEIT',
-        measurementUnit: 'PPM',
+        language: 'en-US',
+        temperatureUnit: 'fahrenheit',
+        concentrationUnit: 'ppm',
         notificationsEnabled: false,
+        phAlertEnabled: true,
+        temperatureAlertEnabled: false,
+        ammoniaAlertEnabled: true,
+        nitriteAlertEnabled: false,
+        nitrateAlertEnabled: true,
       });
       expect(facade.preferencesSaveSuccess()).toBe(true);
+      expect(setLanguageSpy).toHaveBeenCalledWith('en');
     });
 
     it('should flag an error when updatePreferences fails', () => {
       userService.updatePreferences.mockReturnValue(throwError(() => new Error('network error')));
 
       facade.savePreferences({
+        preferredLanguage: 'pt',
         temperatureUnit: 'celsius',
         concentrationUnit: 'mgL',
-        defaultAquariumId: null,
         emailAlertsEnabled: true,
+        phAlertsEnabled: true,
+        temperatureAlertsEnabled: true,
+        ammoniaAlertsEnabled: true,
+        nitriteAlertsEnabled: true,
+        nitrateAlertsEnabled: true,
       });
 
       expect(facade.savingPreferences()).toBe(false);
@@ -228,20 +271,136 @@ describe('ProfileFacade', () => {
   });
 
   describe('auxiliary actions', () => {
-    it('requestPasswordChange should only flag unavailable, without calling any service', () => {
+    it('requestPasswordChange should open the change-password modal', () => {
+      userService.currentUser.set(mockUser);
+
       facade.requestPasswordChange();
 
-      expect(facade.passwordChangeUnavailable()).toBe(true);
-      expect(userService.updateProfile).not.toHaveBeenCalled();
-      expect(userService.updatePreferences).not.toHaveBeenCalled();
+      expect(modalService.open).toHaveBeenCalledWith(
+        expect.objectContaining({
+          closeOnBackdropClick: false,
+          closeOnEscape: true,
+          size: 'medium',
+          contentComponent: ChangePasswordModalComponent,
+          contentComponentInputs: expect.objectContaining({
+            userIdentity: {
+              email: 'john@example.com',
+              name: 'John Doe',
+              birthDate: '1990-05-12',
+            },
+            submitChangePassword: expect.any(Function),
+          }),
+        }),
+      );
     });
 
-    it('confirmDeleteAccount should only flag unavailable, without calling any service', () => {
-      facade.confirmDeleteAccount();
+    it('requestPasswordChange should pass a submit handler that updates the password date', () => {
+      userService.currentUser.set(mockUser);
 
-      expect(facade.deleteAccountUnavailable()).toBe(true);
-      expect(userService.updateProfile).not.toHaveBeenCalled();
-      expect(userService.updatePreferences).not.toHaveBeenCalled();
+      modalService.open.mockImplementation((config) => {
+        config.contentComponentInputs
+          .submitChangePassword({
+            email: 'john@example.com',
+            name: 'John Doe',
+            birthDate: '1990-05-12',
+            currentPassword: 'Current@123',
+            newPassword: 'NewPassword@123',
+          })
+          .subscribe();
+      });
+
+      const previousDate = facade.security().passwordLastChangedAt;
+      facade.requestPasswordChange();
+
+      expect(userService.changePassword).toHaveBeenCalledWith({
+        email: 'john@example.com',
+        name: 'John Doe',
+        birthDate: '1990-05-12',
+        currentPassword: 'Current@123',
+        newPassword: 'NewPassword@123',
+      });
+      expect(facade.security().passwordLastChangedAt).not.toBe(previousDate);
+    });
+
+    it('requestPasswordChange should show an error and not open the modal when current user identity is unavailable', () => {
+      userService.currentUser.set(null);
+
+      facade.requestPasswordChange();
+
+      expect(modalService.open).not.toHaveBeenCalled();
+      expect(feedbackMessageService.showError).toHaveBeenCalledWith(
+        "We couldn't update your password right now. Please try again.",
+        { hasIcon: true, horizontalPosition: 'top', verticalPosition: 'end' },
+      );
+      expect(userService.changePassword).not.toHaveBeenCalled();
+    });
+
+    it('requestDeleteAccount should open the deletion request modal', () => {
+      facade.requestDeleteAccount();
+
+      expect(modalService.open).toHaveBeenCalledWith(
+        expect.objectContaining({
+          closeOnBackdropClick: false,
+          closeOnEscape: true,
+          size: 'medium',
+          contentComponent: DeleteAccountRequestModalComponent,
+          contentComponentInputs: expect.objectContaining({
+            submitDeleteAccountRequest: expect.any(Function),
+          }),
+        }),
+      );
+    });
+
+    it('requestDeleteAccount should pass a submit handler that sends the request and reflects the pending state from the returned user', () => {
+      const deletionRequestedUser: UserApiDto = {
+        ...mockUser,
+        status: 'INACTIVE',
+        accountDeletionRequestedAt: '2026-07-07T23:25:47.101Z',
+        accountDeletionReason: 'No longer needed',
+      };
+      userService.requestAccountDeletion.mockImplementation(() => {
+        userService.currentUser.set(deletionRequestedUser);
+        return of(deletionRequestedUser);
+      });
+
+      modalService.open.mockImplementation((config) => {
+        config.contentComponentInputs
+          .submitDeleteAccountRequest({
+            reason: 'No longer needed',
+          })
+          .subscribe();
+      });
+
+      facade.requestDeleteAccount();
+
+      expect(userService.requestAccountDeletion).toHaveBeenCalledWith({
+        reason: 'No longer needed',
+      });
+      expect(facade.deleteAccountRequestPending()).toBe(true);
+    });
+
+    it('deleteAccountRequestPending should be true when the loaded user already has a deletion request', () => {
+      userService.currentUser.set({
+        ...mockUser,
+        status: 'INACTIVE',
+        accountDeletionRequestedAt: '2026-07-07T23:25:47.101Z',
+        accountDeletionReason: 'No longer needed',
+      });
+
+      expect(facade.deleteAccountRequestPending()).toBe(true);
+    });
+
+    it('requestDeleteAccount should not open a new modal when the request is already pending', () => {
+      userService.currentUser.set({
+        ...mockUser,
+        status: 'INACTIVE',
+        accountDeletionRequestedAt: '2026-07-07T23:25:47.101Z',
+        accountDeletionReason: null,
+      });
+
+      facade.requestDeleteAccount();
+
+      expect(modalService.open).not.toHaveBeenCalled();
     });
 
     it('requestAvatarChange should upload the avatar and clear the preview on success', () => {
@@ -256,7 +415,7 @@ describe('ProfileFacade', () => {
       expect(facade.avatarUploading()).toBe(false);
       expect(facade.avatarUploadError()).toBe(false);
       expect(feedbackMessageService.showSuccess).toHaveBeenCalledWith(
-        'Avatar atualizado com sucesso.',
+        'Avatar updated successfully.',
         { hasIcon: true, horizontalPosition: 'top', verticalPosition: 'end' },
       );
       expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:preview-url');
@@ -274,7 +433,7 @@ describe('ProfileFacade', () => {
       expect(facade.avatarUploadError()).toBe(true);
       expect(facade.avatarPreviewUrl()).toBeNull();
       expect(feedbackMessageService.showError).toHaveBeenCalledWith(
-        'Não foi possível atualizar o avatar. Tente novamente.',
+        'Could not update avatar. Please try again.',
         { hasIcon: true, horizontalPosition: 'top', verticalPosition: 'end' },
       );
       expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:preview-url');
