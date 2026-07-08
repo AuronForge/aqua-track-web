@@ -5,4 +5,6 @@ export interface NavMenuItem {
   route: string;
   exact?: boolean;
   roles?: string[];
+  allowedPlans?: string[];
+  displayRoute?: boolean;
 }

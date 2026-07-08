@@ -21,11 +21,12 @@ const MOCK_ITEMS: NavMenuItem[] = [
 @Component({
   standalone: true,
   imports: [NavMenuComponent],
-  template: `<app-nav-menu [items]="items()" [userRoles]="userRoles()" />`,
+  template: `<app-nav-menu [items]="items()" [userRoles]="userRoles()" [userPlan]="userPlan()" />`,
 })
 class TestHostComponent {
   readonly items = signal<NavMenuItem[]>(MOCK_ITEMS);
   readonly userRoles = signal<string[]>([]);
+  readonly userPlan = signal<string | null>('FREE');
 }
 
 describe('NavMenuComponent', () => {
@@ -214,5 +215,53 @@ describe('NavMenuComponent', () => {
     getToggleButton().click();
     hostFixture.detectChanges();
     expect(getToggleButton().getAttribute('aria-label')).toBe('Expand');
+  });
+
+  it('should hide items when displayRoute is false', () => {
+    hostFixture.componentInstance.items.set([
+      { id: 'ready', label: 'Ready', icon: 'done', route: '/ready', displayRoute: true },
+      { id: 'draft', label: 'Draft', icon: 'draft', route: '/draft', displayRoute: false },
+    ]);
+    hostFixture.detectChanges();
+
+    const links = getLinks();
+    expect(links.length).toBe(1);
+    expect(links[0].textContent).toContain('Ready');
+  });
+
+  it('should show plan-restricted items when user plan matches', () => {
+    hostFixture.componentInstance.items.set([
+      { id: 'free', label: 'Free', icon: 'eco', route: '/free' },
+      {
+        id: 'pro',
+        label: 'Pro',
+        icon: 'bolt',
+        route: '/pro',
+        allowedPlans: ['FREE', 'PREMIUM'],
+      },
+    ]);
+    hostFixture.componentInstance.userPlan.set('FREE');
+    hostFixture.detectChanges();
+
+    expect(getLinks().length).toBe(2);
+  });
+
+  it('should hide plan-restricted items when user plan does not match', () => {
+    hostFixture.componentInstance.items.set([
+      { id: 'free', label: 'Free', icon: 'eco', route: '/free' },
+      {
+        id: 'pro',
+        label: 'Pro',
+        icon: 'bolt',
+        route: '/pro',
+        allowedPlans: ['PREMIUM'],
+      },
+    ]);
+    hostFixture.componentInstance.userPlan.set('FREE');
+    hostFixture.detectChanges();
+
+    const links = getLinks();
+    expect(links.length).toBe(1);
+    expect(links[0].textContent).toContain('Free');
   });
 });

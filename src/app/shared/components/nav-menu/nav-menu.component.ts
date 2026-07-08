@@ -14,6 +14,7 @@ import { NavMenuItem } from './nav-menu-item.model';
 export class NavMenuComponent {
   readonly items = input.required<NavMenuItem[]>();
   readonly userRoles = input<string[]>([]);
+  readonly userPlan = input<string | null | undefined>(null);
   readonly collapseLabel = input<string>('Collapse');
   readonly expandLabel = input<string>('Expand');
   readonly homeAriaLabel = input<string>('Go to home page');
@@ -22,9 +23,18 @@ export class NavMenuComponent {
 
   protected readonly visibleItems = computed(() => {
     const roles = this.userRoles();
+    const plan = this.userPlan();
+
     return this.items().filter((item) => {
-      if (!item.roles || item.roles.length === 0) return true;
-      return item.roles.some((role) => roles.includes(role));
+      if (item.displayRoute === false) return false;
+
+      const hasRoleAccess =
+        !item.roles || item.roles.length === 0 || item.roles.some((role) => roles.includes(role));
+
+      if (!hasRoleAccess) return false;
+
+      if (!item.allowedPlans || item.allowedPlans.length === 0) return true;
+      return !!plan && item.allowedPlans.includes(plan);
     });
   });
 

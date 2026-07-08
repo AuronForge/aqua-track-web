@@ -37,12 +37,15 @@ export class AuthenticatedLayoutComponent {
   protected readonly userInitials = computed(() => buildInitials(this.currentUser()?.name));
   protected readonly userAvatarUrl = computed(() => this.currentUser()?.avatarUrl ?? null);
   protected readonly userPlan = computed(() => this.currentUser()?.plan ?? '');
+  protected readonly userRoles = computed(() => {
+    const role = this.currentUser()?.role;
+    return role ? [role] : [];
+  });
 
   protected readonly userMenuItems = computed<DropdownMenuItem[]>(() => {
     const t = this.t();
     return [
       { id: 'profile', label: t.userMenuProfile, icon: 'person' },
-      { id: 'help', label: t.userMenuHelp, icon: 'help_outline' },
       {
         id: 'logout',
         label: t.userMenuLogout,
@@ -62,19 +65,57 @@ export class AuthenticatedLayoutComponent {
         icon: 'space_dashboard',
         route: '/home',
         exact: true,
+        displayRoute: true,
       },
-      { id: 'aquariums', label: t.navAquariums, icon: 'water_drop', route: '/aquariums' },
-      { id: 'measurements', label: t.navMeasurements, icon: 'show_chart', route: '/measurements' },
-      { id: 'alerts', label: t.navAlerts, icon: 'notifications', route: '/alerts' },
-      { id: 'aquatic-life', label: t.navAquaticLife, icon: 'pets', route: '/aquatic-life' },
-      { id: 'products', label: t.navProducts, icon: 'inventory_2', route: '/products' },
+      {
+        id: 'aquariums',
+        label: t.navAquariums,
+        icon: 'water_drop',
+        route: '/aquariums',
+        displayRoute: false,
+      },
+      {
+        id: 'measurements',
+        label: t.navMeasurements,
+        icon: 'show_chart',
+        route: '/measurements',
+        displayRoute: false,
+      },
+      {
+        id: 'alerts',
+        label: t.navAlerts,
+        icon: 'notifications',
+        route: '/alerts',
+        displayRoute: false,
+      },
+      {
+        id: 'aquatic-life',
+        label: t.navAquaticLife,
+        icon: 'pets',
+        route: '/aquatic-life',
+        displayRoute: false,
+      },
+      {
+        id: 'products',
+        label: t.navProducts,
+        icon: 'inventory_2',
+        route: '/products',
+        displayRoute: false,
+      },
       {
         id: 'dosage-calculator',
         label: t.navDosageCalculator,
         icon: 'calculate',
         route: '/dosage-calculator',
+        displayRoute: false,
       },
-      { id: 'settings', label: t.navSettings, icon: 'settings', route: '/settings' },
+      {
+        id: 'settings',
+        label: t.navSettings,
+        icon: 'settings',
+        route: '/settings',
+        displayRoute: false,
+      },
     ];
   });
 
