@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, finalize, map, shareReplay, tap } from 'rxjs';
 
 import { ChangePasswordRequestDto } from '../models/change-password-request.dto';
 import { RequestAccountDeletionDto } from '../models/request-account-deletion.dto';
@@ -17,16 +17,27 @@ export class UserService {
   private readonly userApiService = inject(UserApiService);
   private readonly languageService = inject(LanguageService);
   private readonly _currentUser = signal<UserApiDto | null>(null);
+  private currentUserRequest$: Observable<UserApiDto> | null = null;
 
   readonly currentUser = this._currentUser.asReadonly();
 
   loadCurrentUser(): Observable<UserApiDto> {
-    return this.userApiService.getMe().pipe(
+    if (this.currentUserRequest$) {
+      return this.currentUserRequest$;
+    }
+
+    this.currentUserRequest$ = this.userApiService.getMe().pipe(
       tap((user) => {
         this._currentUser.set(user);
         this.syncLanguageFromPreferences(user.preferences);
       }),
+      finalize(() => {
+        this.currentUserRequest$ = null;
+      }),
+      shareReplay({ bufferSize: 1, refCount: true }),
     );
+
+    return this.currentUserRequest$;
   }
 
   updateProfile(payload: UpdateUserProfileRequestDto): Observable<UserApiDto> {

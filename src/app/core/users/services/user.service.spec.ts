@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 
 import { LanguageService } from '../../../shared/services/language.service';
 import { UserApiService } from './user-api.service';
@@ -93,6 +93,26 @@ describe('UserService', () => {
 
     expect(service.currentUser()).toEqual(mockUser);
     expect(languageService.setLanguage).toHaveBeenCalledWith('pt');
+  });
+
+  it('should share the same in-flight current user request across subscribers', () => {
+    const pendingRequest$ = new Subject<UserApiDto>();
+    getMeSpy.mockReturnValue(pendingRequest$.asObservable());
+
+    const firstResults: UserApiDto[] = [];
+    const secondResults: UserApiDto[] = [];
+
+    service.loadCurrentUser().subscribe((user) => firstResults.push(user));
+    service.loadCurrentUser().subscribe((user) => secondResults.push(user));
+
+    expect(getMeSpy).toHaveBeenCalledTimes(1);
+
+    pendingRequest$.next(mockUser);
+    pendingRequest$.complete();
+
+    expect(firstResults).toEqual([mockUser]);
+    expect(secondResults).toEqual([mockUser]);
+    expect(service.currentUser()).toEqual(mockUser);
   });
 
   it('should clear the current user', () => {
