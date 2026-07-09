@@ -178,6 +178,13 @@ export const routes: Routes = [
             (m) => m.InputSelectShowcaseComponent,
           ),
       },
+      {
+        path: 'text-formfield',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/formfields/text-formfield-showcase.component').then(
+            (m) => m.TextFormfieldShowcaseComponent,
+          ),
+      },
     ],
   },
   {

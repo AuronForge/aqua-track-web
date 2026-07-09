@@ -49,6 +49,12 @@ export class ComponentsShowcaseComponent {
       icon: 'unfold_more',
       route: '/components/input-select',
     },
+    {
+      id: 'text-formfield',
+      label: 'Text Formfield',
+      icon: 'text_fields',
+      route: '/components/text-formfield',
+    },
     { id: 'menu', label: 'Nav Menu', icon: 'menu', route: '/components/menu' },
     { id: 'modal', label: 'Modal', icon: 'open_in_new', route: '/components/modal' },
     { id: 'toolbar', label: 'Toolbar', icon: 'web_asset', route: '/components/toolbar' },
