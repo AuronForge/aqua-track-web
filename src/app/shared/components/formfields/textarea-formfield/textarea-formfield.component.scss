@@ -1,0 +1,109 @@
+@use '../../../theme' as theme;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.textarea-formfield {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-2xs;
+  width: 100%;
+}
+
+.textarea-formfield__label {
+  color: theme.$aq-color-text-primary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-medium;
+}
+
+.textarea-formfield__control {
+  display: flex;
+  min-height: 7.5rem;
+  padding: theme.$aq-space-sm theme.$aq-space-md;
+  border: 1.5px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-md;
+  background: theme.$aq-color-surface;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background-color 150ms ease;
+}
+
+.textarea-formfield__input {
+  width: 100%;
+  min-height: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: theme.$aq-color-text-primary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-lg;
+  line-height: theme.$aq-line-height-base;
+  outline: none;
+
+  &::placeholder {
+    color: theme.$aq-color-text-secondary;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.textarea-formfield__hint,
+.textarea-formfield__error {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  line-height: theme.$aq-line-height-base;
+}
+
+.textarea-formfield__hint {
+  color: theme.$aq-color-text-secondary;
+}
+
+.textarea-formfield__error {
+  color: theme.$aq-color-error;
+}
+
+.textarea-formfield--focused .textarea-formfield__control {
+  @include theme.aq-focus-ring;
+}
+
+.textarea-formfield--filled .textarea-formfield__control {
+  border-color: theme.$aq-color-border-strong;
+}
+
+.textarea-formfield--invalid .textarea-formfield__control {
+  border-color: theme.$aq-color-error;
+  box-shadow: 0 0 0 4px rgb(217 48 37 / 10%);
+}
+
+.textarea-formfield--disabled .textarea-formfield__control {
+  background: theme.$aq-color-surface-muted;
+  border-color: theme.$aq-color-border;
+  opacity: 0.72;
+}
+
+.textarea-formfield--readonly .textarea-formfield__control {
+  background: rgb(223 231 239 / 24%);
+}
+
+.textarea-formfield:not(.textarea-formfield--disabled, .textarea-formfield--invalid)
+  .textarea-formfield__control:hover {
+  border-color: theme.$aq-color-border-strong;
+}
+
+@media (width <= 640px) {
+  .textarea-formfield__control {
+    min-height: 7rem;
+    padding-inline: theme.$aq-space-sm;
+  }
+
+  .textarea-formfield__input {
+    font-size: theme.$aq-font-size-md;
+  }
+}

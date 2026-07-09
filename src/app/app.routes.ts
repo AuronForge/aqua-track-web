@@ -185,6 +185,13 @@ export const routes: Routes = [
             (m) => m.TextFormfieldShowcaseComponent,
           ),
       },
+      {
+        path: 'textarea-formfield',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/formfields/textarea-formfield-showcase.component').then(
+            (m) => m.TextareaFormfieldShowcaseComponent,
+          ),
+      },
     ],
   },
   {
