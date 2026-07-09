@@ -1,0 +1,168 @@
+@use '../../../theme' as theme;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.text-formfield {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-2xs;
+  width: 100%;
+}
+
+.text-formfield__label {
+  color: theme.$aq-color-text-primary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-medium;
+}
+
+.text-formfield__control {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-xs;
+  min-height: 3rem;
+  padding: 0 theme.$aq-space-md;
+  border: 1.5px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-md;
+  background: theme.$aq-color-surface;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background-color 150ms ease;
+}
+
+.text-formfield__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  padding: theme.$aq-space-sm 0;
+  background: transparent;
+  color: theme.$aq-color-text-primary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-lg;
+  line-height: theme.$aq-line-height-base;
+  outline: none;
+
+  &::placeholder {
+    color: theme.$aq-color-text-secondary;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.text-formfield__prefix,
+.text-formfield__suffix {
+  display: inline-flex;
+  align-items: center;
+  gap: theme.$aq-space-xs;
+  flex-shrink: 0;
+}
+
+.text-formfield__text {
+  color: theme.$aq-color-text-secondary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-md;
+  line-height: theme.$aq-line-height-base;
+}
+
+.text-formfield__icon,
+.text-formfield__action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: theme.$aq-color-text-secondary;
+  font-size: theme.$aq-size-icon-md;
+  line-height: 1;
+  user-select: none;
+}
+
+.text-formfield__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: theme.$aq-radius-pill;
+  background: transparent;
+  color: theme.$aq-color-text-secondary;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &:not(:disabled):hover {
+    background: theme.$aq-color-surface-muted;
+    color: theme.$aq-color-primary;
+  }
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+  }
+}
+
+.text-formfield__hint,
+.text-formfield__error {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  line-height: theme.$aq-line-height-base;
+}
+
+.text-formfield__hint {
+  color: theme.$aq-color-text-secondary;
+}
+
+.text-formfield__error {
+  color: theme.$aq-color-error;
+}
+
+.text-formfield--focused .text-formfield__control {
+  @include theme.aq-focus-ring;
+}
+
+.text-formfield--filled .text-formfield__control {
+  border-color: theme.$aq-color-border-strong;
+}
+
+.text-formfield--invalid .text-formfield__control {
+  border-color: theme.$aq-color-error;
+  box-shadow: 0 0 0 4px rgb(217 48 37 / 10%);
+}
+
+.text-formfield--disabled .text-formfield__control {
+  background: theme.$aq-color-surface-muted;
+  border-color: theme.$aq-color-border;
+  opacity: 0.72;
+}
+
+.text-formfield--readonly .text-formfield__control {
+  background: rgb(223 231 239 / 24%);
+}
+
+.text-formfield:not(.text-formfield--disabled, .text-formfield--invalid)
+  .text-formfield__control:hover {
+  border-color: theme.$aq-color-border-strong;
+}
+
+@media (width <= 640px) {
+  .text-formfield__control {
+    min-height: 2.875rem;
+    padding-inline: theme.$aq-space-sm;
+  }
+
+  .text-formfield__input {
+    font-size: theme.$aq-font-size-md;
+  }
+}
