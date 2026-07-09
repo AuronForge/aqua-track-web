@@ -16,6 +16,7 @@ import { AvatarComponent } from '../../../../shared/ui/avatar/avatar.component';
 import { AvatarVariant } from '../../../../shared/ui/avatar/avatar-variant.type';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { DatepickerComponent } from '../../../../shared/components/datepicker/datepicker.component';
+import { TextFormfieldComponent } from '../../../../shared/components/formfields/text-formfield/text-formfield.component';
 import { SettingsCardComponent } from '../../../../shared/components/settings-card/settings-card.component';
 import { LANGUAGE_LOCALE_MAP } from '../../../../shared/constants/language-locale.constant';
 import { LanguageService } from '../../../../shared/services/language.service';
@@ -33,6 +34,7 @@ const MAX_AVATAR_SIZE_BYTES = 5 * 1024 * 1024;
     AvatarComponent,
     ButtonComponent,
     DatepickerComponent,
+    TextFormfieldComponent,
     SettingsCardComponent,
   ],
   templateUrl: './profile-information-card.component.html',
@@ -60,6 +62,17 @@ export class ProfileInformationCardComponent {
   private readonly avatarInput = viewChild.required<ElementRef<HTMLInputElement>>('avatarInput');
 
   protected readonly avatarError = signal<string | null>(null);
+  protected readonly fullNameErrorMessages = computed(() => ({
+    required: this.t().fullNameRequired,
+    minlength: this.t().fullNameRequired,
+  }));
+  protected readonly emailErrorMessages = computed(() => ({
+    required: this.t().emailRequired,
+    email: this.t().emailInvalid,
+  }));
+  protected readonly phoneErrorMessages = computed(() => ({
+    pattern: this.t().profileContactPhoneInvalid,
+  }));
 
   readonly form = new FormGroup({
     fullName: new FormControl('', {

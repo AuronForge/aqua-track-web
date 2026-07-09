@@ -1,5 +1,7 @@
 <div [class]="wrapperClass()">
-  <label class="text-formfield__label" [for]="inputId()">{{ label() }}</label>
+  @if (label()) {
+    <label class="text-formfield__label" [for]="inputId()">{{ label() }}</label>
+  }
 
   <div class="text-formfield__control">
     @if (hasPrefix()) {
@@ -31,6 +33,7 @@
     }
 
     <input
+      #inputElement
       class="text-formfield__input"
       [id]="inputId()"
       [type]="resolvedInputType()"
@@ -92,7 +95,7 @@
     }
   </div>
 
-  @if (showError()) {
+  @if (showError() && !hideErrorMessage()) {
     <p [id]="errorId()" class="text-formfield__error" role="alert">
       {{ resolvedErrorMessage() }}
     </p>

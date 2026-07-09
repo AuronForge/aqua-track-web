@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  ElementRef,
   computed,
   inject,
   input,
@@ -17,6 +16,7 @@ import { Observable } from 'rxjs';
 
 import { ChangePasswordRequestDto } from '../../../../core/users/models/change-password-request.dto';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { TextFormfieldComponent } from '../../../../shared/components/formfields/text-formfield/text-formfield.component';
 import { ModalRef } from '../../../../shared/modal/modal-ref';
 import { FeedbackMessageService } from '../../../../shared/services/feedback-message.service';
 import { LanguageService } from '../../../../shared/services/language.service';
@@ -32,7 +32,7 @@ import {
 @Component({
   selector: 'app-change-password-modal',
   standalone: true,
-  imports: [ReactiveFormsModule, ButtonComponent],
+  imports: [ReactiveFormsModule, ButtonComponent, TextFormfieldComponent],
   templateUrl: './change-password-modal.component.html',
   styleUrl: './change-password-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,14 +48,11 @@ export class ChangePasswordModalComponent implements AfterViewInit {
   readonly userIdentity =
     input.required<Pick<ChangePasswordRequestDto, 'email' | 'name' | 'birthDate'>>();
 
-  private readonly currentPasswordInput =
-    viewChild.required<ElementRef<HTMLInputElement>>('currentPasswordInput');
+  private readonly currentPasswordField =
+    viewChild.required<TextFormfieldComponent>('currentPasswordField');
 
   protected readonly t = this.languageService.translation;
   protected readonly isSubmitting = signal(false);
-  protected readonly currentPasswordHidden = signal(true);
-  protected readonly newPasswordHidden = signal(true);
-  protected readonly confirmPasswordHidden = signal(true);
   protected readonly submissionError = signal<string | null>(null);
   private readonly newPasswordValue = signal('');
 
@@ -85,6 +82,19 @@ export class ChangePasswordModalComponent implements AfterViewInit {
   protected readonly passwordPolicyState = computed(() =>
     getPasswordPolicyState(this.newPasswordValue()),
   );
+  protected readonly currentPasswordErrorMessages = computed(() => ({
+    required: this.t().passwordRequired,
+    incorrectPassword: this.t().changePasswordCurrentPasswordIncorrect,
+  }));
+  protected readonly newPasswordErrorMessages = computed(() => ({
+    required: this.t().passwordRequired,
+    passwordPolicy: this.t().changePasswordRequirementsError,
+    passwordUnchanged: this.t().changePasswordNewPasswordDifferent,
+  }));
+  protected readonly confirmPasswordErrorMessages = computed(() => ({
+    required: this.t().confirmPasswordRequired,
+    passwordsMismatch: this.t().passwordsMismatch,
+  }));
 
   constructor() {
     this.form.controls.currentPassword.valueChanges
@@ -101,21 +111,7 @@ export class ChangePasswordModalComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    queueMicrotask(() => this.currentPasswordInput().nativeElement.focus());
-  }
-
-  protected togglePasswordVisibility(field: 'current' | 'new' | 'confirm'): void {
-    if (field === 'current') {
-      this.currentPasswordHidden.update((value) => !value);
-      return;
-    }
-
-    if (field === 'new') {
-      this.newPasswordHidden.update((value) => !value);
-      return;
-    }
-
-    this.confirmPasswordHidden.update((value) => !value);
+    queueMicrotask(() => this.currentPasswordField().focus());
   }
 
   protected close(reason: 'cancel' | 'close-button'): void {
@@ -221,7 +217,7 @@ export class ChangePasswordModalComponent implements AfterViewInit {
       control.setValue('');
       control.setErrors({ ...(control.errors ?? {}), incorrectPassword: true });
       control.markAsTouched();
-      this.currentPasswordInput().nativeElement.focus();
+      this.currentPasswordField().focus();
       return;
     }
 
@@ -271,9 +267,6 @@ export class ChangePasswordModalComponent implements AfterViewInit {
     this.form.markAsUntouched();
     this.form.enable({ emitEvent: false });
     this.newPasswordValue.set('');
-    this.currentPasswordHidden.set(true);
-    this.newPasswordHidden.set(true);
-    this.confirmPasswordHidden.set(true);
     this.isSubmitting.set(false);
     this.submissionError.set(null);
   }
