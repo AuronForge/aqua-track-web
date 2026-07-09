@@ -16,12 +16,19 @@ import { LANGUAGE_STORAGE_KEY } from '../../../shared/constants/language-storage
 import { LanguageCode } from '../../../shared/types/language-code.type';
 import { TRANSLATIONS } from '../../../shared/constants/translations.constant';
 import { DatepickerComponent } from '../../../shared/components/datepicker/datepicker.component';
+import { TextFormfieldComponent } from '../../../shared/components/formfields/text-formfield/text-formfield.component';
 import { LanguageSwitcherComponent } from '../../../shared/components/language-switcher/language-switcher.component';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, LanguageSwitcherComponent, DatepickerComponent],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    LanguageSwitcherComponent,
+    DatepickerComponent,
+    TextFormfieldComponent,
+  ],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,6 +58,13 @@ export class ForgotPasswordComponent {
   readonly apiError = signal<string | null>(null);
   readonly newPassword = signal<string | null>(null);
   readonly isCopied = signal(false);
+  protected readonly emailErrorMessages = computed(() => ({
+    required: this.translation().emailRequired,
+    email: this.translation().emailInvalid,
+  }));
+  protected readonly usernameErrorMessages = computed(() => ({
+    required: this.translation().fullNameRequired,
+  }));
 
   changeLanguage(language: LanguageCode): void {
     this.selectedLanguage.set(language);
@@ -63,6 +77,11 @@ export class ForgotPasswordComponent {
     if (this.isLoading()) return;
 
     this.forgotPasswordForm.markAllAsTouched();
+    Object.values(this.forgotPasswordForm.controls).forEach((control) => {
+      control.markAsTouched({ onlySelf: true, emitEvent: true });
+      control.markAsDirty({ onlySelf: true, emitEvent: true });
+      control.updateValueAndValidity({ onlySelf: true, emitEvent: true });
+    });
 
     if (this.forgotPasswordForm.invalid) return;
 

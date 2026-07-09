@@ -1,14 +1,24 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { ButtonComponent } from '../button/button.component';
+import { TextFormfieldComponent } from '../formfields/text-formfield/text-formfield.component';
 import { ConfirmationDialogData } from './confirmation-dialog-data.model';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'aq-confirmation-dialog',
   standalone: true,
-  imports: [ButtonComponent],
+  imports: [ReactiveFormsModule, ButtonComponent, TextFormfieldComponent],
   templateUrl: './confirmation-dialog.component.html',
   styleUrl: './confirmation-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,16 +29,20 @@ import { ConfirmationDialogData } from './confirmation-dialog-data.model';
 export class ConfirmationDialogComponent {
   protected readonly data = inject<ConfirmationDialogData>(DIALOG_DATA);
   private readonly dialogRef = inject(DialogRef<boolean>);
+  private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly confirmText = signal('');
+  protected readonly confirmControl = new FormControl('', { nonNullable: true });
+  private readonly confirmText = signal('');
 
   protected readonly isConfirmDisabled = computed(() => {
     const requiredWord = this.data.confirmWord;
     return !!requiredWord && this.confirmText() !== requiredWord;
   });
 
-  protected onConfirmTextInput(event: Event): void {
-    this.confirmText.set((event.target as HTMLInputElement).value);
+  constructor() {
+    this.confirmControl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => this.confirmText.set(value));
   }
 
   protected confirm(): void {

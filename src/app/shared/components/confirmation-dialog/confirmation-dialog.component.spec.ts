@@ -81,7 +81,7 @@ describe('ConfirmationDialogComponent', () => {
     const confirmButton = element.querySelectorAll('button')[1] as HTMLButtonElement;
     expect(confirmButton.disabled).toBe(true);
 
-    const input = element.querySelector('.confirmation-dialog__input') as HTMLInputElement;
+    const input = element.querySelector('.text-formfield__input') as HTMLInputElement;
     input.value = 'DELETE';
     input.dispatchEvent(new Event('input'));
     fixture.detectChanges();
@@ -119,7 +119,7 @@ describe('ConfirmationDialogComponent', () => {
       confirmWordLabel: 'Type DELETE to confirm',
     });
 
-    const input = element.querySelector('.confirmation-dialog__input') as HTMLInputElement;
+    const input = element.querySelector('.text-formfield__input') as HTMLInputElement;
     input.value = 'wrong';
     input.dispatchEvent(new Event('input'));
     fixture.detectChanges();

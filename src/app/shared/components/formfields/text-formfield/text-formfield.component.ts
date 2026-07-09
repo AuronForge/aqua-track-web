@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  ElementRef,
   Injector,
   OnInit,
   computed,
@@ -10,6 +11,7 @@ import {
   input,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
@@ -46,7 +48,7 @@ let nextUniqueId = 0;
   ],
 })
 export class TextFormfieldComponent implements ControlValueAccessor, OnInit {
-  readonly label = input.required<string>();
+  readonly label = input<string>('');
   readonly placeholder = input<string>('');
   readonly hint = input<string>('');
   readonly type = input<FormfieldInputType>('text');
@@ -68,6 +70,7 @@ export class TextFormfieldComponent implements ControlValueAccessor, OnInit {
   readonly suffixIconFamily = input<string>(DEFAULT_ICON_FAMILY);
 
   readonly passwordToggle = input(false);
+  readonly hideErrorMessage = input(false);
   readonly errorMessages = input<FormfieldErrorMessages>({});
   readonly actions = input<FormfieldAction[]>([]);
 
@@ -76,6 +79,7 @@ export class TextFormfieldComponent implements ControlValueAccessor, OnInit {
   private readonly injector = inject(Injector);
   private readonly destroyRef = inject(DestroyRef);
   private ngControl: NgControl | null = null;
+  private readonly inputElement = viewChild.required<ElementRef<HTMLInputElement>>('inputElement');
 
   protected readonly value = signal('');
   protected readonly focused = signal(false);
@@ -249,5 +253,13 @@ export class TextFormfieldComponent implements ControlValueAccessor, OnInit {
 
   protected actionIconClass(iconFamily: string | undefined): string {
     return `text-formfield__action-icon ${iconFamily ?? DEFAULT_ICON_FAMILY}`;
+  }
+
+  focus(): void {
+    if (this.isDisabled()) {
+      return;
+    }
+
+    this.inputElement().nativeElement.focus();
   }
 }
