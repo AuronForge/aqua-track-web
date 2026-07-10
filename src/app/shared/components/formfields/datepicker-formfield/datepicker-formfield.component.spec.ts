@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 
@@ -40,16 +41,24 @@ class TestHostComponent {
 describe('DatepickerFormfieldComponent', () => {
   let fixture: ComponentFixture<DatepickerFormfieldComponent>;
   let component: DatepickerFormfieldComponent;
+  let overlayContainer: OverlayContainer;
+  let overlayContainerElement: HTMLElement;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DatepickerFormfieldComponent],
     }).compileComponents();
 
+    overlayContainer = TestBed.inject(OverlayContainer);
+    overlayContainerElement = overlayContainer.getContainerElement();
     fixture = TestBed.createComponent(DatepickerFormfieldComponent);
     fixture.componentRef.setInput('label', 'Data de nascimento');
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    overlayContainer.ngOnDestroy();
   });
 
   it('should create', () => {
@@ -58,10 +67,14 @@ describe('DatepickerFormfieldComponent', () => {
 
   it('should open and close the panel', () => {
     component['toggle']();
+    fixture.detectChanges();
     expect(component['isOpen']()).toBe(true);
+    expect(overlayContainerElement.querySelector('.datepicker-formfield__panel')).not.toBeNull();
 
     component['toggle']();
+    fixture.detectChanges();
     expect(component['isOpen']()).toBe(false);
+    expect(overlayContainerElement.querySelector('.datepicker-formfield__panel')).toBeNull();
   });
 
   it('should not toggle when disabled', () => {
@@ -123,25 +136,21 @@ describe('DatepickerFormfieldComponent', () => {
     expect(component['selectedDate']()).toBeNull();
   });
 
-  it('should close the panel on outside click', () => {
-    component['toggle']();
+  it('should clear the selected date when writing a non-string value', () => {
+    component.writeValue('2000-06-15');
+    component.writeValue(null);
 
-    const outsideElement = document.createElement('div');
-    document.body.appendChild(outsideElement);
-
-    component.onDocumentClick({ target: outsideElement } as unknown as MouseEvent);
-
-    expect(component['isOpen']()).toBe(false);
-
-    document.body.removeChild(outsideElement);
+    expect(component['selectedDate']()).toBeNull();
   });
 
-  it('should not close the panel on inside click', () => {
+  it('should close the panel on backdrop click', () => {
     component['toggle']();
+    fixture.detectChanges();
+    overlayContainerElement.parentElement
+      ?.querySelector('.cdk-overlay-backdrop')
+      ?.dispatchEvent(new MouseEvent('click'));
 
-    component.onDocumentClick({ target: fixture.nativeElement } as unknown as MouseEvent);
-
-    expect(component['isOpen']()).toBe(true);
+    expect(component['isOpen']()).toBe(false);
   });
 
   it('should close the panel on escape', () => {
@@ -152,6 +161,46 @@ describe('DatepickerFormfieldComponent', () => {
 
     expect(component['isOpen']()).toBe(false);
     expect(component['viewMode']()).toBe('days');
+  });
+
+  it('should prefer opening upwards when there is not enough space below', () => {
+    jest.spyOn(component['elementRef'].nativeElement, 'getBoundingClientRect').mockReturnValue({
+      top: 500,
+      bottom: 560,
+      left: 0,
+      right: 320,
+      width: 320,
+      height: 60,
+      x: 0,
+      y: 500,
+      toJSON: () => ({}),
+    });
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 640 });
+
+    const positions = component['resolveOverlayPositions']();
+
+    expect(positions[0].originY).toBe('top');
+    expect(positions[0].overlayY).toBe('bottom');
+  });
+
+  it('should prefer opening downwards when there is enough space below', () => {
+    jest.spyOn(component['elementRef'].nativeElement, 'getBoundingClientRect').mockReturnValue({
+      top: 120,
+      bottom: 180,
+      left: 0,
+      right: 320,
+      width: 320,
+      height: 60,
+      x: 0,
+      y: 120,
+      toJSON: () => ({}),
+    });
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 900 });
+
+    const positions = component['resolveOverlayPositions']();
+
+    expect(positions[0].originY).toBe('bottom');
+    expect(positions[0].overlayY).toBe('top');
   });
 
   it('should update month and year navigation in all views', () => {

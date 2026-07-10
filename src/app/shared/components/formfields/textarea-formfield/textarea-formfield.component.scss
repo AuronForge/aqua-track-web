@@ -21,6 +21,7 @@
 
 .textarea-formfield__control {
   display: flex;
+  overflow: hidden;
   min-height: 7.5rem;
   padding: theme.$aq-space-sm theme.$aq-space-md;
   border: 1.5px solid theme.$aq-color-border;
@@ -50,6 +51,16 @@
 
   &:disabled {
     cursor: not-allowed;
+  }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    -webkit-text-fill-color: theme.$aq-color-text-primary;
+    caret-color: theme.$aq-color-text-primary;
+    box-shadow: 0 0 0 1000px theme.$aq-color-surface inset;
+    transition: background-color 9999s ease-out;
   }
 }
 

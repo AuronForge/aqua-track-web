@@ -119,11 +119,10 @@
 }
 
 .datepicker-formfield__panel {
-  position: absolute;
-  top: calc(100% + 0.35rem);
-  left: 0;
-  right: 0;
-  z-index: 10;
+  position: static;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
   padding: theme.$aq-space-xs;
   background: theme.$aq-color-surface;
   border: 1px solid theme.$aq-color-border;

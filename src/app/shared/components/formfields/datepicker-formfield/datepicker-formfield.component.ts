@@ -6,14 +6,20 @@ import {
   ElementRef,
   HostListener,
   Injector,
+  OnDestroy,
   OnInit,
+  TemplateRef,
+  ViewContainerRef,
   computed,
   forwardRef,
   inject,
   input,
   signal,
+  viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ConnectedPosition, Overlay, OverlayModule, OverlayRef } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
 
 import { FormfieldErrorMessages } from '../formfield-error-messages.model';
@@ -50,6 +56,7 @@ let nextUniqueId = 0;
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'aq-datepicker-formfield',
   standalone: true,
+  imports: [OverlayModule],
   templateUrl: './datepicker-formfield.component.html',
   styleUrl: './datepicker-formfield.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -61,7 +68,9 @@ let nextUniqueId = 0;
     },
   ],
 })
-export class DatepickerFormfieldComponent implements ControlValueAccessor, OnInit, DoCheck {
+export class DatepickerFormfieldComponent
+  implements ControlValueAccessor, OnInit, OnDestroy, DoCheck
+{
   readonly label = input.required<string>();
   readonly placeholder = input<string>('Selecione uma data');
   readonly hint = input<string>('');
@@ -75,9 +84,14 @@ export class DatepickerFormfieldComponent implements ControlValueAccessor, OnIni
 
   private readonly injector = inject(Injector);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly overlay = inject(Overlay);
+  private readonly viewContainerRef = inject(ViewContainerRef);
   private readonly elementRef = inject(ElementRef<HTMLElement>);
+  private readonly triggerRef = viewChild.required<ElementRef<HTMLButtonElement>>('trigger');
+  private readonly panelTemplate = viewChild.required<TemplateRef<unknown>>('panelTemplate');
 
   private ngControl: NgControl | null = null;
+  private overlayRef: OverlayRef | null = null;
   private lastControlStateSignature = '';
 
   protected readonly isOpen = signal(false);
@@ -239,6 +253,10 @@ export class DatepickerFormfieldComponent implements ControlValueAccessor, OnIni
       .subscribe(() => this.controlStateVersion.update((version) => version + 1));
   }
 
+  ngOnDestroy(): void {
+    this.disposeOverlay(false);
+  }
+
   ngDoCheck(): void {
     const control = this.ngControl?.control;
 
@@ -259,17 +277,18 @@ export class DatepickerFormfieldComponent implements ControlValueAccessor, OnIni
     }
   }
 
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    if (this.isOpen() && !this.elementRef.nativeElement.contains(event.target as Node)) {
-      this.closePanel();
-    }
-  }
-
   @HostListener('keydown.escape')
   onEscape(): void {
     if (this.isOpen()) {
       this.closePanel();
+    }
+  }
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    if (this.isOpen() && this.overlayRef) {
+      this.overlayRef.updatePositionStrategy(this.buildPositionStrategy());
+      this.overlayRef.updatePosition();
     }
   }
 
@@ -333,7 +352,13 @@ export class DatepickerFormfieldComponent implements ControlValueAccessor, OnIni
     }
 
     this.focused.set(true);
-    this.isOpen.update((isOpen) => !isOpen);
+
+    if (this.isOpen()) {
+      this.closePanel();
+      return;
+    }
+
+    this.openPanel();
   }
 
   protected toggleView(): void {
@@ -405,7 +430,67 @@ export class DatepickerFormfieldComponent implements ControlValueAccessor, OnIni
     this.viewMode.set('months');
   }
 
+  private openPanel(): void {
+    this.disposeOverlay(false);
+
+    this.overlayRef = this.overlay.create({
+      positionStrategy: this.buildPositionStrategy(),
+      hasBackdrop: true,
+      backdropClass: 'cdk-overlay-transparent-backdrop',
+      scrollStrategy: this.overlay.scrollStrategies.reposition(),
+      width: this.elementRef.nativeElement.offsetWidth,
+      minWidth: 280,
+    });
+
+    const portal = new TemplatePortal(this.panelTemplate(), this.viewContainerRef);
+    this.overlayRef.attach(portal);
+    this.isOpen.set(true);
+
+    this.overlayRef.backdropClick().subscribe(() => this.closePanel());
+    this.overlayRef.detachments().subscribe(() => {
+      this.overlayRef = null;
+      this.isOpen.set(false);
+    });
+  }
+
+  private buildPositionStrategy() {
+    return this.overlay
+      .position()
+      .flexibleConnectedTo(this.elementRef)
+      .withPositions(this.resolveOverlayPositions())
+      .withFlexibleDimensions(false)
+      .withPush(false)
+      .withViewportMargin(16);
+  }
+
+  private resolveOverlayPositions(): ConnectedPosition[] {
+    const hostRect = this.elementRef.nativeElement.getBoundingClientRect();
+    const viewportPadding = 16;
+    const estimatedPanelHeight = 344;
+    const spaceBelow = window.innerHeight - hostRect.bottom - viewportPadding;
+    const spaceAbove = hostRect.top - viewportPadding;
+    const preferTop = spaceBelow < estimatedPanelHeight && spaceAbove > spaceBelow;
+
+    const bottomPosition: ConnectedPosition = {
+      originX: 'start',
+      originY: 'bottom',
+      overlayX: 'start',
+      overlayY: 'top',
+      offsetY: 6,
+    };
+    const topPosition: ConnectedPosition = {
+      originX: 'start',
+      originY: 'top',
+      overlayX: 'start',
+      overlayY: 'bottom',
+      offsetY: -6,
+    };
+
+    return preferTop ? [topPosition, bottomPosition] : [bottomPosition, topPosition];
+  }
+
   private closePanel(markAsTouched = true): void {
+    this.disposeOverlay(markAsTouched);
     this.isOpen.set(false);
     this.focused.set(false);
     this.viewMode.set('days');
@@ -413,6 +498,19 @@ export class DatepickerFormfieldComponent implements ControlValueAccessor, OnIni
     if (markAsTouched) {
       this.controlStateVersion.update((version) => version + 1);
       this.onTouched();
+    }
+  }
+
+  private disposeOverlay(restoreFocus: boolean): void {
+    if (!this.overlayRef) {
+      return;
+    }
+
+    this.overlayRef.dispose();
+    this.overlayRef = null;
+
+    if (restoreFocus) {
+      this.triggerRef().nativeElement.focus();
     }
   }
 
