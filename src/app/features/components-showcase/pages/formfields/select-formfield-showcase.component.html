@@ -1,0 +1,89 @@
+<section class="showcase__section">
+  <h2 class="showcase__section-title">Select Formfield</h2>
+  <p class="showcase__section-desc">
+    Campo de selecao oficial do AquaTrack para formularios, com label, hint, erro, suporte a selecao
+    simples ou multipla e integracao direta com Reactive Forms.
+  </p>
+
+  <h3 class="showcase__group-title">Como usar</h3>
+  <div class="showcase__usage">
+    <aq-code-block language="typescript" [code]="codeTs" />
+    <aq-code-block language="html" [code]="codeHtml" />
+    <aq-code-block language="html" [code]="multipleCodeHtml" />
+  </div>
+
+  <h3 class="showcase__group-title">Exemplos</h3>
+
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Com hint e icone</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-select-formfield">
+          <aq-select-formfield
+            [formControl]="exampleForm.controls.displayType"
+            label="Exibicao principal"
+            placeholder="Selecione o tipo"
+            hint="Voce pode alterar isso depois nas preferencias do aquario."
+            [options]="aquariumTypeOptions"
+            (selectionChange)="onSelectionChange($event)"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Disabled</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-select-formfield">
+          <aq-select-formfield
+            [formControl]="disabledControl"
+            label="Categoria bloqueada"
+            [options]="aquariumTypeOptions"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Multiplas selecoes</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-select-formfield">
+          <aq-select-formfield
+            [formControl]="exampleForm.controls.faunaProfile"
+            label="Perfis da fauna"
+            placeholder="Selecione um ou mais perfis"
+            hint="O trigger resume a quantidade de itens marcados."
+            [options]="aquariumTypeOptions"
+            [multiple]="true"
+            (selectionChange)="onSelectionChange($event)"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">Validacao com Reactive Forms</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-select-formfield">
+          <aq-select-formfield
+            [formControl]="exampleForm.controls.aquariumType"
+            label="Tipo do aquario"
+            placeholder="Selecione o tipo"
+            hint="Essa informacao ajuda a adaptar sugestoes e parametros."
+            [options]="aquariumTypeOptions"
+            [errorMessages]="{ required: 'Campo obrigatorio.' }"
+            (selectionChange)="onSelectionChange($event)"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (lastSelection()) {
+    <p class="showcase__event-log">
+      Ultimo selecionado: <strong>{{ lastSelection() }}</strong>
+    </p>
+  }
+</section>

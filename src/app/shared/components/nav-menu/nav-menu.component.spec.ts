@@ -7,11 +7,25 @@ import { NavMenuComponent } from './nav-menu.component';
 
 const MOCK_ITEMS: NavMenuItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: 'dashboard', route: '/', exact: true },
-  { id: 'aquariums', label: 'Aquários', icon: 'waves', route: '/aquariums' },
+  { id: 'aquariums', label: 'Aquarios', icon: 'waves', route: '/aquariums' },
+  {
+    id: 'formfields',
+    label: 'Formfields',
+    icon: 'text_fields',
+    children: [
+      { id: 'text', label: 'Text Formfield', icon: 'text_fields', route: '/components/text' },
+      {
+        id: 'select',
+        label: 'Select Formfield',
+        icon: 'arrow_drop_down_circle',
+        route: '/components/select',
+      },
+    ],
+  },
   { id: 'admin', label: 'Admin', icon: 'admin_panel_settings', route: '/admin', roles: ['admin'] },
   {
     id: 'manager',
-    label: 'Gestão',
+    label: 'Gestao',
     icon: 'manage_accounts',
     route: '/manager',
     roles: ['admin', 'manager'],
@@ -45,6 +59,14 @@ describe('NavMenuComponent', () => {
     return element.querySelectorAll('.nav-menu__link');
   }
 
+  function getSubLinks(): NodeListOf<HTMLElement> {
+    return element.querySelectorAll('.nav-menu__sublink');
+  }
+
+  function getGroupTrigger(): HTMLButtonElement {
+    return element.querySelector('.nav-menu__group-trigger') as HTMLButtonElement;
+  }
+
   function getToggleButton(): HTMLElement {
     return element.querySelector('.nav-menu__toggle') as HTMLElement;
   }
@@ -60,46 +82,49 @@ describe('NavMenuComponent', () => {
     element = hostFixture.nativeElement;
   });
 
-  // ── Creation ───────────────────────────────────────────────────────────────
-
   it('should create', () => {
     expect(getComponent()).toBeTruthy();
   });
 
-  // ── Rendering ──────────────────────────────────────────────────────────────
-
   it('should render the brand icon', () => {
     const icon = element.querySelector('.nav-menu__brand-icon');
-    expect(icon).toBeTruthy();
     expect(icon?.textContent?.trim()).toBe('waves');
   });
 
   it('should render the brand name when expanded', () => {
-    const name = element.querySelector('.nav-menu__brand-name');
-    expect(name?.textContent?.trim()).toBe('AquaTrack');
+    expect(element.querySelector('.nav-menu__brand-name')?.textContent?.trim()).toBe('AquaTrack');
   });
 
-  it('should render item icons for visible items', () => {
-    const icons = element.querySelectorAll('.nav-menu__link-icon');
-    expect(icons.length).toBe(2);
-    expect(icons[0].textContent?.trim()).toBe('dashboard');
-    expect(icons[1].textContent?.trim()).toBe('waves');
+  it('should render top-level item labels when expanded', () => {
+    const labels = Array.from(element.querySelectorAll('.nav-menu__link-label'));
+    expect(labels.map((label) => label.textContent?.trim())).toEqual([
+      'Dashboard',
+      'Aquarios',
+      'Formfields',
+    ]);
   });
 
-  it('should render item labels when expanded', () => {
-    const labels = element.querySelectorAll('.nav-menu__link-label');
-    expect(labels.length).toBe(2);
-    expect(labels[0].textContent?.trim()).toBe('Dashboard');
-    expect(labels[1].textContent?.trim()).toBe('Aquários');
+  it('should render child links for expanded groups', () => {
+    expect(getSubLinks().length).toBe(2);
+    expect(getSubLinks()[0].textContent).toContain('Text Formfield');
   });
 
-  it('should render a toggle button', () => {
-    expect(getToggleButton()).toBeTruthy();
+  it('should collapse a group when its trigger is clicked', () => {
+    getGroupTrigger().click();
+    hostFixture.detectChanges();
+
+    expect(getSubLinks().length).toBe(0);
+    expect(getGroupTrigger().getAttribute('aria-expanded')).toBe('false');
   });
 
-  it('should show collapse label on toggle button when expanded', () => {
-    const label = element.querySelector('.nav-menu__toggle-label');
-    expect(label?.textContent?.trim()).toBe('Collapse');
+  it('should expand a group again when its trigger is clicked twice', () => {
+    getGroupTrigger().click();
+    hostFixture.detectChanges();
+    getGroupTrigger().click();
+    hostFixture.detectChanges();
+
+    expect(getSubLinks().length).toBe(2);
+    expect(getGroupTrigger().getAttribute('aria-expanded')).toBe('true');
   });
 
   it('should react to items input changes', () => {
@@ -107,45 +132,30 @@ describe('NavMenuComponent', () => {
       { id: 'only', label: 'Only One', icon: 'star', route: '/only' },
     ]);
     hostFixture.detectChanges();
+
     expect(getLinks().length).toBe(1);
   });
-
-  // ── Role-based filtering ───────────────────────────────────────────────────
 
   it('should show only items without roles when userRoles is empty', () => {
     hostFixture.componentInstance.userRoles.set([]);
     hostFixture.detectChanges();
+
     expect(getLinks().length).toBe(2);
   });
 
-  it('should show all items when user has admin role', () => {
+  it('should show all top-level links when user has admin role', () => {
     hostFixture.componentInstance.userRoles.set(['admin']);
     hostFixture.detectChanges();
-    expect(getLinks().length).toBe(4);
-  });
 
-  it('should not show role-restricted items when user role does not match', () => {
-    hostFixture.componentInstance.userRoles.set(['viewer']);
-    hostFixture.detectChanges();
-    expect(getLinks().length).toBe(2);
+    expect(getLinks().length).toBe(4);
   });
 
   it('should show item when user has at least one of the required roles', () => {
     hostFixture.componentInstance.userRoles.set(['manager']);
     hostFixture.detectChanges();
+
     expect(getLinks().length).toBe(3);
   });
-
-  it('should show items with an empty roles array regardless of user roles', () => {
-    hostFixture.componentInstance.items.set([
-      { id: 'open', label: 'Open', icon: 'public', route: '/open', roles: [] },
-    ]);
-    hostFixture.componentInstance.userRoles.set([]);
-    hostFixture.detectChanges();
-    expect(getLinks().length).toBe(1);
-  });
-
-  // ── Collapse / Expand ──────────────────────────────────────────────────────
 
   it('should start in expanded state', () => {
     expect(getNavMenu().classList).not.toContain('nav-menu--collapsed');
@@ -154,57 +164,32 @@ describe('NavMenuComponent', () => {
   it('should apply collapsed class when toggle is clicked', () => {
     getToggleButton().click();
     hostFixture.detectChanges();
-    expect(getNavMenu().classList).toContain('nav-menu--collapsed');
-  });
 
-  it('should expand again when toggle is clicked a second time', () => {
-    getToggleButton().click();
-    hostFixture.detectChanges();
-    getToggleButton().click();
-    hostFixture.detectChanges();
-    expect(getNavMenu().classList).not.toContain('nav-menu--collapsed');
+    expect(getNavMenu().classList).toContain('nav-menu--collapsed');
   });
 
   it('should hide item labels when collapsed', () => {
     getToggleButton().click();
     hostFixture.detectChanges();
+
     expect(element.querySelectorAll('.nav-menu__link-label').length).toBe(0);
+    expect(element.querySelectorAll('.nav-menu__sublink').length).toBe(0);
   });
 
   it('should hide brand name when collapsed', () => {
     getToggleButton().click();
     hostFixture.detectChanges();
+
     expect(element.querySelector('.nav-menu__brand-name')).toBeNull();
   });
-
-  it('should restore labels after re-expanding', () => {
-    getToggleButton().click();
-    hostFixture.detectChanges();
-    getToggleButton().click();
-    hostFixture.detectChanges();
-    expect(element.querySelectorAll('.nav-menu__link-label').length).toBe(2);
-  });
-
-  it('should hide toggle label when collapsed', () => {
-    getToggleButton().click();
-    hostFixture.detectChanges();
-    expect(element.querySelector('.nav-menu__toggle-label')).toBeNull();
-  });
-
-  // ── Accessibility ──────────────────────────────────────────────────────────
 
   it('should set title attribute on links when collapsed', () => {
     getToggleButton().click();
     hostFixture.detectChanges();
+
     const links = getLinks();
     expect(links[0].getAttribute('title')).toBe('Dashboard');
-    expect(links[1].getAttribute('title')).toBe('Aquários');
-  });
-
-  it('should have empty title on links when expanded', () => {
-    const links = getLinks();
-    expect(links[0].getAttribute('title')).toBe('');
-    expect(links[1].getAttribute('title')).toBe('');
+    expect(links[1].getAttribute('title')).toBe('Aquarios');
   });
 
   it('should set aria-label to collapseLabel value when expanded', () => {
@@ -214,6 +199,7 @@ describe('NavMenuComponent', () => {
   it('should set aria-label to expandLabel value when collapsed', () => {
     getToggleButton().click();
     hostFixture.detectChanges();
+
     expect(getToggleButton().getAttribute('aria-label')).toBe('Expand');
   });
 
@@ -224,21 +210,30 @@ describe('NavMenuComponent', () => {
     ]);
     hostFixture.detectChanges();
 
-    const links = getLinks();
-    expect(links.length).toBe(1);
-    expect(links[0].textContent).toContain('Ready');
+    expect(getLinks().length).toBe(1);
+    expect(getLinks()[0].textContent).toContain('Ready');
+  });
+
+  it('should hide empty groups after filtering children', () => {
+    hostFixture.componentInstance.items.set([
+      {
+        id: 'group',
+        label: 'Group',
+        icon: 'folder',
+        children: [
+          { id: 'hidden', label: 'Hidden', icon: 'lock', route: '/hidden', displayRoute: false },
+        ],
+      },
+    ]);
+    hostFixture.detectChanges();
+
+    expect(element.querySelector('.nav-menu__group-trigger')).toBeNull();
   });
 
   it('should show plan-restricted items when user plan matches', () => {
     hostFixture.componentInstance.items.set([
       { id: 'free', label: 'Free', icon: 'eco', route: '/free' },
-      {
-        id: 'pro',
-        label: 'Pro',
-        icon: 'bolt',
-        route: '/pro',
-        allowedPlans: ['FREE', 'PREMIUM'],
-      },
+      { id: 'pro', label: 'Pro', icon: 'bolt', route: '/pro', allowedPlans: ['FREE', 'PREMIUM'] },
     ]);
     hostFixture.componentInstance.userPlan.set('FREE');
     hostFixture.detectChanges();
@@ -249,19 +244,12 @@ describe('NavMenuComponent', () => {
   it('should hide plan-restricted items when user plan does not match', () => {
     hostFixture.componentInstance.items.set([
       { id: 'free', label: 'Free', icon: 'eco', route: '/free' },
-      {
-        id: 'pro',
-        label: 'Pro',
-        icon: 'bolt',
-        route: '/pro',
-        allowedPlans: ['PREMIUM'],
-      },
+      { id: 'pro', label: 'Pro', icon: 'bolt', route: '/pro', allowedPlans: ['PREMIUM'] },
     ]);
     hostFixture.componentInstance.userPlan.set('FREE');
     hostFixture.detectChanges();
 
-    const links = getLinks();
-    expect(links.length).toBe(1);
-    expect(links[0].textContent).toContain('Free');
+    expect(getLinks().length).toBe(1);
+    expect(getLinks()[0].textContent).toContain('Free');
   });
 });

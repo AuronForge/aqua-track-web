@@ -172,17 +172,24 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'input-select',
-        loadComponent: () =>
-          import('./features/components-showcase/pages/select/input-select-showcase.component').then(
-            (m) => m.InputSelectShowcaseComponent,
-          ),
-      },
-      {
         path: 'text-formfield',
         loadComponent: () =>
           import('./features/components-showcase/pages/formfields/text-formfield-showcase.component').then(
             (m) => m.TextFormfieldShowcaseComponent,
+          ),
+      },
+      {
+        path: 'datepicker-formfield',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/formfields/datepicker-formfield-showcase.component').then(
+            (m) => m.DatepickerFormfieldShowcaseComponent,
+          ),
+      },
+      {
+        path: 'select-formfield',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/formfields/select-formfield-showcase.component').then(
+            (m) => m.SelectFormfieldShowcaseComponent,
           ),
       },
       {

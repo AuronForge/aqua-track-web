@@ -1,4 +1,4 @@
-export interface InputSelectOption {
+export interface SelectFormfieldOption {
   id: string;
   title: string;
   subtitle?: string;

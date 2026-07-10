@@ -127,20 +127,14 @@
     </div>
 
     <div class="profile-information-card__field">
-      <label class="profile-information-card__label" for="profile-birthdate">{{
-        t().birthdateLabel
-      }}</label>
-      <app-datepicker
-        inputId="profile-birthdate"
+      <aq-datepicker-formfield
         formControlName="birthDate"
+        id="profile-birthdate"
+        [label]="t().birthdateLabel"
         [locale]="locale()"
-        [hasError]="form.controls.birthDate.invalid && form.controls.birthDate.touched"
+        [required]="true"
+        [errorMessages]="{ required: t().birthdateRequired }"
       />
-      @if (form.controls.birthDate.invalid && form.controls.birthDate.touched) {
-        <span id="profile-birthdate-error" class="profile-information-card__error" role="alert">
-          {{ t().birthdateRequired }}
-        </span>
-      }
     </div>
   </form>
 

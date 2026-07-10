@@ -19,7 +19,7 @@ import { Router, RouterLink } from '@angular/router';
 
 import { AuthApiService } from '../../../core/auth/services/auth-api.service';
 import { AuthService } from '../../../core/auth/services/auth.service';
-import { DatepickerComponent } from '../../../shared/components/datepicker/datepicker.component';
+import { DatepickerFormfieldComponent } from '../../../shared/components/formfields/datepicker-formfield/datepicker-formfield.component';
 import { LanguageSwitcherComponent } from '../../../shared/components/language-switcher/language-switcher.component';
 import { LANGUAGE_STORAGE_KEY } from '../../../shared/constants/language-storage-key.constant';
 import { TRANSLATIONS } from '../../../shared/constants/translations.constant';
@@ -36,7 +36,12 @@ function passwordsMatchValidator(group: AbstractControl): ValidationErrors | nul
 @Component({
   selector: 'app-registration',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, LanguageSwitcherComponent, DatepickerComponent],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    LanguageSwitcherComponent,
+    DatepickerFormfieldComponent,
+  ],
   templateUrl: './registration.component.html',
   styleUrl: './registration.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

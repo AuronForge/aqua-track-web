@@ -1,0 +1,125 @@
+<div [class]="wrapperClass()">
+  <label class="datepicker-formfield__label" [for]="inputId()">{{ label() }}</label>
+
+  <div class="datepicker-formfield__control">
+    <button
+      type="button"
+      class="datepicker-formfield__trigger"
+      [id]="inputId()"
+      [disabled]="isDisabled() || null"
+      [attr.aria-expanded]="isOpen()"
+      [attr.aria-invalid]="showError() ? true : null"
+      [attr.aria-required]="requiredState() ? true : null"
+      [attr.aria-describedby]="describedBy()"
+      aria-haspopup="dialog"
+      (click)="toggle()"
+    >
+      <span
+        class="datepicker-formfield__trigger-text"
+        [class.datepicker-formfield__trigger-text--placeholder]="!displayValue()"
+      >
+        {{ displayValue() || placeholder() }}
+      </span>
+      <span class="datepicker-formfield__trigger-icon material-icons-outlined" aria-hidden="true">
+        calendar_month
+      </span>
+    </button>
+
+    @if (isOpen()) {
+      <div class="datepicker-formfield__panel" role="dialog" aria-modal="true">
+        <div class="datepicker-formfield__nav">
+          <button
+            type="button"
+            class="datepicker-formfield__nav-btn"
+            (click)="prevPage()"
+            aria-label="Periodo anterior"
+          >
+            ‹
+          </button>
+
+          <button type="button" class="datepicker-formfield__nav-label-btn" (click)="toggleView()">
+            {{ navLabel() }}
+            <span
+              class="datepicker-formfield__nav-label-chevron material-icons-outlined"
+              aria-hidden="true"
+            >
+              expand_more
+            </span>
+          </button>
+
+          <button
+            type="button"
+            class="datepicker-formfield__nav-btn"
+            (click)="nextPage()"
+            aria-label="Proximo periodo"
+          >
+            ›
+          </button>
+        </div>
+
+        @if (viewMode() === 'days') {
+          <div class="datepicker-formfield__weekdays">
+            @for (day of weekdays(); track day) {
+              <span class="datepicker-formfield__weekday">{{ day }}</span>
+            }
+          </div>
+
+          <div class="datepicker-formfield__grid">
+            @for (day of calendarDays(); track day.date.getTime()) {
+              <button
+                type="button"
+                class="datepicker-formfield__day"
+                [class.datepicker-formfield__day--other-month]="!day.isCurrentMonth"
+                [class.datepicker-formfield__day--today]="day.isToday"
+                [class.datepicker-formfield__day--selected]="day.isSelected"
+                (click)="selectDay(day)"
+              >
+                {{ day.date.getDate() }}
+              </button>
+            }
+          </div>
+        }
+
+        @if (viewMode() === 'months') {
+          <div class="datepicker-formfield__month-grid">
+            @for (month of monthItems(); track month.index) {
+              <button
+                type="button"
+                class="datepicker-formfield__month-btn"
+                [class.datepicker-formfield__month-btn--current]="month.isCurrent"
+                [class.datepicker-formfield__month-btn--selected]="month.isSelected"
+                (click)="selectMonth(month.index)"
+              >
+                {{ month.label }}
+              </button>
+            }
+          </div>
+        }
+
+        @if (viewMode() === 'years') {
+          <div class="datepicker-formfield__year-grid">
+            @for (year of yearItems(); track year.value) {
+              <button
+                type="button"
+                class="datepicker-formfield__year-btn"
+                [class.datepicker-formfield__year-btn--current]="year.isCurrent"
+                [class.datepicker-formfield__year-btn--selected]="year.isSelected"
+                (click)="selectYear(year.value)"
+              >
+                {{ year.value }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  @if (showError()) {
+    <p [id]="errorId()" class="datepicker-formfield__error" role="alert">
+      {{ resolvedErrorMessage() }}
+    </p>
+  } @else if (hint()) {
+    <p [id]="hintId()" class="datepicker-formfield__hint">{{ hint() }}</p>
+  }
+</div>

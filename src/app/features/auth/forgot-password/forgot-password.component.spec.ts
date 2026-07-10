@@ -345,6 +345,8 @@ describe('ForgotPasswordComponent', () => {
 });
 
 function errorTexts(fixture: ComponentFixture<ForgotPasswordComponent>): string[] {
-  const nodes: NodeListOf<Element> = fixture.nativeElement.querySelectorAll('.login-card__error');
+  const nodes: NodeListOf<Element> = fixture.nativeElement.querySelectorAll(
+    '.login-card__error, .datepicker-formfield__error',
+  );
   return Array.from(nodes).map((el) => el.textContent?.trim() ?? '');
 }

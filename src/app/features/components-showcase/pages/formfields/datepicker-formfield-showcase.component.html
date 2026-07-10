@@ -1,0 +1,56 @@
+<section class="showcase__section">
+  <h2 class="showcase__section-title">Datepicker Formfield</h2>
+  <p class="showcase__section-desc">
+    Campo oficial de data do AquaTrack com label, hint, validacao integrada e navegacao por dias,
+    meses e anos.
+  </p>
+
+  <h3 class="showcase__group-title">Como usar</h3>
+  <div class="showcase__usage">
+    <aq-code-block language="typescript" [code]="codeTs" />
+    <aq-code-block language="html" [code]="codeHtml" />
+  </div>
+
+  <h3 class="showcase__group-title">Exemplos</h3>
+
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Com valor inicial</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-datepicker-formfield">
+          <aq-datepicker-formfield
+            [formControl]="presetDateControl"
+            label="Inicio da ciclagem"
+            hint="Boa para registrar marcos importantes do aquario."
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Disabled</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-datepicker-formfield">
+          <aq-datepicker-formfield [formControl]="disabledControl" label="Ultima manutencao" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">Validacao com Reactive Forms</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-datepicker-formfield">
+          <aq-datepicker-formfield
+            [formControl]="birthDateControl"
+            label="Data de nascimento"
+            hint="Use a mesma data cadastrada na sua conta."
+            [required]="true"
+            [errorMessages]="{ required: 'Campo obrigatorio.' }"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

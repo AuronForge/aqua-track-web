@@ -1,0 +1,320 @@
+import { Component } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+
+import { DatepickerFormfieldComponent } from './datepicker-formfield.component';
+
+interface CalendarDay {
+  date: Date;
+  isCurrentMonth: boolean;
+  isToday: boolean;
+  isSelected: boolean;
+}
+
+@Component({
+  standalone: true,
+  imports: [ReactiveFormsModule, DatepickerFormfieldComponent],
+  template: `
+    <form [formGroup]="form">
+      <aq-datepicker-formfield
+        formControlName="birthDate"
+        label="Data de nascimento"
+        hint="Use a mesma data cadastrada na sua conta."
+        [errorMessages]="{ required: 'Campo obrigatorio.' }"
+      />
+    </form>
+
+    <aq-datepicker-formfield label="Livre" />
+  `,
+})
+class TestHostComponent {
+  readonly form = new FormGroup({
+    birthDate: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+  });
+}
+
+describe('DatepickerFormfieldComponent', () => {
+  let fixture: ComponentFixture<DatepickerFormfieldComponent>;
+  let component: DatepickerFormfieldComponent;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [DatepickerFormfieldComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(DatepickerFormfieldComponent);
+    fixture.componentRef.setInput('label', 'Data de nascimento');
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should open and close the panel', () => {
+    component['toggle']();
+    expect(component['isOpen']()).toBe(true);
+
+    component['toggle']();
+    expect(component['isOpen']()).toBe(false);
+  });
+
+  it('should not toggle when disabled', () => {
+    component.setDisabledState(true);
+
+    component['toggle']();
+
+    expect(component['isOpen']()).toBe(false);
+  });
+
+  it('should cycle between calendar views', () => {
+    expect(component['viewMode']()).toBe('days');
+
+    component['toggleView']();
+    expect(component['viewMode']()).toBe('months');
+
+    component['toggleView']();
+    expect(component['viewMode']()).toBe('years');
+
+    component['toggleView']();
+    expect(component['viewMode']()).toBe('days');
+  });
+
+  it('should emit an ISO value when selecting a day', () => {
+    const onChange = jest.fn();
+    const onTouched = jest.fn();
+    const day: CalendarDay = {
+      date: new Date(2000, 0, 5),
+      isCurrentMonth: true,
+      isToday: false,
+      isSelected: false,
+    };
+
+    component.registerOnChange(onChange);
+    component.registerOnTouched(onTouched);
+
+    component['selectDay'](day);
+
+    expect(onChange).toHaveBeenCalledWith('2000-01-05');
+    expect(onTouched).toHaveBeenCalled();
+    expect(component['selectedDate']()).toEqual(day.date);
+    expect(component['isOpen']()).toBe(false);
+  });
+
+  it('should update the displayed value when writing a date', () => {
+    component.writeValue('2000-06-15');
+
+    expect(component['selectedDate']()?.getFullYear()).toBe(2000);
+    expect(component['selectedDate']()?.getMonth()).toBe(5);
+    expect(component['selectedDate']()?.getDate()).toBe(15);
+    expect(component['viewDate']().getMonth()).toBe(5);
+    expect(component['displayValue']()).toContain('2000');
+  });
+
+  it('should clear the selected date when writing an empty value', () => {
+    component.writeValue('2000-06-15');
+    component.writeValue('');
+
+    expect(component['selectedDate']()).toBeNull();
+  });
+
+  it('should close the panel on outside click', () => {
+    component['toggle']();
+
+    const outsideElement = document.createElement('div');
+    document.body.appendChild(outsideElement);
+
+    component.onDocumentClick({ target: outsideElement } as unknown as MouseEvent);
+
+    expect(component['isOpen']()).toBe(false);
+
+    document.body.removeChild(outsideElement);
+  });
+
+  it('should not close the panel on inside click', () => {
+    component['toggle']();
+
+    component.onDocumentClick({ target: fixture.nativeElement } as unknown as MouseEvent);
+
+    expect(component['isOpen']()).toBe(true);
+  });
+
+  it('should close the panel on escape', () => {
+    component['toggle']();
+    component['toggleView']();
+
+    component.onEscape();
+
+    expect(component['isOpen']()).toBe(false);
+    expect(component['viewMode']()).toBe('days');
+  });
+
+  it('should update month and year navigation in all views', () => {
+    component['viewDate'].set(new Date(2024, 5, 1));
+    component['prevPage']();
+    expect(component['viewDate']().getMonth()).toBe(4);
+
+    component['toggleView']();
+    component['nextPage']();
+    expect(component['viewDate']().getFullYear()).toBe(2025);
+
+    component['toggleView']();
+    component['prevPage']();
+    expect(component['viewDate']().getFullYear()).toBe(2013);
+  });
+
+  it('should select a month and return to days view', () => {
+    component['toggleView']();
+
+    component['selectMonth'](8);
+
+    expect(component['viewDate']().getMonth()).toBe(8);
+    expect(component['viewMode']()).toBe('days');
+  });
+
+  it('should select a year and return to months view', () => {
+    component['toggleView']();
+    component['toggleView']();
+
+    component['selectYear'](2010);
+
+    expect(component['viewDate']().getFullYear()).toBe(2010);
+    expect(component['viewMode']()).toBe('months');
+  });
+
+  it('should move the calendar view when selecting a day from another month', () => {
+    component['viewDate'].set(new Date(2024, 5, 1));
+
+    component['selectDay']({
+      date: new Date(2024, 6, 1),
+      isCurrentMonth: false,
+      isToday: false,
+      isSelected: false,
+    });
+
+    expect(component['viewDate']().getMonth()).toBe(6);
+  });
+
+  it('should compute calendar, month and year helper collections', () => {
+    component.writeValue('2000-06-15');
+    component['viewDate'].set(new Date(2000, 5, 1));
+
+    expect(component['calendarDays']().length % 7).toBe(0);
+    expect(component['calendarDays']().some((day) => day.isSelected)).toBe(true);
+    expect(component['monthItems']()).toHaveLength(12);
+    expect(component['monthItems']().some((month) => month.isSelected)).toBe(true);
+    expect(component['yearItems']()).toHaveLength(12);
+    expect(component['yearItems']().some((year) => year.isSelected)).toBe(true);
+  });
+
+  it('should compute weekday labels and year range label', () => {
+    component['viewDate'].set(new Date(2024, 0, 1));
+    component['toggleView']();
+    component['toggleView']();
+
+    expect(component['weekdays']()).toHaveLength(7);
+    expect(component['yearRangeStart']()).toBe(2016);
+    expect(component['navLabel']()).toBe('2016 - 2027');
+  });
+
+  it('should expose empty error state without NgControl', () => {
+    expect((component as unknown as { showError: () => boolean }).showError()).toBe(false);
+    expect(
+      (component as unknown as { resolvedErrorMessage: () => string }).resolvedErrorMessage(),
+    ).toBe('');
+  });
+
+  it('should clear focus when disabling the component', () => {
+    component['toggle']();
+
+    component.setDisabledState(true);
+
+    expect(component['isDisabled']()).toBe(true);
+    expect(component['focused']()).toBe(false);
+    expect(component['isOpen']()).toBe(false);
+  });
+});
+
+describe('DatepickerFormfieldComponent with NgControl', () => {
+  let hostFixture: ComponentFixture<TestHostComponent>;
+  let host: TestHostComponent;
+
+  function getBoundComponent(): DatepickerFormfieldComponent {
+    return hostFixture.debugElement.query(By.directive(DatepickerFormfieldComponent))
+      .componentInstance as DatepickerFormfieldComponent;
+  }
+
+  function getBoundTrigger(): HTMLButtonElement {
+    return hostFixture.nativeElement.querySelector('.datepicker-formfield__trigger');
+  }
+
+  function getHint(): HTMLElement | null {
+    return hostFixture.nativeElement.querySelector('.datepicker-formfield__hint');
+  }
+
+  function getError(): HTMLElement | null {
+    return hostFixture.nativeElement.querySelector('.datepicker-formfield__error');
+  }
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [TestHostComponent],
+    }).compileComponents();
+
+    hostFixture = TestBed.createComponent(TestHostComponent);
+    host = hostFixture.componentInstance;
+    hostFixture.detectChanges();
+  });
+
+  it('should show the hint before validation errors are visible', () => {
+    expect(getHint()?.textContent).toContain('Use a mesma data cadastrada na sua conta.');
+    expect(getError()).toBeNull();
+    expect(getBoundTrigger().getAttribute('aria-describedby')).toBe(getHint()?.id ?? null);
+  });
+
+  it('should show the required error after the control is touched', () => {
+    host.form.controls.birthDate.markAsTouched();
+    (
+      getBoundComponent() as unknown as {
+        controlStateVersion: { update: (updater: (value: number) => number) => void };
+      }
+    ).controlStateVersion.update((value) => value + 1);
+    hostFixture.detectChanges();
+
+    expect(getError()?.textContent).toContain('Campo obrigatorio.');
+    expect(getBoundTrigger().getAttribute('aria-invalid')).toBe('true');
+  });
+
+  it('should use generic fallback messages for unknown error keys', () => {
+    host.form.controls.birthDate.setErrors({ custom: true });
+    host.form.controls.birthDate.markAsTouched();
+    (
+      getBoundComponent() as unknown as {
+        controlStateVersion: { update: (updater: (value: number) => number) => void };
+      }
+    ).controlStateVersion.update((value) => value + 1);
+    hostFixture.detectChanges();
+
+    expect(getBoundComponent()['resolvedErrorMessage']()).toBe('Campo invalido.');
+  });
+
+  it('should set the control as touched when a date is selected', () => {
+    const boundComponent = getBoundComponent();
+
+    boundComponent['selectDay']({
+      date: new Date(2024, 0, 5),
+      isCurrentMonth: true,
+      isToday: false,
+      isSelected: false,
+    });
+    hostFixture.detectChanges();
+
+    expect(host.form.controls.birthDate.touched).toBe(true);
+    expect(host.form.controls.birthDate.value).toBe('2024-01-05');
+  });
+});

@@ -10,7 +10,7 @@ import { InfoListComponent } from './info-list.component';
 const ITEMS: InfoListItemData[] = [
   { title: 'Item 1', value: '1.0', badge: { label: 'Normal', status: 'normal' } },
   { title: 'Item 2', value: '2.0', badge: { label: 'Alto', status: 'danger' } },
-  { title: 'Item 3', value: '3.0', badge: { label: 'Atenção', status: 'attention' } },
+  { title: 'Item 3', value: '3.0', badge: { label: 'Atencao', status: 'attention' } },
   { title: 'Item 4', value: '4.0' },
   { title: 'Item 5', value: '5.0' },
   { title: 'Item 6', value: '6.0' },
@@ -100,11 +100,11 @@ describe('InfoListComponent', () => {
   }
 
   function getNextButton(): HTMLButtonElement | null {
-    return element.querySelector('[aria-label="Próxima página"]');
+    return element.querySelector('[aria-label="Proxima pagina"]');
   }
 
   function getPrevButton(): HTMLButtonElement | null {
-    return element.querySelector('[aria-label="Página anterior"]');
+    return element.querySelector('[aria-label="Pagina anterior"]');
   }
 
   beforeEach(async () => {
@@ -117,19 +117,13 @@ describe('InfoListComponent', () => {
     element = hostFixture.nativeElement;
   });
 
-  // ── Creation ──────────────────────────────────────────────────────────────
-
   it('should create', () => {
     expect(getComponent()).toBeTruthy();
   });
 
-  // ── Base class ────────────────────────────────────────────────────────────
-
   it('should always have the base info-list class', () => {
     expect(getList()!.classList).toContain('info-list');
   });
-
-  // ── Rendering ─────────────────────────────────────────────────────────────
 
   it('should render only items of the current page', () => {
     expect(getItemElements().length).toBe(5);
@@ -143,8 +137,8 @@ describe('InfoListComponent', () => {
   });
 
   it('should render items with correct title', () => {
-    const titles = Array.from(element.querySelectorAll('.info-list-item__title')).map((el) =>
-      el.textContent?.trim(),
+    const titles = Array.from(element.querySelectorAll('.info-list-item__title')).map((item) =>
+      item.textContent?.trim(),
     );
 
     expect(titles).toEqual(['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5']);
@@ -154,8 +148,8 @@ describe('InfoListComponent', () => {
     hostFixture.componentInstance.pageIndex.set(1);
     hostFixture.detectChanges();
 
-    const titles = Array.from(element.querySelectorAll('.info-list-item__title')).map((el) =>
-      el.textContent?.trim(),
+    const titles = Array.from(element.querySelectorAll('.info-list-item__title')).map((item) =>
+      item.textContent?.trim(),
     );
 
     expect(titles).toEqual(['Item 6', 'Item 7']);
@@ -165,8 +159,6 @@ describe('InfoListComponent', () => {
     expect(element.querySelector('ul.info-list__items')).toBeTruthy();
     expect(element.querySelector('ul.info-list__items')?.getAttribute('role')).toBe('list');
   });
-
-  // ── Paginator visibility ──────────────────────────────────────────────────
 
   it('should show paginator when paginated=true and totalItems > pageSize', () => {
     expect(getPaginator()).toBeTruthy();
@@ -193,8 +185,6 @@ describe('InfoListComponent', () => {
     expect(getPaginator()).toBeTruthy();
   });
 
-  // ── pageChange event ──────────────────────────────────────────────────────
-
   it('should emit pageChange when next page is clicked', () => {
     getNextButton()?.click();
 
@@ -210,19 +200,17 @@ describe('InfoListComponent', () => {
     expect(hostFixture.componentInstance.lastPageChange).toEqual({ pageIndex: 0, pageSize: 5 });
   });
 
-  // ── itemClick event ───────────────────────────────────────────────────────
-
   it('should emit itemClick with the correct item when clickable=true', () => {
     hostFixture.componentInstance.clickable.set(true);
     hostFixture.detectChanges();
 
-    (getListItems()[0] as HTMLElement).click();
+    getListItems()[0].click();
 
     expect(hostFixture.componentInstance.lastClickedItem).toEqual(ITEMS[0]);
   });
 
   it('should not emit itemClick when clickable=false', () => {
-    (getListItems()[0] as HTMLElement).click();
+    getListItems()[0].click();
 
     expect(hostFixture.componentInstance.lastClickedItem).toBeNull();
   });
@@ -232,12 +220,10 @@ describe('InfoListComponent', () => {
     hostFixture.componentInstance.disabled.set(true);
     hostFixture.detectChanges();
 
-    (getListItems()[0] as HTMLElement).click();
+    getListItems()[0].click();
 
     expect(hostFixture.componentInstance.lastClickedItem).toBeNull();
   });
-
-  // ── Empty state ───────────────────────────────────────────────────────────
 
   it('should show empty state when items is empty', () => {
     hostFixture.componentInstance.items.set([]);
@@ -273,12 +259,12 @@ describe('InfoListComponent', () => {
     hostFixture.componentInstance.items.set([]);
     hostFixture.componentInstance.emptyState.set({
       title: 'Sem registros',
-      description: 'Nenhuma medição foi registrada ainda.',
+      description: 'Nenhuma medicao foi registrada ainda.',
     });
     hostFixture.detectChanges();
 
     expect(getEmptyDescription()?.textContent?.trim()).toBe(
-      'Nenhuma medição foi registrada ainda.',
+      'Nenhuma medicao foi registrada ainda.',
     );
   });
 
@@ -288,8 +274,6 @@ describe('InfoListComponent', () => {
 
     expect(getEmptyDescription()).toBeNull();
   });
-
-  // ── Loading state ─────────────────────────────────────────────────────────
 
   it('should show loading state when loading=true', () => {
     hostFixture.componentInstance.loading.set(true);
@@ -313,8 +297,6 @@ describe('InfoListComponent', () => {
     expect(getEmptyState()).toBeNull();
     expect(getLoadingState()).toBeTruthy();
   });
-
-  // ── Modifier classes ──────────────────────────────────────────────────────
 
   it('should apply info-list--disabled class when disabled', () => {
     hostFixture.componentInstance.disabled.set(true);
@@ -344,8 +326,6 @@ describe('InfoListComponent', () => {
     expect(classList).not.toContain('info-list--loading');
     expect(classList).not.toContain('info-list--empty');
   });
-
-  // ── Accessibility ─────────────────────────────────────────────────────────
 
   it('should set aria-busy when loading', () => {
     hostFixture.componentInstance.loading.set(true);
