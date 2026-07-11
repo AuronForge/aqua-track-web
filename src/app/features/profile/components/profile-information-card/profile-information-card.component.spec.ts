@@ -57,15 +57,21 @@ describe('ProfileInformationCardComponent', () => {
   let element: HTMLElement;
 
   function getNameInput(): HTMLInputElement {
-    return element.querySelector('#profile-full-name') as HTMLInputElement;
+    return element.querySelector(
+      'aq-text-formfield[formcontrolname="fullName"] input',
+    ) as HTMLInputElement;
   }
 
   function getEmailInput(): HTMLInputElement {
-    return element.querySelector('input[type=email]') as HTMLInputElement;
+    return element.querySelector(
+      'aq-text-formfield[formcontrolname="email"] input',
+    ) as HTMLInputElement;
   }
 
   function getPhoneInput(): HTMLInputElement {
-    return element.querySelector('input[type=tel]') as HTMLInputElement;
+    return element.querySelector(
+      'aq-text-formfield[formcontrolname="phone"] input',
+    ) as HTMLInputElement;
   }
 
   function getSaveButton(): HTMLButtonElement {

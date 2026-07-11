@@ -10,18 +10,18 @@
   <p id="confirmation-dialog-message" class="confirmation-dialog__message">{{ data.message }}</p>
 
   @if (data.confirmWord) {
-    <label class="confirmation-dialog__field">
-      <span class="confirmation-dialog__field-label">
+    <div class="confirmation-dialog__field">
+      <label class="confirmation-dialog__field-label" for="confirmation-dialog-confirm-word">
         {{ data.confirmWordLabel }}
-      </span>
-      <input
+      </label>
+      <aq-text-formfield
+        id="confirmation-dialog-confirm-word"
         type="text"
-        class="confirmation-dialog__input"
-        [value]="confirmText()"
-        (input)="onConfirmTextInput($event)"
+        [formControl]="confirmControl"
         autocomplete="off"
-      />
-    </label>
+        [hideErrorMessage]="true"
+      ></aq-text-formfield>
+    </div>
   }
 
   <div class="confirmation-dialog__actions">

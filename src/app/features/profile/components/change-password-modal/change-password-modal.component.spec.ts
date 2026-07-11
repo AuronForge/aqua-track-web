@@ -17,6 +17,20 @@ describe('ChangePasswordModalComponent', () => {
   let modalRef: { close: jest.Mock };
   let feedbackMessageService: { showSuccess: jest.Mock };
 
+  function getPasswordField(fieldName: string): Element {
+    return element.querySelector(`aq-text-formfield[formcontrolname="${fieldName}"]`) as Element;
+  }
+
+  function getPasswordInput(fieldName: string): HTMLInputElement {
+    return getPasswordField(fieldName).querySelector('input') as HTMLInputElement;
+  }
+
+  function getPasswordToggle(fieldName: string): HTMLButtonElement {
+    return getPasswordField(fieldName).querySelector(
+      '.text-formfield__action',
+    ) as HTMLButtonElement;
+  }
+
   function createComponent() {
     submitChangePassword = jest.fn().mockReturnValue(of(void 0));
     modalRef = { close: jest.fn() };
@@ -112,28 +126,29 @@ describe('ChangePasswordModalComponent', () => {
   });
 
   it('should toggle each password visibility independently', () => {
-    const inputs = element.querySelectorAll('input');
-    const buttons = element.querySelectorAll('.change-password-modal__visibility-button');
+    const currentPasswordInput = getPasswordInput('currentPassword');
+    const newPasswordInput = getPasswordInput('newPassword');
 
-    expect((inputs[0] as HTMLInputElement).type).toBe('password');
-    (buttons[0] as HTMLButtonElement).click();
+    expect(currentPasswordInput.type).toBe('password');
+    getPasswordToggle('currentPassword').click();
     fixture.detectChanges();
 
-    expect((inputs[0] as HTMLInputElement).type).toBe('text');
-    expect((inputs[1] as HTMLInputElement).type).toBe('password');
+    expect(currentPasswordInput.type).toBe('text');
+    expect(newPasswordInput.type).toBe('password');
   });
 
   it('should toggle the new and confirm password fields independently', () => {
-    const inputs = element.querySelectorAll('input');
-    const buttons = element.querySelectorAll('.change-password-modal__visibility-button');
+    const currentPasswordInput = getPasswordInput('currentPassword');
+    const newPasswordInput = getPasswordInput('newPassword');
+    const confirmPasswordInput = getPasswordInput('confirmNewPassword');
 
-    (buttons[1] as HTMLButtonElement).click();
-    (buttons[2] as HTMLButtonElement).click();
+    getPasswordToggle('newPassword').click();
+    getPasswordToggle('confirmNewPassword').click();
     fixture.detectChanges();
 
-    expect((inputs[0] as HTMLInputElement).type).toBe('password');
-    expect((inputs[1] as HTMLInputElement).type).toBe('text');
-    expect((inputs[2] as HTMLInputElement).type).toBe('text');
+    expect(currentPasswordInput.type).toBe('password');
+    expect(newPasswordInput.type).toBe('text');
+    expect(confirmPasswordInput.type).toBe('text');
   });
 
   it('should not submit when the form is invalid', () => {

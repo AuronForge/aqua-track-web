@@ -1,5 +1,5 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { NEVER, of, throwError } from 'rxjs';
 
@@ -129,7 +129,7 @@ describe('ForgotPasswordComponent', () => {
       fixture.componentInstance.submit();
       fixture.detectChanges();
 
-      expect(errorTexts(fixture)).toContain('O e-mail é obrigatório.');
+      expect(errorTexts(fixture)).toContain(fixture.componentInstance.translation().emailRequired);
     });
 
     it('should show the email invalid error when the format is wrong', async () => {
@@ -139,7 +139,7 @@ describe('ForgotPasswordComponent', () => {
       fixture.componentInstance.forgotPasswordForm.controls.email.markAsTouched();
       fixture.detectChanges();
 
-      expect(errorTexts(fixture)).toContain('Informe um e-mail válido.');
+      expect(errorTexts(fixture)).toContain(fixture.componentInstance.translation().emailInvalid);
     });
 
     it('should show the username required error after submit', async () => {
@@ -148,7 +148,9 @@ describe('ForgotPasswordComponent', () => {
       fixture.componentInstance.submit();
       fixture.detectChanges();
 
-      expect(errorTexts(fixture)).toContain('O nome de usuário é obrigatório.');
+      expect(errorTexts(fixture)).toContain(
+        fixture.componentInstance.translation().fullNameRequired,
+      );
     });
 
     it('should show the birthdate required error after submit', async () => {
@@ -157,7 +159,9 @@ describe('ForgotPasswordComponent', () => {
       fixture.componentInstance.submit();
       fixture.detectChanges();
 
-      expect(errorTexts(fixture)).toContain('A data de nascimento é obrigatória.');
+      expect(errorTexts(fixture)).toContain(
+        fixture.componentInstance.translation().birthdateRequired,
+      );
     });
   });
 
@@ -346,7 +350,7 @@ describe('ForgotPasswordComponent', () => {
 
 function errorTexts(fixture: ComponentFixture<ForgotPasswordComponent>): string[] {
   const nodes: NodeListOf<Element> = fixture.nativeElement.querySelectorAll(
-    '.login-card__error, .datepicker-formfield__error',
+    '.login-card__error, .text-formfield__error, .datepicker-formfield__error',
   );
   return Array.from(nodes).map((el) => el.textContent?.trim() ?? '');
 }

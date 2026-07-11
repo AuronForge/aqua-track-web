@@ -120,25 +120,6 @@
   color: theme.$aq-color-text-primary;
 }
 
-.profile-information-card__input {
-  border: 1px solid theme.$aq-color-border-strong;
-  border-radius: theme.$aq-radius-sm;
-  padding: theme.$aq-space-sm;
-  font-family: theme.$aq-font-family-base;
-  font-size: theme.$aq-font-size-md;
-  color: theme.$aq-color-text-primary;
-
-  &:focus-visible {
-    @include theme.aq-focus-ring;
-  }
-}
-
-.profile-information-card__input--disabled {
-  background: theme.$aq-color-surface-muted;
-  color: theme.$aq-color-text-secondary;
-  cursor: not-allowed;
-}
-
 .profile-information-card__hint {
   font-family: theme.$aq-font-family-base;
   font-size: theme.$aq-font-size-xs;

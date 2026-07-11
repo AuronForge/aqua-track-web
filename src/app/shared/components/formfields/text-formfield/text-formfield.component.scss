@@ -19,6 +19,10 @@
   font-weight: theme.$aq-font-weight-medium;
 }
 
+:host-context(.login-card) .text-formfield__label {
+  font: 700 0.98rem/1.2 theme.$aq-font-family-base;
+}
+
 .text-formfield__control {
   display: flex;
   align-items: center;
