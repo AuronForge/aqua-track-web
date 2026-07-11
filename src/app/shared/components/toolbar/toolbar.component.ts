@@ -3,8 +3,8 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { AvatarColor } from '../avatar/avatar-color.type';
 import { AvatarComponent } from '../avatar/avatar.component';
 import { AvatarVariant } from '../avatar/avatar-variant.type';
-import { DropdownMenuItem } from '../../ui/dropdown-menu/dropdown-menu-item.model';
-import { DropdownMenuComponent } from '../../ui/dropdown-menu/dropdown-menu.component';
+import { DropdownMenuItem } from '../dropdown-menu/dropdown-menu-item.model';
+import { DropdownMenuComponent } from '../dropdown-menu/dropdown-menu.component';
 import { LanguageCode } from '../../types/language-code.type';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 
