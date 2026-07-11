@@ -123,6 +123,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'photo-upload',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/photo-upload/photo-upload-showcase.component').then(
+            (m) => m.PhotoUploadShowcaseComponent,
+          ),
+      },
+      {
         path: 'avatar',
         loadComponent: () =>
           import('./features/components-showcase/pages/avatar/avatar-showcase.component').then(

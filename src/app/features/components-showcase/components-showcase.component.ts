@@ -76,6 +76,12 @@ export class ComponentsShowcaseComponent {
     },
     { id: 'menu', label: 'Nav Menu', icon: 'menu', route: '/components/menu' },
     { id: 'modal', label: 'Modal', icon: 'open_in_new', route: '/components/modal' },
+    {
+      id: 'photo-upload',
+      label: 'Photo Upload',
+      icon: 'upload_file',
+      route: '/components/photo-upload',
+    },
     { id: 'toolbar', label: 'Toolbar', icon: 'web_asset', route: '/components/toolbar' },
   ];
 }

@@ -1,0 +1,50 @@
+<div class="photo-upload__layout">
+  <div
+    [class]="containerClass()"
+    role="button"
+    tabindex="0"
+    [attr.aria-disabled]="isDisabled()"
+    [attr.aria-describedby]="describedBy()"
+    (click)="openFilePicker()"
+    (keydown)="onKeydown($event)"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+  >
+    <input
+      #fileInput
+      [id]="inputId()"
+      type="file"
+      hidden
+      [accept]="accept()"
+      [disabled]="isDisabled()"
+      (change)="onFileInputChange($event)"
+    />
+
+    <span class="photo-upload__icon-shell" aria-hidden="true">
+      <span class="material-icons-outlined photo-upload__icon">{{ icon() }}</span>
+    </span>
+
+    <div class="photo-upload__copy">
+      <p class="photo-upload__label">
+        {{ label() }}
+        <span class="photo-upload__browse">{{ browseLabel() }}</span>
+      </p>
+      <p class="photo-upload__hint" [id]="hintId()">{{ resolvedHint() }}</p>
+
+      @if (selectedFileName()) {
+        <p class="photo-upload__filename">{{ selectedFileName() }}</p>
+      }
+
+      @if (resolvedError()) {
+        <p class="photo-upload__error" [id]="errorId()" role="alert">{{ resolvedError() }}</p>
+      }
+    </div>
+  </div>
+
+  @if (showPreview() && resolvedPreviewUrl()) {
+    <div class="photo-upload__preview">
+      <img class="photo-upload__preview-image" [src]="resolvedPreviewUrl()" alt="" />
+    </div>
+  }
+</div>
