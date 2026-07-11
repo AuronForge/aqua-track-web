@@ -18,8 +18,8 @@ import { TextFormfieldComponent } from '../../../../shared/components/formfields
 import { SettingsCardComponent } from '../../../../shared/components/settings-card/settings-card.component';
 import { LANGUAGE_LOCALE_MAP } from '../../../../shared/constants/language-locale.constant';
 import { LanguageService } from '../../../../shared/services/language.service';
-import { AvatarVariant } from '../../../../shared/ui/avatar/avatar-variant.type';
-import { AvatarComponent } from '../../../../shared/ui/avatar/avatar.component';
+import { AvatarVariant } from '../../../../shared/components/avatar/avatar-variant.type';
+import { AvatarComponent } from '../../../../shared/components/avatar/avatar.component';
 import { ProfileInformationFormValue } from '../../models/profile-information-form-value.model';
 import { ProfileUser } from '../../models/profile-user.model';
 
