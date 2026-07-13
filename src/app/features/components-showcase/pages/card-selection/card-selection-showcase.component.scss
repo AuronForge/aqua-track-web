@@ -1,0 +1,56 @@
+@use '../../showcase-page';
+@use '../../../../shared/theme' as theme;
+
+.demo-card-selection {
+  width: 100%;
+  max-width: 48rem;
+}
+
+.demo-card-selection-form {
+  display: grid;
+  gap: theme.$aq-space-md;
+  width: 100%;
+}
+
+.demo-card-selection__value {
+  margin: 0;
+  padding: theme.$aq-space-md;
+  background: theme.$aq-color-surface-muted;
+  border: 1px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-sm;
+  color: theme.$aq-color-text-secondary;
+  font:
+    400 0.85rem/1.5 'Cascadia Code',
+    Consolas,
+    monospace;
+  white-space: pre-wrap;
+}
+
+.demo-card-selection__custom-option {
+  display: grid;
+  gap: theme.$aq-space-2xs;
+}
+
+.demo-card-selection__custom-title {
+  color: theme.$aq-color-text-primary;
+  font: #{theme.$aq-font-weight-semibold} #{theme.$aq-font-size-xl}/#{theme.$aq-line-height-tight}
+    theme.$aq-font-family-base;
+}
+
+.demo-card-selection__custom-description {
+  color: theme.$aq-color-text-secondary;
+  font: #{theme.$aq-font-weight-regular} #{theme.$aq-font-size-lg}/#{theme.$aq-line-height-base}
+    theme.$aq-font-family-base;
+}
+
+.demo-card-selection__custom-badge {
+  width: fit-content;
+  margin-top: theme.$aq-space-2xs;
+  padding: 0.125rem 0.5rem;
+  border: 1px solid rgb(35 192 232 / 24%);
+  border-radius: theme.$aq-radius-pill;
+  background: rgb(35 192 232 / 10%);
+  color: theme.$aq-color-accent-strong;
+  font: #{theme.$aq-font-weight-semibold} #{theme.$aq-font-size-xs}/#{theme.$aq-line-height-base}
+    theme.$aq-font-family-base;
+}

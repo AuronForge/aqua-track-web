@@ -1,0 +1,96 @@
+<fieldset
+  class="card-selection__fieldset"
+  [attr.id]="groupId()"
+  [attr.aria-describedby]="describedBy()"
+  [attr.aria-invalid]="showError() ? true : null"
+  [attr.aria-required]="requiredState() ? true : null"
+  [attr.aria-disabled]="isDisabled() ? true : null"
+  [attr.aria-labelledby]="label() ? legendId() : null"
+  [attr.aria-label]="!label() && groupLabel() ? groupLabel() : null"
+  [disabled]="isDisabled() || null"
+  (focusin)="onFocusIn()"
+  (focusout)="onFocusOut($event)"
+>
+  @if (label()) {
+    <legend class="card-selection__legend" [id]="legendId()">
+      <span>{{ label() }}</span>
+      @if (requiredState()) {
+        <span class="card-selection__required-mark" aria-hidden="true">*</span>
+        <span class="card-selection__required-text"> obrigatório</span>
+      }
+    </legend>
+  }
+
+  @if (hint()) {
+    <p class="card-selection__hint" [id]="hintId()">{{ hint() }}</p>
+  }
+
+  <div
+    class="card-selection__options"
+    [style.--card-selection-columns]="gridColumns()"
+    [attr.data-empty]="options().length === 0 ? true : null"
+  >
+    @for (option of options(); track trackOption(option)) {
+      <label
+        class="card-selection__option"
+        [class.card-selection__option--selected]="isOptionSelected(option)"
+        [class.card-selection__option--disabled]="isOptionDisabled(option)"
+        [attr.data-testid]="option.testId || null"
+      >
+        <input
+          #optionInput
+          class="card-selection__input"
+          [type]="inputType()"
+          [name]="!multiple() ? groupName() : null"
+          [checked]="isOptionSelected(option)"
+          [disabled]="isOptionDisabled(option) || null"
+          [required]="!multiple() && requiredState() ? true : null"
+          [attr.aria-label]="option.ariaLabel || null"
+          (change)="onOptionChange(option)"
+          (keydown)="onOptionKeydown($event, $index)"
+        />
+
+        <div [class]="optionCardClass(option)">
+          @if (projectedContent(); as contentTemplate) {
+            <ng-container
+              [ngTemplateOutlet]="contentTemplate.templateRef"
+              [ngTemplateOutletContext]="buildProjectedContentContext(option, $index)"
+            />
+          } @else {
+            <div
+              class="card-selection__option-content"
+              [class.card-selection__option-content--icon-end]="
+                optionIconPosition(option) === 'end'
+              "
+            >
+              @if (hasOptionIcon(option) && optionIconPosition(option) === 'start') {
+                <span class="material-icons card-selection__option-icon" aria-hidden="true">
+                  {{ option.iconName }}
+                </span>
+              }
+
+              <div class="card-selection__option-text">
+                <span class="card-selection__option-title">{{ option.title }}</span>
+                @if (option.description) {
+                  <span class="card-selection__option-description">{{ option.description }}</span>
+                }
+              </div>
+
+              @if (hasOptionIcon(option) && optionIconPosition(option) === 'end') {
+                <span class="material-icons card-selection__option-icon" aria-hidden="true">
+                  {{ option.iconName }}
+                </span>
+              }
+            </div>
+          }
+        </div>
+      </label>
+    }
+  </div>
+
+  @if (showError()) {
+    <p class="card-selection__error" [id]="errorId()" role="alert">
+      {{ resolvedErrorMessage() }}
+    </p>
+  }
+</fieldset>
