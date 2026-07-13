@@ -46,11 +46,15 @@ describe('PaginatorComponent', () => {
   }
 
   function getPrevButton(): HTMLButtonElement | null {
-    return element.querySelector('[aria-label="Página anterior"]');
+    return element.querySelector('[aria-label="Pagina anterior"]');
   }
 
   function getNextButton(): HTMLButtonElement | null {
-    return element.querySelector('[aria-label="Próxima página"]');
+    return element.querySelector('[aria-label="Proxima pagina"]');
+  }
+
+  function getPageSizeTrigger(): HTMLButtonElement | null {
+    return element.querySelector('.paginator__size-field .select-formfield__trigger');
   }
 
   beforeEach(async () => {
@@ -63,50 +67,42 @@ describe('PaginatorComponent', () => {
     element = hostFixture.nativeElement;
   });
 
-  // ── Creation ──────────────────────────────────────────────────────────────
-
   it('should create', () => {
     expect(getComponent()).toBeTruthy();
   });
-
-  // ── Base class ────────────────────────────────────────────────────────────
 
   it('should always have the base paginator class', () => {
     expect(element.querySelector('aq-paginator')!.classList).toContain('paginator');
   });
 
-  // ── Page info ─────────────────────────────────────────────────────────────
-
   it('should display correct page info on first page', () => {
-    expect(getInfo()?.textContent?.trim()).toBe('1–5 de 12');
+    expect(getInfo()?.textContent?.trim()).toBe('1-5 de 12');
   });
 
   it('should display correct page info on second page', () => {
     hostFixture.componentInstance.pageIndex.set(1);
     hostFixture.detectChanges();
 
-    expect(getInfo()?.textContent?.trim()).toBe('6–10 de 12');
+    expect(getInfo()?.textContent?.trim()).toBe('6-10 de 12');
   });
 
   it('should display correct page info on last partial page', () => {
     hostFixture.componentInstance.pageIndex.set(2);
     hostFixture.detectChanges();
 
-    expect(getInfo()?.textContent?.trim()).toBe('11–12 de 12');
+    expect(getInfo()?.textContent?.trim()).toBe('11-12 de 12');
   });
 
-  it('should display 0–0 de 0 when totalItems is 0', () => {
+  it('should display 0-0 de 0 when totalItems is 0', () => {
     hostFixture.componentInstance.totalItems.set(0);
     hostFixture.detectChanges();
 
-    expect(getInfo()?.textContent?.trim()).toBe('0–0 de 0');
+    expect(getInfo()?.textContent?.trim()).toBe('0-0 de 0');
   });
 
   it('should have aria-live on the info element', () => {
     expect(getInfo()?.getAttribute('aria-live')).toBe('polite');
   });
-
-  // ── Previous button ───────────────────────────────────────────────────────
 
   it('should disable the previous button on the first page', () => {
     expect(getPrevButton()?.disabled).toBe(true);
@@ -139,8 +135,6 @@ describe('PaginatorComponent', () => {
 
     expect(hostFixture.componentInstance.lastPageChange).toBeNull();
   });
-
-  // ── Next button ───────────────────────────────────────────────────────────
 
   it('should enable the next button when there are more pages', () => {
     expect(getNextButton()?.disabled).toBe(false);
@@ -177,13 +171,11 @@ describe('PaginatorComponent', () => {
     expect(hostFixture.componentInstance.lastPageChange).toBeNull();
   });
 
-  // ── Page size change ──────────────────────────────────────────────────────
-
   it('should reset pageIndex to 0 when page size changes', () => {
     hostFixture.componentInstance.pageIndex.set(2);
     hostFixture.detectChanges();
 
-    getComponent()['onSizeChange']({ option: { id: '10', title: '10' }, previousOption: null });
+    getComponent()['onSizeChange']({ option: { id: '10', title: '10' } });
 
     expect(hostFixture.componentInstance.lastPageChange).toEqual({ pageIndex: 0, pageSize: 10 });
   });
@@ -199,18 +191,18 @@ describe('PaginatorComponent', () => {
     ]);
   });
 
-  it('should expose the selected page size option', () => {
-    expect(getComponent()['selectedSizeOption']()).toEqual({ id: '5', title: '5' });
-  });
+  it('should sync the page size control with the pageSize input', () => {
+    expect(getComponent()['pageSizeControl'].value).toBe('5');
 
-  it('should return null when the selected page size is not in the options', () => {
-    hostFixture.componentInstance.pageSize.set(99);
+    hostFixture.componentInstance.pageSize.set(20);
     hostFixture.detectChanges();
 
-    expect(getComponent()['selectedSizeOption']()).toBeNull();
+    expect(getComponent()['pageSizeControl'].value).toBe('20');
   });
 
-  // ── Disabled state ────────────────────────────────────────────────────────
+  it('should render the current page size in the select trigger', () => {
+    expect(getPageSizeTrigger()?.textContent).toContain('5');
+  });
 
   it('should apply paginator--disabled class when disabled', () => {
     hostFixture.componentInstance.disabled.set(true);
@@ -223,13 +215,18 @@ describe('PaginatorComponent', () => {
     expect(element.querySelector('aq-paginator')!.classList).not.toContain('paginator--disabled');
   });
 
-  // ── Accessibility ─────────────────────────────────────────────────────────
+  it('should disable the page size select when paginator is disabled', () => {
+    hostFixture.componentInstance.disabled.set(true);
+    hostFixture.detectChanges();
+
+    expect(getPageSizeTrigger()?.disabled).toBe(true);
+  });
 
   it('should have aria-label on the previous button', () => {
-    expect(getPrevButton()?.getAttribute('aria-label')).toBe('Página anterior');
+    expect(getPrevButton()?.getAttribute('aria-label')).toBe('Pagina anterior');
   });
 
   it('should have aria-label on the next button', () => {
-    expect(getNextButton()?.getAttribute('aria-label')).toBe('Próxima página');
+    expect(getNextButton()?.getAttribute('aria-label')).toBe('Proxima pagina');
   });
 });

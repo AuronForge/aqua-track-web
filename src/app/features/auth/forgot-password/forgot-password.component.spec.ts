@@ -350,7 +350,7 @@ describe('ForgotPasswordComponent', () => {
 
 function errorTexts(fixture: ComponentFixture<ForgotPasswordComponent>): string[] {
   const nodes: NodeListOf<Element> = fixture.nativeElement.querySelectorAll(
-    '.text-formfield__error, .login-card__error',
+    '.login-card__error, .text-formfield__error, .datepicker-formfield__error',
   );
   return Array.from(nodes).map((el) => el.textContent?.trim() ?? '');
 }

@@ -1,0 +1,13 @@
+@use '../../showcase-page';
+@use '../../../../shared/theme' as theme;
+
+.photo-upload-showcase__event-log {
+  margin: theme.$aq-space-md 0 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  color: theme.$aq-color-text-secondary;
+}
+
+.photo-upload-showcase__event-log--error {
+  color: theme.$aq-color-error;
+}

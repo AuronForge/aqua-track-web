@@ -1,0 +1,107 @@
+<label class="select-formfield__label" [for]="inputId()">{{ label() }}</label>
+
+<div class="select-formfield__control" (focusin)="onFocusIn()" (focusout)="onFocusOut($event)">
+  <button
+    #trigger
+    class="select-formfield__trigger"
+    [id]="inputId()"
+    type="button"
+    role="combobox"
+    [attr.aria-expanded]="isOpen()"
+    aria-haspopup="listbox"
+    [attr.aria-controls]="listboxId"
+    [attr.aria-disabled]="isDisabled() ? true : null"
+    [attr.aria-invalid]="showError() ? true : null"
+    [attr.aria-required]="requiredState() ? true : null"
+    [attr.aria-describedby]="describedBy()"
+    [attr.aria-activedescendant]="
+      isOpen() && focusedIndex() >= 0 ? 'sf-opt-' + options()[focusedIndex()]?.id : null
+    "
+    [disabled]="isDisabled() || null"
+    (click)="toggleDropdown()"
+  >
+    @if (triggerIcon()) {
+      <span class="select-formfield__trigger-icon material-icons" aria-hidden="true">{{
+        triggerIcon()
+      }}</span>
+    }
+
+    <span
+      class="select-formfield__trigger-title"
+      [class.select-formfield__trigger-title--placeholder]="selectedOptions().length === 0"
+    >
+      {{ triggerLabel() }}
+    </span>
+
+    <span class="select-formfield__trigger-arrow material-icons" aria-hidden="true"
+      >expand_more</span
+    >
+  </button>
+</div>
+
+@if (showError()) {
+  <p [id]="errorId()" class="select-formfield__error" role="alert">
+    {{ resolvedErrorMessage() }}
+  </p>
+} @else if (hint()) {
+  <p [id]="hintId()" class="select-formfield__hint">{{ hint() }}</p>
+}
+
+<ng-template #dropdownTemplate>
+  <div
+    [id]="listboxId"
+    class="select-formfield__dropdown"
+    role="listbox"
+    [attr.aria-label]="placeholder()"
+    [attr.aria-multiselectable]="multiple() ? true : null"
+  >
+    @if (loading()) {
+      <div class="select-formfield__loading">
+        <span class="material-icons select-formfield__loading-icon" aria-hidden="true"
+          >hourglass_top</span
+        >
+      </div>
+    } @else if (options().length === 0) {
+      <div class="select-formfield__empty">
+        <span class="material-icons select-formfield__empty-icon" aria-hidden="true">inbox</span>
+        <span>Nenhuma opcao disponivel</span>
+      </div>
+    } @else {
+      <ul class="select-formfield__list" role="presentation">
+        @for (option of options(); track option.id; let i = $index) {
+          <li
+            class="select-formfield__option"
+            [class.select-formfield__option--selected]="isSelected(option)"
+            [class.select-formfield__option--disabled]="option.disabled"
+            [class.select-formfield__option--focused]="focusedIndex() === i"
+            role="option"
+            tabindex="-1"
+            [attr.aria-selected]="isSelected(option)"
+            [attr.aria-disabled]="option.disabled ? true : null"
+            [id]="'sf-opt-' + option.id"
+            (click)="selectOption(option)"
+            (keydown.enter)="selectOption(option)"
+            (mouseenter)="focusedIndex.set(i)"
+          >
+            @if (option.icon) {
+              <span class="select-formfield__option-icon material-icons" aria-hidden="true">{{
+                option.icon
+              }}</span>
+            }
+
+            <div class="select-formfield__option-content">
+              <span class="select-formfield__option-title">{{ option.title }}</span>
+              @if (option.subtitle) {
+                <span class="select-formfield__option-subtitle">{{ option.subtitle }}</span>
+              }
+            </div>
+
+            <span class="select-formfield__option-check material-icons" aria-hidden="true"
+              >check</span
+            >
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</ng-template>

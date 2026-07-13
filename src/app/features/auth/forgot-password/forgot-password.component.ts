@@ -1,8 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   computed,
+  DestroyRef,
   inject,
   signal,
 } from '@angular/core';
@@ -11,13 +11,13 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { RouterLink } from '@angular/router';
 
 import { AuthApiService } from '../../../core/auth/services/auth-api.service';
-import { getInitialLanguage } from '../../../shared/utils/get-initial-language.util';
-import { LANGUAGE_STORAGE_KEY } from '../../../shared/constants/language-storage-key.constant';
-import { LanguageCode } from '../../../shared/types/language-code.type';
-import { TRANSLATIONS } from '../../../shared/constants/translations.constant';
-import { DatepickerComponent } from '../../../shared/components/datepicker/datepicker.component';
+import { DatepickerFormfieldComponent } from '../../../shared/components/formfields/datepicker-formfield/datepicker-formfield.component';
 import { TextFormfieldComponent } from '../../../shared/components/formfields/text-formfield/text-formfield.component';
 import { LanguageSwitcherComponent } from '../../../shared/components/language-switcher/language-switcher.component';
+import { LANGUAGE_STORAGE_KEY } from '../../../shared/constants/language-storage-key.constant';
+import { TRANSLATIONS } from '../../../shared/constants/translations.constant';
+import { LanguageCode } from '../../../shared/types/language-code.type';
+import { getInitialLanguage } from '../../../shared/utils/get-initial-language.util';
 
 @Component({
   selector: 'app-forgot-password',
@@ -26,7 +26,7 @@ import { LanguageSwitcherComponent } from '../../../shared/components/language-s
     ReactiveFormsModule,
     RouterLink,
     LanguageSwitcherComponent,
-    DatepickerComponent,
+    DatepickerFormfieldComponent,
     TextFormfieldComponent,
   ],
   templateUrl: './forgot-password.component.html',

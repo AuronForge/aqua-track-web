@@ -34,52 +34,6 @@ export const routes: Routes = [
       ),
   },
   {
-    path: '',
-    loadComponent: () =>
-      import('./layouts/authenticated-layout/authenticated-layout.component').then(
-        (m) => m.AuthenticatedLayoutComponent,
-      ),
-    canMatch: [authCanMatchGuard],
-    canActivateChild: [authCanActivateChildGuard],
-    children: [
-      {
-        path: 'home',
-        loadChildren: () => import('./features/home/home.routes').then((m) => m.HOME_ROUTES),
-      },
-      {
-        path: 'profile',
-        loadChildren: () =>
-          import('./features/profile/profile.routes').then((m) => m.PROFILE_ROUTES),
-      },
-      {
-        path: 'aquariums/new',
-        loadComponent: () =>
-          import('./features/aquarium/pages/aquarium-create-page/aquarium-create-page.component').then(
-            (m) => m.AquariumCreatePageComponent,
-          ),
-      },
-      {
-        path: 'measurements/new',
-        loadComponent: () =>
-          import('./features/measurement/pages/measurement-create-page/measurement-create-page.component').then(
-            (m) => m.MeasurementCreatePageComponent,
-          ),
-      },
-      {
-        path: 'applications/new',
-        loadComponent: () =>
-          import('./features/application/pages/application-create-page/application-create-page.component').then(
-            (m) => m.ApplicationCreatePageComponent,
-          ),
-      },
-      {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: 'home',
-      },
-    ],
-  },
-  {
     path: 'components',
     loadComponent: () =>
       import('./features/components-showcase/components-showcase.component').then(
@@ -120,6 +74,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/components-showcase/pages/modal/modal-showcase.component').then(
             (m) => m.ModalShowcaseComponent,
+          ),
+      },
+      {
+        path: 'photo-upload',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/photo-upload/photo-upload-showcase.component').then(
+            (m) => m.PhotoUploadShowcaseComponent,
           ),
       },
       {
@@ -172,18 +133,85 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'input-select',
-        loadComponent: () =>
-          import('./features/components-showcase/pages/select/input-select-showcase.component').then(
-            (m) => m.InputSelectShowcaseComponent,
-          ),
-      },
-      {
         path: 'text-formfield',
         loadComponent: () =>
           import('./features/components-showcase/pages/formfields/text-formfield-showcase.component').then(
             (m) => m.TextFormfieldShowcaseComponent,
           ),
+      },
+      {
+        path: 'datepicker-formfield',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/formfields/datepicker-formfield-showcase.component').then(
+            (m) => m.DatepickerFormfieldShowcaseComponent,
+          ),
+      },
+      {
+        path: 'select-formfield',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/formfields/select-formfield-showcase.component').then(
+            (m) => m.SelectFormfieldShowcaseComponent,
+          ),
+      },
+      {
+        path: 'card-selection',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/card-selection/card-selection-showcase.component').then(
+            (m) => m.CardSelectionShowcaseComponent,
+          ),
+      },
+      {
+        path: 'textarea-formfield',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/formfields/textarea-formfield-showcase.component').then(
+            (m) => m.TextareaFormfieldShowcaseComponent,
+          ),
+      },
+    ],
+  },
+  {
+    path: '',
+    loadComponent: () =>
+      import('./layouts/authenticated-layout/authenticated-layout.component').then(
+        (m) => m.AuthenticatedLayoutComponent,
+      ),
+    canMatch: [authCanMatchGuard],
+    canActivateChild: [authCanActivateChildGuard],
+    children: [
+      {
+        path: 'home',
+        loadChildren: () => import('./features/home/home.routes').then((m) => m.HOME_ROUTES),
+      },
+      {
+        path: 'profile',
+        loadChildren: () =>
+          import('./features/profile/profile.routes').then((m) => m.PROFILE_ROUTES),
+      },
+      {
+        path: 'aquariums/new',
+        loadComponent: () =>
+          import('./features/aquarium/pages/aquarium-create-page/aquarium-create-page.component').then(
+            (m) => m.AquariumCreatePageComponent,
+          ),
+      },
+      {
+        path: 'measurements/new',
+        loadComponent: () =>
+          import('./features/measurement/pages/measurement-create-page/measurement-create-page.component').then(
+            (m) => m.MeasurementCreatePageComponent,
+          ),
+      },
+      {
+        path: 'applications/new',
+        loadComponent: () =>
+          import('./features/application/pages/application-create-page/application-create-page.component').then(
+            (m) => m.ApplicationCreatePageComponent,
+          ),
+      },
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'home',
       },
     ],
   },

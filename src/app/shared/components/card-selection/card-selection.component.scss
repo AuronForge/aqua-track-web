@@ -1,0 +1,209 @@
+@use '../../theme' as theme;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.card-selection__fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-sm;
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.card-selection__legend {
+  padding: 0;
+  color: theme.$aq-color-text-primary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-medium;
+}
+
+.card-selection__required-mark {
+  margin-left: 0.2rem;
+}
+
+.card-selection__required-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.card-selection__hint,
+.card-selection__error {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  line-height: theme.$aq-line-height-base;
+}
+
+.card-selection__hint {
+  color: theme.$aq-color-text-secondary;
+}
+
+.card-selection__error {
+  color: theme.$aq-color-error;
+}
+
+.card-selection__options {
+  display: grid;
+  grid-template-columns: repeat(
+    var(--card-selection-columns, auto-fit),
+    minmax(min(100%, 14.5rem), 1fr)
+  );
+  gap: theme.$aq-space-sm;
+}
+
+.card-selection__option {
+  display: block;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.card-selection__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.card-selection__option-card {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-2xs;
+  min-height: 4.75rem;
+  width: 100%;
+  padding: theme.$aq-space-lg;
+  border: 1.5px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-md;
+  background: theme.$aq-color-surface;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    color 150ms ease;
+}
+
+.card-selection__option-content {
+  display: flex;
+  align-items: flex-start;
+  gap: theme.$aq-space-sm;
+}
+
+.card-selection__option-content--icon-end {
+  justify-content: space-between;
+}
+
+.card-selection__option-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: theme.$aq-space-2xs;
+  min-width: 0;
+}
+
+.card-selection__option-icon {
+  flex-shrink: 0;
+  color: theme.$aq-color-text-secondary;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.card-selection__option-title {
+  color: theme.$aq-color-text-primary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-xl;
+  font-weight: theme.$aq-font-weight-semibold;
+  line-height: theme.$aq-line-height-tight;
+}
+
+.card-selection__option-description {
+  color: theme.$aq-color-text-secondary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-lg;
+  line-height: theme.$aq-line-height-base;
+}
+
+.card-selection__option:hover:not(.card-selection__option--disabled) .card-selection__option-card {
+  border-color: theme.$aq-color-border-strong;
+  background: theme.$aq-color-surface-muted;
+}
+
+.card-selection__option-card--selected {
+  border-color: theme.$aq-color-accent;
+  background: theme.$aq-color-surface-accent;
+  box-shadow: inset 0 0 0 1px rgb(35 192 232 / 28%);
+}
+
+.card-selection__option-card--disabled {
+  background: theme.$aq-color-surface-muted;
+  opacity: 0.72;
+}
+
+.card-selection__option--disabled {
+  cursor: not-allowed;
+}
+
+.card-selection__input:focus-visible + .card-selection__option-card {
+  @include theme.aq-focus-ring;
+}
+
+.card-selection__option-card--selected.card-selection__option-card {
+  .card-selection__option-icon,
+  .card-selection__option-title {
+    color: theme.$aq-color-primary;
+  }
+}
+
+:host(.card-selection--invalid)
+  .card-selection__option-card:not(.card-selection__option-card--selected) {
+  border-color: rgb(217 48 37 / 35%);
+}
+
+:host(.card-selection--invalid) .card-selection__fieldset {
+  gap: theme.$aq-space-2xs;
+}
+
+:host(.card-selection--disabled) .card-selection__fieldset {
+  opacity: 0.88;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-selection__option-card {
+    transition: none;
+  }
+}
+
+@media (width <= 720px) {
+  .card-selection__options {
+    grid-template-columns: 1fr;
+  }
+
+  .card-selection__option-card {
+    padding: theme.$aq-space-md;
+  }
+
+  .card-selection__option-title {
+    font-size: theme.$aq-font-size-lg;
+  }
+
+  .card-selection__option-description {
+    font-size: theme.$aq-font-size-md;
+  }
+}

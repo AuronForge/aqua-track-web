@@ -1,0 +1,337 @@
+@use '../../../theme' as theme;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.datepicker-formfield {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-2xs;
+  width: 100%;
+}
+
+.datepicker-formfield__label {
+  color: theme.$aq-color-text-primary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-medium;
+}
+
+.datepicker-formfield__control {
+  position: relative;
+  width: 100%;
+}
+
+.datepicker-formfield__trigger {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-xs;
+  width: 100%;
+  min-height: 3rem;
+  padding: theme.$aq-space-xs theme.$aq-space-md;
+  border: 1.5px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-md;
+  background: theme.$aq-color-surface;
+  color: theme.$aq-color-text-primary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-lg;
+  font-weight: theme.$aq-font-weight-medium;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background-color 150ms ease;
+}
+
+.datepicker-formfield--focused .datepicker-formfield__trigger {
+  @include theme.aq-focus-ring;
+}
+
+.datepicker-formfield--filled .datepicker-formfield__trigger {
+  border-color: theme.$aq-color-border-strong;
+}
+
+.datepicker-formfield--invalid .datepicker-formfield__trigger {
+  border-color: theme.$aq-color-error;
+  box-shadow: 0 0 0 4px rgb(217 48 37 / 10%);
+}
+
+.datepicker-formfield--disabled .datepicker-formfield__trigger {
+  background: theme.$aq-color-surface-muted;
+  border-color: theme.$aq-color-border;
+  opacity: 0.72;
+}
+
+.datepicker-formfield__trigger:hover:not(:disabled) {
+  border-color: theme.$aq-color-border-strong;
+}
+
+.datepicker-formfield__trigger:focus-visible {
+  @include theme.aq-focus-ring;
+}
+
+.datepicker-formfield__trigger-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &--placeholder {
+    color: theme.$aq-color-text-secondary;
+    font-weight: theme.$aq-font-weight-regular;
+  }
+}
+
+.datepicker-formfield__trigger-icon {
+  flex-shrink: 0;
+  font-size: theme.$aq-size-icon-md;
+  line-height: 1;
+  color: theme.$aq-color-text-secondary;
+  user-select: none;
+  transition:
+    color 150ms ease,
+    transform 200ms ease;
+}
+
+.datepicker-formfield__hint,
+.datepicker-formfield__error {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  line-height: theme.$aq-line-height-base;
+}
+
+.datepicker-formfield__hint {
+  color: theme.$aq-color-text-secondary;
+}
+
+.datepicker-formfield__error {
+  color: theme.$aq-color-error;
+}
+
+.datepicker-formfield--open .datepicker-formfield__trigger-icon {
+  color: theme.$aq-color-primary;
+  transform: rotate(-8deg);
+}
+
+.datepicker-formfield__panel {
+  position: static;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: theme.$aq-space-xs;
+  background: theme.$aq-color-surface;
+  border: 1px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-md;
+  box-shadow:
+    0 4px 16px -4px rgb(18 63 97 / 12%),
+    0 20px 56px -20px rgb(36 48 65 / 22%);
+  animation: datepicker-formfield-enter 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes datepicker-formfield-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.datepicker-formfield__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  margin-bottom: theme.$aq-space-xs;
+}
+
+.datepicker-formfield__nav-btn,
+.datepicker-formfield__nav-label-btn {
+  border: 0;
+  background: transparent;
+  color: theme.$aq-color-text-primary;
+  cursor: pointer;
+}
+
+.datepicker-formfield__nav-btn {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: theme.$aq-radius-sm;
+  color: theme.$aq-color-text-secondary;
+  font-size: 1rem;
+  line-height: 1;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+
+  &:hover {
+    background: theme.$aq-color-surface-muted;
+    color: theme.$aq-color-primary;
+  }
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+  }
+}
+
+.datepicker-formfield__nav-label-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  flex: 1;
+  border-radius: theme.$aq-radius-sm;
+  padding: 0.375rem 0.5rem;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-semibold;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+
+  &:hover {
+    background: theme.$aq-color-surface-muted;
+    color: theme.$aq-color-primary;
+  }
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+  }
+}
+
+.datepicker-formfield__nav-label-chevron {
+  font-size: theme.$aq-size-icon-sm;
+  line-height: 1;
+  opacity: 0.65;
+}
+
+.datepicker-formfield__weekdays,
+.datepicker-formfield__grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.datepicker-formfield__weekdays {
+  margin-bottom: 0.25rem;
+}
+
+.datepicker-formfield__weekday {
+  padding: 0.25rem 0;
+  color: theme.$aq-color-text-tertiary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-xs;
+  font-weight: theme.$aq-font-weight-semibold;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.datepicker-formfield__grid {
+  gap: 0.1rem;
+}
+
+.datepicker-formfield__day,
+.datepicker-formfield__month-btn,
+.datepicker-formfield__year-btn {
+  border: 0;
+  background: transparent;
+  color: theme.$aq-color-text-primary;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease,
+    transform 120ms ease;
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+  }
+}
+
+.datepicker-formfield__day {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: theme.$aq-radius-sm;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-medium;
+
+  &:hover:not(.datepicker-formfield__day--selected) {
+    background: theme.$aq-color-surface-accent;
+    color: theme.$aq-color-primary;
+    transform: scale(1.05);
+  }
+}
+
+.datepicker-formfield__day--other-month {
+  color: theme.$aq-color-text-tertiary;
+  opacity: 0.45;
+}
+
+.datepicker-formfield__day--today:not(.datepicker-formfield__day--selected) {
+  box-shadow: inset 0 0 0 1.5px rgb(35 192 232 / 55%);
+  color: theme.$aq-color-accent-strong;
+  font-weight: theme.$aq-font-weight-semibold;
+}
+
+.datepicker-formfield__day--selected,
+.datepicker-formfield__month-btn--selected,
+.datepicker-formfield__year-btn--selected {
+  background: linear-gradient(175deg, #18486d 0%, theme.$aq-color-primary 100%);
+  color: theme.$aq-color-surface;
+  box-shadow: 0 4px 12px -4px rgb(18 63 97 / 55%);
+}
+
+.datepicker-formfield__month-grid,
+.datepicker-formfield__year-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.3rem;
+}
+
+.datepicker-formfield__month-btn,
+.datepicker-formfield__year-btn {
+  border-radius: theme.$aq-radius-sm;
+  padding: 0.75rem 0.25rem;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-medium;
+}
+
+.datepicker-formfield__month-btn {
+  text-transform: capitalize;
+}
+
+.datepicker-formfield__month-btn:hover:not(
+    .datepicker-formfield__month-btn--selected,
+    .datepicker-formfield__year-btn--selected
+  ),
+.datepicker-formfield__year-btn:hover:not(
+    .datepicker-formfield__month-btn--selected,
+    .datepicker-formfield__year-btn--selected
+  ) {
+  background: theme.$aq-color-surface-accent;
+  color: theme.$aq-color-primary;
+}
+
+.datepicker-formfield__month-btn--current:not(.datepicker-formfield__month-btn--selected),
+.datepicker-formfield__year-btn--current:not(.datepicker-formfield__year-btn--selected) {
+  box-shadow: inset 0 0 0 1.5px rgb(35 192 232 / 55%);
+  color: theme.$aq-color-accent-strong;
+}
+
+@media (width <= 640px) {
+  .datepicker-formfield__trigger {
+    min-height: 2.875rem;
+    padding-inline: theme.$aq-space-sm;
+    font-size: theme.$aq-font-size-md;
+  }
+}

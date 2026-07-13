@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
 import { CodeBlockComponent } from '../../../../shared/components/code-block/code-block.component';
-import { DropdownMenuItem } from '../../../../shared/ui/dropdown-menu/dropdown-menu-item.model';
+import { DropdownMenuItem } from '../../../../shared/components/dropdown-menu/dropdown-menu-item.model';
 import { LanguageCode } from '../../../../shared/types/language-code.type';
 import { ToolbarComponent } from '../../../../shared/components/toolbar/toolbar.component';
 
@@ -15,7 +15,7 @@ import { ToolbarComponent } from '../../../../shared/components/toolbar/toolbar.
 })
 export class ToolbarShowcaseComponent {
   readonly codeTs = `import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.component';
-import { DropdownMenuItem } from '../../shared/ui/dropdown-menu/dropdown-menu-item.model';
+import { DropdownMenuItem } from '../../shared/components/dropdown-menu/dropdown-menu-item.model';
 import { LanguageCode } from '../../shared/types/language-code.type';
 
 readonly menuItems: DropdownMenuItem[] = [
