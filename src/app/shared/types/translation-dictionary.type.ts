@@ -153,10 +153,56 @@ export interface TranslationDictionary {
   readonly homeApplicationsEmptyTitle: string;
   readonly homeApplicationsEmptyDesc: string;
 
-  // Aquarium — create page (placeholder)
+  // Aquarium — create page
   readonly aquariumFormTitle: string;
-  readonly aquariumFormComingSoon: string;
-  readonly aquariumFormBackToDashboard: string;
+  readonly aquariumCreateSubtitle: string;
+  readonly aquariumCreateBackToAquariums: string;
+  readonly aquariumCreateBasicInfoTitle: string;
+  readonly aquariumCreateNameLabel: string;
+  readonly aquariumCreateNamePlaceholder: string;
+  readonly aquariumCreateTypeLabel: string;
+  readonly aquariumCreateTypeHint: string;
+  readonly aquariumCreateTypeFreshwater: string;
+  readonly aquariumCreateTypeFreshwaterDescription: string;
+  readonly aquariumCreateTypePlanted: string;
+  readonly aquariumCreateTypePlantedDescription: string;
+  readonly aquariumCreateTypeSaltwater: string;
+  readonly aquariumCreateTypeSaltwaterDescription: string;
+  readonly aquariumCreateTypeShrimp: string;
+  readonly aquariumCreateTypeShrimpDescription: string;
+  readonly aquariumCreateTypeTurtle: string;
+  readonly aquariumCreateTypeTurtleDescription: string;
+  readonly aquariumCreateSetupDateLabel: string;
+  readonly aquariumCreateSetupDatePlaceholder: string;
+  readonly aquariumCreateDimensionsTitle: string;
+  readonly aquariumCreateDimensionsSubtitle: string;
+  readonly aquariumCreateLengthLabel: string;
+  readonly aquariumCreateLengthPlaceholder: string;
+  readonly aquariumCreateWidthLabel: string;
+  readonly aquariumCreateWidthPlaceholder: string;
+  readonly aquariumCreateHeightLabel: string;
+  readonly aquariumCreateHeightPlaceholder: string;
+  readonly aquariumCreateVolumeCalculatedLabel: string;
+  readonly aquariumCreateVolumeUnitLiters: string;
+  readonly aquariumCreateVolumeFormula: string;
+  readonly aquariumCreateDetailsTitle: string;
+  readonly aquariumCreateDetailsSubtitle: string;
+  readonly aquariumCreateDescriptionLabel: string;
+  readonly aquariumCreateDescriptionPlaceholder: string;
+  readonly aquariumCreatePhotoTitle: string;
+  readonly aquariumCreatePhotoSubtitle: string;
+  readonly aquariumCreatePhotoDropLabel: string;
+  readonly aquariumCreatePhotoBrowseLabel: string;
+  readonly aquariumCreatePhotoHint: string;
+  readonly aquariumCreatePhotoInvalidType: string;
+  readonly aquariumCreatePhotoTooLarge: string;
+  readonly aquariumCreatePhotoLocalOnly: string;
+  readonly aquariumCreateSubmitLabel: string;
+  readonly aquariumCreateRequiredError: string;
+  readonly aquariumCreateNumberError: string;
+  readonly aquariumCreatePositiveNumberError: string;
+  readonly aquariumCreateValidationSummary: string;
+  readonly aquariumCreateApiDisabledMessage: string;
 
   // Measurement — create page (placeholder)
   readonly measurementFormTitle: string;

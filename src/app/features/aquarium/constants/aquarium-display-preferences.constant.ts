@@ -1,0 +1,25 @@
+import { AquariumDisplayPreferencesValues } from '../models/aquarium-api.dto';
+
+export const DEFAULT_AQUARIUM_DISPLAY_PREFERENCES: AquariumDisplayPreferencesValues = {
+  displayPH: true,
+  displayGH: true,
+  displayKH: true,
+  displayNitrate: true,
+  displayNitrite: true,
+  displayAmmonia: true,
+  displayTemperature: true,
+  displayTDS: true,
+  displayCopper: true,
+  displayPhosphate: true,
+  displayIron: true,
+  displayCO2: true,
+  displayO2: true,
+  displayCalcium: true,
+  displaySilicates: true,
+  displayDensitySalinity: true,
+  displayMagnesium: true,
+  displayIodine: true,
+  displayMolybdenum: true,
+  displayStrontium: true,
+  displayPotassium: true,
+};

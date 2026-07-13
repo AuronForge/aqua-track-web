@@ -1,22 +1,223 @@
 @use '../../../../shared/theme' as theme;
 
-.aquarium-create-page__state-container {
+.aquarium-create-page {
   display: flex;
   flex-direction: column;
+  gap: theme.$aq-space-lg;
+  width: 100%;
+}
+
+.aquarium-create-page__back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: theme.$aq-space-2xs;
+  width: fit-content;
+  color: theme.$aq-color-text-secondary;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-medium;
+  text-decoration: none;
+
+  &:hover {
+    color: theme.$aq-color-primary;
+  }
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+  }
+}
+
+.aquarium-create-page__header {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-md;
+}
+
+.aquarium-create-page__header-icon,
+.aquarium-create-page__volume-icon {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: theme.$aq-space-md;
-  padding: theme.$aq-space-2xl;
-  text-align: center;
+  flex: 0 0 auto;
+  width: theme.$aq-size-icon-container-md;
+  height: theme.$aq-size-icon-container-md;
+  border-radius: theme.$aq-radius-sm;
+  background: theme.$aq-color-surface-accent;
+  color: theme.$aq-color-primary;
 }
 
-.aquarium-create-page__state-icon {
-  font-size: 3rem;
-  color: theme.$aq-color-text-tertiary;
-}
-
-.aquarium-create-page__state-message {
+.aquarium-create-page__title {
   margin: 0;
-  font-size: theme.$aq-font-size-md;
-  color: theme.$aq-color-text-secondary;
+  color: theme.$aq-color-text-primary;
+  font-family: theme.$aq-font-family-heading;
+  font-size: 1.625rem;
+  font-weight: theme.$aq-font-weight-bold;
+  line-height: theme.$aq-line-height-tight;
 }
+
+.aquarium-create-page__subtitle,
+.aquarium-create-page__section-subtitle,
+.aquarium-create-page__photo-note,
+.aquarium-create-page__volume-formula {
+  margin: 0;
+  color: theme.$aq-color-text-secondary;
+  font-size: theme.$aq-font-size-sm;
+  line-height: theme.$aq-line-height-base;
+}
+
+.aquarium-create-page__card {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-md;
+  width: 100%;
+  padding: theme.$aq-space-lg;
+  border: 1px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-md;
+  background: theme.$aq-color-surface;
+  box-shadow: theme.$aq-shadow-card;
+}
+
+.aquarium-create-page__section-header {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-2xs;
+}
+
+.aquarium-create-page__section-title {
+  margin: 0;
+  color: theme.$aq-color-text-primary;
+  font-size: theme.$aq-font-size-lg;
+  font-weight: theme.$aq-font-weight-semibold;
+  line-height: theme.$aq-line-height-tight;
+}
+
+.aquarium-create-page__dimensions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: theme.$aq-space-md;
+}
+
+/* stylelint-disable selector-pseudo-element-no-unknown */
+:host ::ng-deep .aquarium-create-page__type-selector .card-selection__options {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+:host ::ng-deep .aquarium-create-page__type-selector .card-selection__option-card {
+  height: 100%;
+  min-height: 6.5rem;
+  padding: theme.$aq-space-md;
+}
+
+.aquarium-create-page__type-option {
+  display: grid;
+  grid-template-columns: theme.$aq-size-icon-md minmax(0, 1fr);
+  align-items: flex-start;
+  gap: theme.$aq-space-sm;
+  min-height: 4.5rem;
+}
+
+.aquarium-create-page__type-icon {
+  color: theme.$aq-color-tertiary;
+  font-size: theme.$aq-size-icon-md;
+  line-height: theme.$aq-line-height-tight;
+}
+
+.aquarium-create-page__type-copy {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-xs;
+  min-width: 0;
+}
+
+.aquarium-create-page__type-title {
+  color: theme.$aq-color-text-primary;
+  font-size: theme.$aq-font-size-xl;
+  font-weight: theme.$aq-font-weight-semibold;
+  line-height: theme.$aq-line-height-tight;
+}
+
+.aquarium-create-page__type-description {
+  color: theme.$aq-color-text-secondary;
+  font-size: theme.$aq-font-size-lg;
+  line-height: theme.$aq-line-height-base;
+}
+
+.aquarium-create-page__volume {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-md;
+  padding: theme.$aq-space-md;
+  border: 1px solid rgb(35 192 232 / 26%);
+  border-radius: theme.$aq-radius-md;
+  background: theme.$aq-color-surface-accent;
+}
+
+.aquarium-create-page__volume-label {
+  margin: 0 0 theme.$aq-space-2xs;
+  color: theme.$aq-color-text-secondary;
+  font-size: theme.$aq-font-size-xs;
+  font-weight: theme.$aq-font-weight-medium;
+}
+
+.aquarium-create-page__volume-value {
+  margin: 0 0 theme.$aq-space-2xs;
+  color: theme.$aq-color-text-primary;
+  font-size: theme.$aq-font-size-xl;
+  font-weight: theme.$aq-font-weight-bold;
+}
+
+.aquarium-create-page__photo-note {
+  font-weight: theme.$aq-font-weight-medium;
+}
+
+.aquarium-create-page__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: theme.$aq-space-sm;
+  width: 100%;
+  padding-top: theme.$aq-space-sm;
+}
+
+.aquarium-create-page__actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: theme.$aq-space-xs;
+}
+
+@media (width <= 720px) {
+  .aquarium-create-page__header {
+    align-items: flex-start;
+  }
+
+  .aquarium-create-page__card {
+    padding: theme.$aq-space-md;
+  }
+
+  .aquarium-create-page__dimensions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  :host ::ng-deep .aquarium-create-page__type-selector .card-selection__options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aquarium-create-page__type-title,
+  .aquarium-create-page__type-description {
+    font-size: theme.$aq-font-size-md;
+  }
+
+  .aquarium-create-page__actions {
+    flex-direction: column-reverse;
+  }
+
+  .aquarium-create-page__actions button {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+@media (width <= 520px) {
+  :host ::ng-deep .aquarium-create-page__type-selector .card-selection__options {
+    grid-template-columns: 1fr;
+  }
+}
+/* stylelint-enable selector-pseudo-element-no-unknown */

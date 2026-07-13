@@ -1,9 +1,191 @@
-<div class="aquarium-create-page">
-  <div class="aquarium-create-page__state-container">
-    <span class="material-icons aquarium-create-page__state-icon">water_drop</span>
-    <p class="aquarium-create-page__state-message">{{ t().aquariumFormComingSoon }}</p>
-    <a aqButton variant="stroked" color="primary" size="medium" routerLink="/home">
-      {{ t().aquariumFormBackToDashboard }}
-    </a>
+<form class="aquarium-create-page" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+  <a class="aquarium-create-page__back-link" routerLink="/home">
+    <span class="material-icons" aria-hidden="true">chevron_left</span>
+    {{ t().aquariumCreateBackToAquariums }}
+  </a>
+
+  <header class="aquarium-create-page__header">
+    <div class="aquarium-create-page__header-icon" aria-hidden="true">
+      <span class="material-icons-outlined">water_drop</span>
+    </div>
+    <div>
+      <h1 class="aquarium-create-page__title">{{ t().aquariumFormTitle }}</h1>
+      <p class="aquarium-create-page__subtitle">{{ t().aquariumCreateSubtitle }}</p>
+    </div>
+  </header>
+
+  <section class="aquarium-create-page__card" aria-labelledby="aquarium-basic-info-title">
+    <div class="aquarium-create-page__section-header">
+      <h2 id="aquarium-basic-info-title" class="aquarium-create-page__section-title">
+        {{ t().aquariumCreateBasicInfoTitle }}
+      </h2>
+    </div>
+
+    <aq-text-formfield
+      formControlName="name"
+      [label]="t().aquariumCreateNameLabel"
+      [placeholder]="t().aquariumCreateNamePlaceholder"
+      prefixIcon="sell"
+      [required]="true"
+      [errorMessages]="requiredErrorMessages()"
+    />
+
+    <aq-card-selection
+      class="aquarium-create-page__type-selector"
+      formControlName="aquariumType"
+      [label]="t().aquariumCreateTypeLabel"
+      [hint]="t().aquariumCreateTypeHint"
+      [options]="aquariumTypeOptions()"
+      [required]="true"
+      [errorMessages]="requiredErrorMessages()"
+    >
+      <ng-template aqCardSelectionContent let-option>
+        <div class="aquarium-create-page__type-option">
+          <span class="material-icons-outlined aquarium-create-page__type-icon" aria-hidden="true">
+            {{ option.iconName }}
+          </span>
+          <span class="aquarium-create-page__type-copy">
+            <span class="aquarium-create-page__type-title">{{ option.title }}</span>
+            <span class="aquarium-create-page__type-description">{{ option.description }}</span>
+          </span>
+        </div>
+      </ng-template>
+    </aq-card-selection>
+
+    <aq-datepicker-formfield
+      formControlName="setupDate"
+      [label]="t().aquariumCreateSetupDateLabel"
+      [placeholder]="t().aquariumCreateSetupDatePlaceholder"
+      [required]="true"
+      [errorMessages]="requiredErrorMessages()"
+    />
+  </section>
+
+  <section class="aquarium-create-page__card" aria-labelledby="aquarium-dimensions-title">
+    <div class="aquarium-create-page__section-header">
+      <h2 id="aquarium-dimensions-title" class="aquarium-create-page__section-title">
+        {{ t().aquariumCreateDimensionsTitle }}
+      </h2>
+      <p class="aquarium-create-page__section-subtitle">
+        {{ t().aquariumCreateDimensionsSubtitle }}
+      </p>
+    </div>
+
+    <div class="aquarium-create-page__dimensions-grid">
+      <aq-text-formfield
+        formControlName="lengthCm"
+        [label]="t().aquariumCreateLengthLabel"
+        [placeholder]="t().aquariumCreateLengthPlaceholder"
+        type="text"
+        inputmode="decimal"
+        prefixIcon="straighten"
+        suffixText="cm"
+        [required]="true"
+        [errorMessages]="dimensionErrorMessages()"
+      />
+
+      <aq-text-formfield
+        formControlName="widthCm"
+        [label]="t().aquariumCreateWidthLabel"
+        [placeholder]="t().aquariumCreateWidthPlaceholder"
+        type="text"
+        prefixIcon="straighten"
+        suffixText="cm"
+        [required]="true"
+        [errorMessages]="dimensionErrorMessages()"
+      />
+
+      <aq-text-formfield
+        formControlName="heightCm"
+        [label]="t().aquariumCreateHeightLabel"
+        [placeholder]="t().aquariumCreateHeightPlaceholder"
+        type="text"
+        prefixIcon="straighten"
+        suffixText="cm"
+        [required]="true"
+        [errorMessages]="dimensionErrorMessages()"
+      />
+    </div>
+
+    @if (hasVolume()) {
+      <div class="aquarium-create-page__volume" aria-live="polite">
+        <div class="aquarium-create-page__volume-icon" aria-hidden="true">
+          <span class="material-icons-outlined">water_drop</span>
+        </div>
+        <div>
+          <p class="aquarium-create-page__volume-label">
+            {{ t().aquariumCreateVolumeCalculatedLabel }}
+          </p>
+          <p class="aquarium-create-page__volume-value">
+            {{ volumeLiters() }} {{ t().aquariumCreateVolumeUnitLiters }}
+          </p>
+          <p class="aquarium-create-page__volume-formula">
+            {{ t().aquariumCreateVolumeFormula }}
+          </p>
+        </div>
+      </div>
+    }
+  </section>
+
+  <section class="aquarium-create-page__card" aria-labelledby="aquarium-details-title">
+    <div class="aquarium-create-page__section-header">
+      <h2 id="aquarium-details-title" class="aquarium-create-page__section-title">
+        {{ t().aquariumCreateDetailsTitle }}
+      </h2>
+      <p class="aquarium-create-page__section-subtitle">
+        {{ t().aquariumCreateDetailsSubtitle }}
+      </p>
+    </div>
+
+    <aq-textarea-formfield
+      formControlName="description"
+      [label]="t().aquariumCreateDescriptionLabel"
+      [placeholder]="t().aquariumCreateDescriptionPlaceholder"
+      [rows]="4"
+      resize="none"
+    />
+  </section>
+
+  <section class="aquarium-create-page__card" aria-labelledby="aquarium-photo-title">
+    <div class="aquarium-create-page__section-header">
+      <h2 id="aquarium-photo-title" class="aquarium-create-page__section-title">
+        {{ t().aquariumCreatePhotoTitle }}
+      </h2>
+      <p class="aquarium-create-page__section-subtitle">{{ t().aquariumCreatePhotoSubtitle }}</p>
+    </div>
+
+    <aq-photo-upload
+      [label]="t().aquariumCreatePhotoDropLabel"
+      [browseLabel]="t().aquariumCreatePhotoBrowseLabel"
+      [hint]="t().aquariumCreatePhotoHint"
+      [invalidTypeMessage]="t().aquariumCreatePhotoInvalidType"
+      [maxSizeMessage]="t().aquariumCreatePhotoTooLarge"
+      [showPreview]="true"
+      (fileSelected)="onPhotoSelected($event)"
+      (fileRejected)="onPhotoRejected()"
+    />
+
+    @if (selectedPhotoName()) {
+      <p class="aquarium-create-page__photo-note">
+        {{ t().aquariumCreatePhotoLocalOnly }} {{ selectedPhotoName() }}
+      </p>
+    }
+  </section>
+
+  <div class="aquarium-create-page__actions">
+    <button
+      type="button"
+      aqButton
+      variant="stroked"
+      color="tertiary"
+      size="medium"
+      (click)="onCancel()"
+    >
+      {{ t().cancelLabel }}
+    </button>
+    <button type="submit" aqButton variant="flat" color="primary" size="medium">
+      <span class="material-icons" aria-hidden="true">water_drop</span>
+      {{ t().aquariumCreateSubmitLabel }}
+    </button>
   </div>
-</div>
+</form>
