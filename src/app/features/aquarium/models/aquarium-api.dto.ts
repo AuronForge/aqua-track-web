@@ -4,7 +4,8 @@ export type AquariumType =
   | 'PLANTED'
   | 'BREEDING'
   | 'HOSPITAL'
-  | 'OTHER';
+  | 'OTHER'
+  | string;
 
 export type AquariumWaterType = 'FRESHWATER' | 'SALTWATER' | 'BRACKISH';
 

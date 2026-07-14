@@ -203,6 +203,24 @@ describe('DatepickerFormfieldComponent', () => {
     expect(positions[0].overlayY).toBe('top');
   });
 
+  it('should cap the panel width on large screens', () => {
+    Object.defineProperty(component['elementRef'].nativeElement, 'offsetWidth', {
+      configurable: true,
+      value: 1200,
+    });
+
+    expect(component['resolvePanelWidth']()).toBe(360);
+  });
+
+  it('should keep the panel width fluid on smaller screens', () => {
+    Object.defineProperty(component['elementRef'].nativeElement, 'offsetWidth', {
+      configurable: true,
+      value: 320,
+    });
+
+    expect(component['resolvePanelWidth']()).toBe(320);
+  });
+
   it('should update month and year navigation in all views', () => {
     component['viewDate'].set(new Date(2024, 5, 1));
     component['prevPage']();

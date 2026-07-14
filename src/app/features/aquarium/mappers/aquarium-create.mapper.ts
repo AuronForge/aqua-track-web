@@ -1,8 +1,8 @@
-import { DEFAULT_AQUARIUM_DISPLAY_PREFERENCES } from '../constants/aquarium-display-preferences.constant';
+import { mapDisplayParameterSelectionToPreferences } from '../constants/aquarium-display-parameter-options.constant';
 import { AQUARIUM_TYPE_MAPPINGS } from '../constants/aquarium-type-options.constant';
 import { CreateAquariumPayload } from '../models/aquarium-api.dto';
 import { AquariumCreateFormValue } from '../models/aquarium-create-form-value.model';
-import { calculateAquariumVolumeLiters } from '../utils/aquarium-volume.util';
+import { calculateAquariumVolumeLiters, parseLocalizedNumber } from '../utils/aquarium-volume.util';
 import { dateOnlyToIso } from '../utils/date-only-to-iso.util';
 
 export function mapAquariumCreateFormToPayload(
@@ -12,10 +12,24 @@ export function mapAquariumCreateFormToPayload(
     throw new Error('Aquarium type is required to build the payload.');
   }
 
-  const volume = calculateAquariumVolumeLiters(value.lengthCm, value.widthCm, value.heightCm);
+  if (!value.waterType) {
+    throw new Error('Water type is required to build the payload.');
+  }
+
+  const volume = value.usePhysicalDimensions
+    ? calculateAquariumVolumeLiters(value.lengthCm, value.widthCm, value.heightCm)
+    : parseLocalizedNumber(value.volume);
 
   if (volume === null) {
-    throw new Error('Aquarium dimensions must produce a valid volume.');
+    throw new Error(
+      value.usePhysicalDimensions
+        ? 'Aquarium dimensions must produce a valid volume.'
+        : 'Aquarium volume must be a valid positive number.',
+    );
+  }
+
+  if (volume <= 0) {
+    throw new Error('Aquarium volume must be a valid positive number.');
   }
 
   const mapping = AQUARIUM_TYPE_MAPPINGS[value.aquariumType];
@@ -24,11 +38,11 @@ export function mapAquariumCreateFormToPayload(
   return {
     name: value.name.trim(),
     description: description || null,
-    type: mapping.type,
-    waterType: mapping.waterType,
+    type: mapping?.type ?? value.aquariumType,
+    waterType: value.waterType,
     volume,
     volumeUnit: 'LITER',
     setupDate: dateOnlyToIso(value.setupDate),
-    displayPreferences: { ...DEFAULT_AQUARIUM_DISPLAY_PREFERENCES },
+    displayPreferences: mapDisplayParameterSelectionToPreferences(value.displayParameters),
   };
 }

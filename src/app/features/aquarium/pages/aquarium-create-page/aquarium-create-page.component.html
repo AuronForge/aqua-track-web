@@ -14,7 +14,10 @@
     </div>
   </header>
 
-  <section class="aquarium-create-page__card" aria-labelledby="aquarium-basic-info-title">
+  <section
+    class="aquarium-create-page__card aquarium-create-page__card--basic-info"
+    aria-labelledby="aquarium-basic-info-title"
+  >
     <div class="aquarium-create-page__section-header">
       <h2 id="aquarium-basic-info-title" class="aquarium-create-page__section-title">
         {{ t().aquariumCreateBasicInfoTitle }}
@@ -30,12 +33,21 @@
       [errorMessages]="requiredErrorMessages()"
     />
 
+    <aq-datepicker-formfield
+      formControlName="setupDate"
+      [label]="t().aquariumCreateSetupDateLabel"
+      [placeholder]="t().aquariumCreateSetupDatePlaceholder"
+      [required]="true"
+      [errorMessages]="requiredErrorMessages()"
+    />
+
     <aq-card-selection
       class="aquarium-create-page__type-selector"
-      formControlName="aquariumType"
-      [label]="t().aquariumCreateTypeLabel"
-      [hint]="t().aquariumCreateTypeHint"
-      [options]="aquariumTypeOptions()"
+      formControlName="waterType"
+      [label]="t().aquariumCreateWaterTypeLabel"
+      [hint]="aquariumWaterTypeHint()"
+      [options]="aquariumWaterTypeOptions()"
+      [disabled]="waterTypeOptionsLoading() || waterTypeOptionsError()"
       [required]="true"
       [errorMessages]="requiredErrorMessages()"
     >
@@ -52,13 +64,28 @@
       </ng-template>
     </aq-card-selection>
 
-    <aq-datepicker-formfield
-      formControlName="setupDate"
-      [label]="t().aquariumCreateSetupDateLabel"
-      [placeholder]="t().aquariumCreateSetupDatePlaceholder"
+    <aq-card-selection
+      class="aquarium-create-page__type-selector"
+      formControlName="aquariumType"
+      [label]="t().aquariumCreateTypeLabel"
+      [hint]="aquariumTypeHint()"
+      [options]="aquariumTypeOptions()"
+      [disabled]="aquariumTypeDisabled()"
       [required]="true"
       [errorMessages]="requiredErrorMessages()"
-    />
+    >
+      <ng-template aqCardSelectionContent let-option>
+        <div class="aquarium-create-page__type-option">
+          <span class="material-icons-outlined aquarium-create-page__type-icon" aria-hidden="true">
+            {{ option.iconName }}
+          </span>
+          <span class="aquarium-create-page__type-copy">
+            <span class="aquarium-create-page__type-title">{{ option.title }}</span>
+            <span class="aquarium-create-page__type-description">{{ option.description }}</span>
+          </span>
+        </div>
+      </ng-template>
+    </aq-card-selection>
   </section>
 
   <section class="aquarium-create-page__card" aria-labelledby="aquarium-dimensions-title">
@@ -71,41 +98,87 @@
       </p>
     </div>
 
-    <div class="aquarium-create-page__dimensions-grid">
+    <div class="aquarium-create-page__dimension-mode">
+      <div class="aquarium-create-page__dimension-mode-options" role="group">
+        <button
+          type="button"
+          class="aquarium-create-page__dimension-mode-option"
+          [class.aquarium-create-page__dimension-mode-option--selected]="usesPhysicalDimensions()"
+          [attr.aria-pressed]="usesPhysicalDimensions()"
+          (click)="onUsePhysicalDimensionsChange(true)"
+        >
+          <span class="material-icons-outlined" aria-hidden="true">
+            {{ usesPhysicalDimensions() ? 'check_box' : 'check_box_outline_blank' }}
+          </span>
+          <span>{{ t().aquariumCreateDimensionModeLabel }}</span>
+        </button>
+
+        <button
+          type="button"
+          class="aquarium-create-page__dimension-mode-option"
+          [class.aquarium-create-page__dimension-mode-option--selected]="!usesPhysicalDimensions()"
+          [attr.aria-pressed]="!usesPhysicalDimensions()"
+          (click)="onUsePhysicalDimensionsChange(false)"
+        >
+          <span class="material-icons-outlined" aria-hidden="true">
+            {{ !usesPhysicalDimensions() ? 'check_box' : 'check_box_outline_blank' }}
+          </span>
+          <span>{{ t().aquariumCreateVolumeLabel }}</span>
+        </button>
+      </div>
+    </div>
+
+    @if (usesPhysicalDimensions()) {
+      <div class="aquarium-create-page__dimensions-grid">
+        <aq-text-formfield
+          formControlName="lengthCm"
+          [label]="t().aquariumCreateLengthLabel"
+          [placeholder]="t().aquariumCreateLengthPlaceholder"
+          type="text"
+          inputmode="decimal"
+          prefixIcon="straighten"
+          suffixText="cm"
+          [required]="true"
+          [errorMessages]="dimensionErrorMessages()"
+        />
+
+        <aq-text-formfield
+          formControlName="widthCm"
+          [label]="t().aquariumCreateWidthLabel"
+          [placeholder]="t().aquariumCreateWidthPlaceholder"
+          type="text"
+          inputmode="decimal"
+          prefixIcon="straighten"
+          suffixText="cm"
+          [required]="true"
+          [errorMessages]="dimensionErrorMessages()"
+        />
+
+        <aq-text-formfield
+          formControlName="heightCm"
+          [label]="t().aquariumCreateHeightLabel"
+          [placeholder]="t().aquariumCreateHeightPlaceholder"
+          type="text"
+          inputmode="decimal"
+          prefixIcon="straighten"
+          suffixText="cm"
+          [required]="true"
+          [errorMessages]="dimensionErrorMessages()"
+        />
+      </div>
+    } @else {
       <aq-text-formfield
-        formControlName="lengthCm"
-        [label]="t().aquariumCreateLengthLabel"
-        [placeholder]="t().aquariumCreateLengthPlaceholder"
+        formControlName="volume"
+        [label]="t().aquariumCreateVolumeLabel"
+        [placeholder]="t().aquariumCreateVolumePlaceholder"
         type="text"
         inputmode="decimal"
-        prefixIcon="straighten"
-        suffixText="cm"
+        prefixIcon="water_drop"
+        suffixText="L"
         [required]="true"
         [errorMessages]="dimensionErrorMessages()"
       />
-
-      <aq-text-formfield
-        formControlName="widthCm"
-        [label]="t().aquariumCreateWidthLabel"
-        [placeholder]="t().aquariumCreateWidthPlaceholder"
-        type="text"
-        prefixIcon="straighten"
-        suffixText="cm"
-        [required]="true"
-        [errorMessages]="dimensionErrorMessages()"
-      />
-
-      <aq-text-formfield
-        formControlName="heightCm"
-        [label]="t().aquariumCreateHeightLabel"
-        [placeholder]="t().aquariumCreateHeightPlaceholder"
-        type="text"
-        prefixIcon="straighten"
-        suffixText="cm"
-        [required]="true"
-        [errorMessages]="dimensionErrorMessages()"
-      />
-    </div>
+    }
 
     @if (hasVolume()) {
       <div class="aquarium-create-page__volume" aria-live="polite">
@@ -113,18 +186,55 @@
           <span class="material-icons-outlined">water_drop</span>
         </div>
         <div>
-          <p class="aquarium-create-page__volume-label">
-            {{ t().aquariumCreateVolumeCalculatedLabel }}
-          </p>
+          <p class="aquarium-create-page__volume-label">{{ volumeLabel() }}</p>
           <p class="aquarium-create-page__volume-value">
             {{ volumeLiters() }} {{ t().aquariumCreateVolumeUnitLiters }}
           </p>
-          <p class="aquarium-create-page__volume-formula">
-            {{ t().aquariumCreateVolumeFormula }}
-          </p>
+          @if (usesPhysicalDimensions()) {
+            <p class="aquarium-create-page__volume-formula">
+              {{ t().aquariumCreateVolumeFormula }}
+            </p>
+          }
         </div>
       </div>
     }
+  </section>
+
+  <section class="aquarium-create-page__card" aria-labelledby="aquarium-display-parameters-title">
+    <div class="aquarium-create-page__section-header">
+      <h2 id="aquarium-display-parameters-title" class="aquarium-create-page__section-title">
+        {{ t().aquariumCreateDisplayParametersTitle }}
+      </h2>
+      <p class="aquarium-create-page__section-subtitle">
+        {{ t().aquariumCreateDisplayParametersSubtitle }}
+      </p>
+    </div>
+
+    <p class="aquarium-create-page__section-subtitle">
+      {{ t().aquariumCreateDisplayParametersHint }}
+    </p>
+
+    <div class="aquarium-create-page__parameter-list">
+      @for (option of displayParameterOptions(); track option.value) {
+        <div class="aquarium-create-page__parameter-item">
+          <div class="aquarium-create-page__parameter-copy">
+            <span
+              class="material-icons-outlined aquarium-create-page__parameter-icon"
+              aria-hidden="true"
+            >
+              {{ option.iconName }}
+            </span>
+            <span class="aquarium-create-page__parameter-title">{{ option.title }}</span>
+          </div>
+
+          <aq-switch
+            [checked]="isDisplayParameterSelected(option.value)"
+            [ariaLabel]="option.title"
+            (checkedChange)="onDisplayParameterToggle(option.value, $event)"
+          />
+        </div>
+      }
+    </div>
   </section>
 
   <section class="aquarium-create-page__card" aria-labelledby="aquarium-details-title">

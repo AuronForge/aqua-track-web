@@ -76,6 +76,10 @@
   box-shadow: theme.$aq-shadow-card;
 }
 
+.aquarium-create-page__card--basic-info {
+  gap: theme.$aq-space-lg;
+}
+
 .aquarium-create-page__section-header {
   display: flex;
   flex-direction: column;
@@ -94,6 +98,56 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: theme.$aq-space-md;
+}
+
+.aquarium-create-page__dimension-mode {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: theme.$aq-space-md;
+}
+
+.aquarium-create-page__dimension-mode-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: theme.$aq-space-sm;
+}
+
+.aquarium-create-page__dimension-mode-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: theme.$aq-space-xs;
+  min-height: 3rem;
+  padding: theme.$aq-space-sm theme.$aq-space-md;
+  border: 1px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-md;
+  background: theme.$aq-color-surface;
+  color: theme.$aq-color-text-secondary;
+  font-size: theme.$aq-font-size-md;
+  font-weight: theme.$aq-font-weight-medium;
+  cursor: pointer;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease;
+
+  &:hover {
+    border-color: theme.$aq-color-border-strong;
+    color: theme.$aq-color-text-primary;
+  }
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+  }
+}
+
+.aquarium-create-page__dimension-mode-option--selected {
+  border-color: theme.$aq-color-primary;
+  background: theme.$aq-color-surface-accent;
+  color: theme.$aq-color-primary;
+  box-shadow: inset 0 0 0 1px rgb(35 192 232 / 18%);
 }
 
 /* stylelint-disable selector-pseudo-element-no-unknown */
@@ -138,6 +192,52 @@
 .aquarium-create-page__type-description {
   color: theme.$aq-color-text-secondary;
   font-size: theme.$aq-font-size-lg;
+  line-height: theme.$aq-line-height-base;
+}
+
+.aquarium-create-page__parameter-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: theme.$aq-space-sm 3rem;
+}
+
+@media (width <= 1080px) {
+  .aquarium-create-page__parameter-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.aquarium-create-page__parameter-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: theme.$aq-space-md;
+  min-height: 3.5rem;
+  padding: theme.$aq-space-sm 0;
+  border-bottom: 1px solid theme.$aq-color-border;
+}
+
+.aquarium-create-page__parameter-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: theme.$aq-space-sm;
+  min-width: 0;
+}
+
+.aquarium-create-page__parameter-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 theme.$aq-size-icon-sm;
+  width: theme.$aq-size-icon-sm;
+  color: theme.$aq-color-tertiary;
+  font-size: theme.$aq-size-icon-sm;
+}
+
+.aquarium-create-page__parameter-title {
+  color: theme.$aq-color-text-primary;
+  font-size: theme.$aq-font-size-md;
+  font-weight: theme.$aq-font-weight-medium;
   line-height: theme.$aq-line-height-base;
 }
 
@@ -196,7 +296,19 @@
     grid-template-columns: 1fr;
   }
 
+  .aquarium-create-page__dimension-mode {
+    align-items: stretch;
+  }
+
+  .aquarium-create-page__dimension-mode-options {
+    grid-template-columns: 1fr;
+  }
+
   :host ::ng-deep .aquarium-create-page__type-selector .card-selection__options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aquarium-create-page__parameter-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -217,6 +329,10 @@
 
 @media (width <= 520px) {
   :host ::ng-deep .aquarium-create-page__type-selector .card-selection__options {
+    grid-template-columns: 1fr;
+  }
+
+  .aquarium-create-page__parameter-list {
     grid-template-columns: 1fr;
   }
 }
