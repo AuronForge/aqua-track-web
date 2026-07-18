@@ -49,6 +49,8 @@ interface YearItem {
 const FALLBACK_ERROR_MESSAGES: FormfieldErrorMessages = {
   required: 'Campo obrigatorio.',
 };
+const DATEPICKER_PANEL_MIN_WIDTH = 280;
+const DATEPICKER_PANEL_MAX_WIDTH = 360;
 
 let nextUniqueId = 0;
 
@@ -438,8 +440,7 @@ export class DatepickerFormfieldComponent
       hasBackdrop: true,
       backdropClass: 'cdk-overlay-transparent-backdrop',
       scrollStrategy: this.overlay.scrollStrategies.reposition(),
-      width: this.elementRef.nativeElement.offsetWidth,
-      minWidth: 280,
+      width: this.resolvePanelWidth(),
     });
 
     const portal = new TemplatePortal(this.panelTemplate(), this.viewContainerRef);
@@ -487,6 +488,12 @@ export class DatepickerFormfieldComponent
     };
 
     return preferTop ? [topPosition, bottomPosition] : [bottomPosition, topPosition];
+  }
+
+  private resolvePanelWidth(): number {
+    const hostWidth = this.elementRef.nativeElement.offsetWidth;
+
+    return Math.max(DATEPICKER_PANEL_MIN_WIDTH, Math.min(hostWidth, DATEPICKER_PANEL_MAX_WIDTH));
   }
 
   private closePanel(markAsTouched = true): void {

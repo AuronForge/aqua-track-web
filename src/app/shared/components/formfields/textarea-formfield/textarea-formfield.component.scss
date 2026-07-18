@@ -15,7 +15,7 @@
 .textarea-formfield__label {
   color: theme.$aq-color-text-primary;
   font-family: theme.$aq-font-family-base;
-  font-size: theme.$aq-font-size-sm;
+  font-size: theme.$aq-font-size-md;
   font-weight: theme.$aq-font-weight-medium;
 }
 
@@ -35,7 +35,7 @@
 
 .textarea-formfield__input {
   width: 100%;
-  min-height: 100%;
+  min-height: 0;
   border: 0;
   padding: 0;
   background: transparent;
