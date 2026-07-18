@@ -131,9 +131,15 @@ describe('HomePageComponent', () => {
     );
   });
 
-  it('should render "Meus Aquários" section title', async () => {
+  it('should keep the aquarium section accessible without rendering a visible title block', async () => {
     const fixture = await createFixture(buildFacadeMock());
-    expect(fixture.nativeElement.textContent).toContain('Meus Aquários');
+    const section: HTMLElement | null = fixture.nativeElement.querySelector('.home-page__section');
+    const title = fixture.nativeElement.querySelector('#aquariums-title');
+    const subtitle = fixture.nativeElement.querySelector('.home-page__section-subtitle');
+
+    expect(section?.getAttribute('aria-label')).toBe(TRANSLATIONS.pt.homeMyAquariums);
+    expect(title).toBeNull();
+    expect(subtitle).toBeNull();
   });
 
   describe('loading state', () => {

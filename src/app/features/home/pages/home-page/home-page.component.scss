@@ -32,6 +32,10 @@
   flex-wrap: wrap;
 }
 
+.home-page__section-header--actions-only {
+  justify-content: flex-end;
+}
+
 .home-page__section-title {
   margin: 0;
   font-family: theme.$aq-font-family-heading;

@@ -255,6 +255,26 @@ export interface TranslationDictionary {
   readonly aquariumCreateSuccessMessage: string;
   readonly aquariumCreateErrorMessage: string;
   readonly aquariumCreateApiDisabledMessage: string;
+  readonly aquariumListPageSubtitle: string;
+  readonly aquariumListAddAction: string;
+  readonly aquariumListVolumeLabel: string;
+  readonly aquariumListInstalledLabel: string;
+  readonly aquariumListInstalledMonthSingular: string;
+  readonly aquariumListInstalledMonthPlural: string;
+  readonly aquariumListInstalledYearSingular: string;
+  readonly aquariumListInstalledYearPlural: string;
+  readonly aquariumListRecentParametersTitle: string;
+  readonly aquariumListParameterPh: string;
+  readonly aquariumListParameterTemperature: string;
+  readonly aquariumListParameterNitrate: string;
+  readonly aquariumListDetailsAction: string;
+  readonly aquariumListDetailsActionAria: string;
+  readonly aquariumListTotalLabel: string;
+  readonly aquariumListCombinedVolumeLabel: string;
+  readonly aquariumListAquariumSingular: string;
+  readonly aquariumListAquariumPlural: string;
+  readonly aquariumListEmptyTitle: string;
+  readonly aquariumListEmptyDescription: string;
 
   // Measurement — create page (placeholder)
   readonly measurementFormTitle: string;

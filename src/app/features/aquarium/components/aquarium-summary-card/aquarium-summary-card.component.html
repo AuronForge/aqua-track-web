@@ -1,0 +1,70 @@
+<article class="aquarium-summary-card" [attr.data-aquarium-id]="aquarium().id">
+  <aq-info-card
+    [icon]="'water_drop'"
+    [status]="aquarium().status"
+    [statusLabel]="aquarium().statusLabel"
+    [title]="aquarium().title"
+    [subtitleValue]="aquarium().subtitle"
+    [fillContainer]="true"
+  >
+    <div class="aquarium-summary-card__details">
+      <div class="aquarium-summary-card__detail">
+        <span class="aquarium-summary-card__detail-label">
+          {{ t().aquariumListVolumeLabel }}
+        </span>
+        <span class="aquarium-summary-card__detail-value">{{ aquarium().volumeLabel }}</span>
+      </div>
+
+      <div class="aquarium-summary-card__detail">
+        <span class="aquarium-summary-card__detail-label">
+          <span
+            class="material-icons-outlined aquarium-summary-card__detail-icon"
+            aria-hidden="true"
+          >
+            calendar_today
+          </span>
+          {{ aquarium().installedLabel }}
+        </span>
+        <span class="aquarium-summary-card__detail-value">{{ aquarium().installedValue }}</span>
+      </div>
+    </div>
+
+    <hr class="aquarium-summary-card__divider" aria-hidden="true" />
+
+    <div class="aquarium-summary-card__parameters">
+      <p class="aquarium-summary-card__parameters-title">
+        {{ t().aquariumListRecentParametersTitle }}
+      </p>
+
+      <div class="aquarium-summary-card__parameter-grid">
+        @for (parameter of aquarium().recentParameters; track parameter.key) {
+          <div class="aquarium-summary-card__parameter-tile">
+            <span class="aquarium-summary-card__parameter-label">
+              <span
+                class="material-icons-outlined aquarium-summary-card__parameter-icon"
+                aria-hidden="true"
+              >
+                {{ parameter.icon }}
+              </span>
+              {{ parameter.label }}
+            </span>
+            <span class="aquarium-summary-card__parameter-value">{{ parameter.value }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <a
+      aqButton
+      class="aquarium-summary-card__details-link"
+      variant="stroked"
+      color="primary"
+      size="medium"
+      [routerLink]="detailsLink()"
+      [attr.aria-label]="detailsAriaLabel()"
+    >
+      {{ t().aquariumListDetailsAction }}
+      <span class="material-icons-outlined" aria-hidden="true">arrow_forward</span>
+    </a>
+  </aq-info-card>
+</article>

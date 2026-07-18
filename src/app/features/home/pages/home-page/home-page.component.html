@@ -1,11 +1,7 @@
 <div class="home-page">
   <!-- ── Seção: Meus Aquários ──────────────────────────────────────────────── -->
-  <section class="home-page__section" aria-labelledby="aquariums-title">
-    <div class="home-page__section-header">
-      <div>
-        <h2 id="aquariums-title" class="home-page__section-title">{{ t().homeMyAquariums }}</h2>
-        <p class="home-page__section-subtitle">{{ t().homeMyAquariumsSubtitle }}</p>
-      </div>
+  <section class="home-page__section" [attr.aria-label]="t().homeMyAquariums">
+    <div class="home-page__section-header home-page__section-header--actions-only">
       <a
         aqButton
         variant="flat"

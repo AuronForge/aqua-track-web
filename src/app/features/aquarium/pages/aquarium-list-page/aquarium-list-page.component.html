@@ -1,0 +1,39 @@
+<section class="aquarium-list-page" [attr.aria-label]="t().homeMyAquariums">
+  <div class="aquarium-list-page__header">
+    <a
+      aqButton
+      variant="flat"
+      color="primary"
+      size="medium"
+      class="aquarium-list-page__add-button"
+      routerLink="/aquariums/new"
+    >
+      <span class="material-icons-outlined" aria-hidden="true">add</span>
+      {{ t().aquariumListAddAction }}
+    </a>
+  </div>
+
+  @if (hasAquariums()) {
+    <div class="aquarium-list-page__grid">
+      @for (aquarium of aquariums(); track aquarium.id) {
+        <app-aquarium-summary-card [aquarium]="aquarium" />
+      }
+    </div>
+
+    <footer class="aquarium-list-page__footer" aria-label="Resumo dos aquários">
+      <p class="aquarium-list-page__totals">
+        {{ totalAquariumsLabel() }}
+        <span aria-hidden="true">•</span>
+        {{ combinedVolumeLabel() }}
+      </p>
+    </footer>
+  } @else {
+    <div class="aquarium-list-page__empty-state" role="status">
+      <span class="material-icons-outlined aquarium-list-page__empty-icon" aria-hidden="true">
+        water_drop
+      </span>
+      <h3 class="aquarium-list-page__empty-title">{{ t().aquariumListEmptyTitle }}</h3>
+      <p class="aquarium-list-page__empty-description">{{ t().aquariumListEmptyDescription }}</p>
+    </div>
+  }
+</section>

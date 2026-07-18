@@ -154,7 +154,7 @@ describe('AuthenticatedLayoutComponent', () => {
     const text = fixture.nativeElement.textContent;
 
     expect(text).toContain('Dashboard');
-    expect(text).not.toContain('Aquariums');
+    expect(text).toContain('Aquariums');
     expect(text).not.toContain('Measurements');
     expect(text).not.toContain('Alerts');
     expect(text).not.toContain('Settings');
