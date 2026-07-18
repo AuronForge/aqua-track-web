@@ -14,6 +14,32 @@
     </div>
   </header>
 
+  <section class="aquarium-create-page__card" aria-labelledby="aquarium-photo-title">
+    <div class="aquarium-create-page__section-header">
+      <h2 id="aquarium-photo-title" class="aquarium-create-page__section-title">
+        {{ t().aquariumCreatePhotoTitle }}
+      </h2>
+      <p class="aquarium-create-page__section-subtitle">{{ t().aquariumCreatePhotoSubtitle }}</p>
+    </div>
+
+    <aq-photo-upload
+      [label]="t().aquariumCreatePhotoDropLabel"
+      [browseLabel]="t().aquariumCreatePhotoBrowseLabel"
+      [hint]="t().aquariumCreatePhotoHint"
+      [invalidTypeMessage]="t().aquariumCreatePhotoInvalidType"
+      [maxSizeMessage]="t().aquariumCreatePhotoTooLarge"
+      [showPreview]="true"
+      (fileSelected)="onPhotoSelected($event)"
+      (fileRejected)="onPhotoRejected()"
+    />
+
+    @if (selectedPhotoName()) {
+      <p class="aquarium-create-page__photo-note">
+        {{ t().aquariumCreatePhotoLocalOnly }} {{ selectedPhotoName() }}
+      </p>
+    }
+  </section>
+
   <section
     class="aquarium-create-page__card aquarium-create-page__card--basic-info"
     aria-labelledby="aquarium-basic-info-title"
@@ -47,7 +73,6 @@
       [label]="t().aquariumCreateWaterTypeLabel"
       [hint]="aquariumWaterTypeHint()"
       [options]="aquariumWaterTypeOptions()"
-      [disabled]="waterTypeOptionsLoading() || waterTypeOptionsError()"
       [required]="true"
       [errorMessages]="requiredErrorMessages()"
     >
@@ -70,7 +95,6 @@
       [label]="t().aquariumCreateTypeLabel"
       [hint]="aquariumTypeHint()"
       [options]="aquariumTypeOptions()"
-      [disabled]="aquariumTypeDisabled()"
       [required]="true"
       [errorMessages]="requiredErrorMessages()"
     >
@@ -237,6 +261,144 @@
     </div>
   </section>
 
+  <section class="aquarium-create-page__card" aria-labelledby="aquarium-alert-configuration-title">
+    <div class="aquarium-create-page__section-header">
+      <h2 id="aquarium-alert-configuration-title" class="aquarium-create-page__section-title">
+        {{ t().aquariumCreateAlertConfigurationTitle }}
+      </h2>
+    </div>
+
+    <div class="aquarium-create-page__alert-channels" formGroupName="alertChannels">
+      <div class="aquarium-create-page__section-header">
+        <h3 class="aquarium-create-page__alert-subtitle">
+          {{ t().aquariumCreateAlertChannelsTitle }}
+        </h3>
+        <p class="aquarium-create-page__section-subtitle">
+          {{ t().aquariumCreateAlertChannelsSubtitle }}
+        </p>
+      </div>
+
+      <div class="aquarium-create-page__alert-channel-list">
+        <div class="aquarium-create-page__alert-item aquarium-create-page__alert-item--compact">
+          <div class="aquarium-create-page__alert-header">
+            <div class="aquarium-create-page__parameter-copy">
+              <span
+                class="material-icons-outlined aquarium-create-page__parameter-icon"
+                aria-hidden="true"
+              >
+                dashboard
+              </span>
+              <span class="aquarium-create-page__parameter-title">
+                {{ t().aquariumCreateAlertChannelDashboardLabel }}
+              </span>
+            </div>
+
+            <aq-switch
+              [checked]="isAlertChannelEnabled('dashboard')"
+              [ariaLabel]="t().aquariumCreateAlertChannelDashboardLabel"
+              (checkedChange)="onAlertChannelToggle('dashboard', $event)"
+            />
+          </div>
+        </div>
+
+        <div class="aquarium-create-page__alert-item aquarium-create-page__alert-item--compact">
+          <div class="aquarium-create-page__alert-header">
+            <div class="aquarium-create-page__parameter-copy">
+              <span
+                class="material-icons-outlined aquarium-create-page__parameter-icon"
+                aria-hidden="true"
+              >
+                alternate_email
+              </span>
+              <span class="aquarium-create-page__parameter-title">
+                {{ t().aquariumCreateAlertChannelEmailLabel }}
+              </span>
+            </div>
+
+            <aq-switch
+              [checked]="isAlertChannelEnabled('email')"
+              [ariaLabel]="t().aquariumCreateAlertChannelEmailLabel"
+              (checkedChange)="onAlertChannelToggle('email', $event)"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="aquarium-create-page__alert-subtitle">
+      {{ t().aquariumCreateAlertParametersTitle }}
+    </h3>
+
+    <p class="aquarium-create-page__section-subtitle">
+      {{ t().aquariumCreateAlertConfigurationSubtitle }}
+    </p>
+
+    <p class="aquarium-create-page__section-subtitle">
+      {{ t().aquariumCreateAlertConfigurationHint }}
+    </p>
+
+    <div class="aquarium-create-page__alert-list" formGroupName="alertParameters">
+      @for (option of displayParameterOptions(); track option.value) {
+        <div class="aquarium-create-page__alert-item" [formGroupName]="option.value">
+          <div class="aquarium-create-page__alert-header">
+            <div class="aquarium-create-page__parameter-copy">
+              <span
+                class="material-icons-outlined aquarium-create-page__parameter-icon"
+                aria-hidden="true"
+              >
+                {{ option.iconName }}
+              </span>
+              <span class="aquarium-create-page__parameter-title">{{ option.title }}</span>
+            </div>
+
+            <aq-switch
+              [checked]="isAlertParameterEnabled(option.value)"
+              [ariaLabel]="option.title"
+              (checkedChange)="onAlertParameterToggle(option.value, $event)"
+            />
+          </div>
+
+          @if (isAlertParameterEnabled(option.value)) {
+            <div class="aquarium-create-page__alert-grid">
+              <aq-text-formfield
+                formControlName="targetValue"
+                [label]="t().aquariumCreateAlertTargetLabel"
+                [placeholder]="t().aquariumCreateAlertTargetPlaceholder"
+                type="text"
+                inputmode="decimal"
+                prefixIcon="adjust"
+                [required]="true"
+                [errorMessages]="alertValueErrorMessages()"
+              />
+
+              <aq-text-formfield
+                formControlName="minimumValue"
+                [label]="t().aquariumCreateAlertMinimumLabel"
+                [placeholder]="t().aquariumCreateAlertMinimumPlaceholder"
+                type="text"
+                inputmode="decimal"
+                prefixIcon="south"
+                [required]="true"
+                [errorMessages]="alertValueErrorMessages()"
+              />
+
+              <aq-text-formfield
+                formControlName="maximumValue"
+                [label]="t().aquariumCreateAlertMaximumLabel"
+                [placeholder]="t().aquariumCreateAlertMaximumPlaceholder"
+                type="text"
+                inputmode="decimal"
+                prefixIcon="north"
+                [required]="true"
+                [errorMessages]="alertValueErrorMessages()"
+              />
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </section>
+
   <section class="aquarium-create-page__card" aria-labelledby="aquarium-details-title">
     <div class="aquarium-create-page__section-header">
       <h2 id="aquarium-details-title" class="aquarium-create-page__section-title">
@@ -256,32 +418,6 @@
     />
   </section>
 
-  <section class="aquarium-create-page__card" aria-labelledby="aquarium-photo-title">
-    <div class="aquarium-create-page__section-header">
-      <h2 id="aquarium-photo-title" class="aquarium-create-page__section-title">
-        {{ t().aquariumCreatePhotoTitle }}
-      </h2>
-      <p class="aquarium-create-page__section-subtitle">{{ t().aquariumCreatePhotoSubtitle }}</p>
-    </div>
-
-    <aq-photo-upload
-      [label]="t().aquariumCreatePhotoDropLabel"
-      [browseLabel]="t().aquariumCreatePhotoBrowseLabel"
-      [hint]="t().aquariumCreatePhotoHint"
-      [invalidTypeMessage]="t().aquariumCreatePhotoInvalidType"
-      [maxSizeMessage]="t().aquariumCreatePhotoTooLarge"
-      [showPreview]="true"
-      (fileSelected)="onPhotoSelected($event)"
-      (fileRejected)="onPhotoRejected()"
-    />
-
-    @if (selectedPhotoName()) {
-      <p class="aquarium-create-page__photo-note">
-        {{ t().aquariumCreatePhotoLocalOnly }} {{ selectedPhotoName() }}
-      </p>
-    }
-  </section>
-
   <div class="aquarium-create-page__actions">
     <button
       type="button"
@@ -293,9 +429,16 @@
     >
       {{ t().cancelLabel }}
     </button>
-    <button type="submit" aqButton variant="flat" color="primary" size="medium">
+    <button
+      type="submit"
+      aqButton
+      variant="flat"
+      color="primary"
+      size="medium"
+      [disabled]="form.invalid || isSubmitting()"
+    >
       <span class="material-icons" aria-hidden="true">water_drop</span>
-      {{ t().aquariumCreateSubmitLabel }}
+      {{ isSubmitting() ? t().aquariumCreateSubmittingLabel : t().aquariumCreateSubmitLabel }}
     </button>
   </div>
 </form>

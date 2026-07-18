@@ -226,6 +226,22 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
       'Escolha quais parâmetros devem aparecer quando este aquário for selecionado no dashboard.',
     aquariumCreateDisplayParametersHint:
       'Você pode marcar vários parâmetros para acompanhar na tela principal.',
+    aquariumCreateAlertConfigurationTitle: 'Configuração dos Alertas',
+    aquariumCreateAlertConfigurationSubtitle:
+      'Ative os alertas por parâmetro e configure o valor desejado com a faixa mínima e máxima.',
+    aquariumCreateAlertConfigurationHint: 'Exemplo para pH: alvo 7,0, mínimo 6,6 e máximo 7,2.',
+    aquariumCreateAlertChannelsTitle: 'Meios de Alerta',
+    aquariumCreateAlertChannelsSubtitle:
+      'Escolha por quais canais o usuário deverá ser avisado quando houver alertas.',
+    aquariumCreateAlertChannelDashboardLabel: 'Dashboard',
+    aquariumCreateAlertChannelEmailLabel: 'Email',
+    aquariumCreateAlertParametersTitle: 'Parametrização dos alertas',
+    aquariumCreateAlertMinimumLabel: 'Valor mínimo',
+    aquariumCreateAlertMinimumPlaceholder: 'ex.: 6,5',
+    aquariumCreateAlertMaximumLabel: 'Valor máximo',
+    aquariumCreateAlertMaximumPlaceholder: 'ex.: 7,5',
+    aquariumCreateAlertTargetLabel: 'Valor desejado',
+    aquariumCreateAlertTargetPlaceholder: 'ex.: 7,0',
     aquariumCreateDetailsTitle: 'Detalhes Adicionais',
     aquariumCreateDetailsSubtitle: 'Adicione informações adicionais sobre seu aquário.',
     aquariumCreateDescriptionLabel: 'Observações',
@@ -238,11 +254,17 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     aquariumCreatePhotoInvalidType: 'Escolha uma imagem JPG, PNG ou WebP.',
     aquariumCreatePhotoTooLarge: 'A imagem deve ter no máximo 5MB.',
     aquariumCreatePhotoLocalOnly: 'Imagem selecionada localmente, ainda não será enviada:',
+    aquariumCreateSubmittingLabel: 'Criando aquário...',
     aquariumCreateSubmitLabel: 'Criar Aquário',
     aquariumCreateRequiredError: 'Campo obrigatório.',
     aquariumCreateNumberError: 'Informe um número válido.',
     aquariumCreatePositiveNumberError: 'Informe um valor maior que zero.',
+    aquariumCreateAlertMaximumRangeError: 'O valor máximo deve ser maior que o valor mínimo.',
+    aquariumCreateAlertTargetRangeError:
+      'O valor desejado precisa estar entre o mínimo e o máximo.',
     aquariumCreateValidationSummary: 'Revise os campos destacados antes de continuar.',
+    aquariumCreateSuccessMessage: 'Aquário criado com sucesso.',
+    aquariumCreateErrorMessage: 'Não foi possível criar o aquário. Tente novamente.',
     aquariumCreateApiDisabledMessage:
       'Payload gerado com sucesso. A integração com a API ainda não está habilitada.',
 
@@ -596,6 +618,23 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
       'Choose which parameters should appear when this aquarium is selected on the dashboard.',
     aquariumCreateDisplayParametersHint:
       'You can select multiple parameters to track on the main screen.',
+    aquariumCreateAlertConfigurationTitle: 'Alert Configuration',
+    aquariumCreateAlertConfigurationSubtitle:
+      'Enable alerts per parameter and configure the desired value with minimum and maximum limits.',
+    aquariumCreateAlertConfigurationHint:
+      'Example for pH: target 7.0, minimum 6.6, and maximum 7.2.',
+    aquariumCreateAlertChannelsTitle: 'Alert Channels',
+    aquariumCreateAlertChannelsSubtitle:
+      'Choose which channels should notify the user when alerts are triggered.',
+    aquariumCreateAlertChannelDashboardLabel: 'Dashboard',
+    aquariumCreateAlertChannelEmailLabel: 'Email',
+    aquariumCreateAlertParametersTitle: 'Alert parameterization',
+    aquariumCreateAlertMinimumLabel: 'Minimum value',
+    aquariumCreateAlertMinimumPlaceholder: 'e.g., 6.5',
+    aquariumCreateAlertMaximumLabel: 'Maximum value',
+    aquariumCreateAlertMaximumPlaceholder: 'e.g., 7.5',
+    aquariumCreateAlertTargetLabel: 'Desired value',
+    aquariumCreateAlertTargetPlaceholder: 'e.g., 7.0',
     aquariumCreateDetailsTitle: 'Additional Details',
     aquariumCreateDetailsSubtitle: 'Add extra information about your aquarium.',
     aquariumCreateDescriptionLabel: 'Notes',
@@ -608,11 +647,17 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     aquariumCreatePhotoInvalidType: 'Choose a JPG, PNG, or WebP image.',
     aquariumCreatePhotoTooLarge: 'The image must be at most 5MB.',
     aquariumCreatePhotoLocalOnly: 'Image selected locally and will not be uploaded yet:',
+    aquariumCreateSubmittingLabel: 'Creating aquarium...',
     aquariumCreateSubmitLabel: 'Create Aquarium',
     aquariumCreateRequiredError: 'This field is required.',
     aquariumCreateNumberError: 'Enter a valid number.',
     aquariumCreatePositiveNumberError: 'Enter a value greater than zero.',
+    aquariumCreateAlertMaximumRangeError: 'The maximum value must be greater than the minimum.',
+    aquariumCreateAlertTargetRangeError:
+      'The desired value must stay between the minimum and maximum.',
     aquariumCreateValidationSummary: 'Review the highlighted fields before continuing.',
+    aquariumCreateSuccessMessage: 'Aquarium created successfully.',
+    aquariumCreateErrorMessage: 'Could not create the aquarium. Please try again.',
     aquariumCreateApiDisabledMessage:
       'Payload generated successfully. API integration is not enabled yet.',
 
@@ -971,6 +1016,22 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
       'Elige qué parámetros deben aparecer cuando este acuario sea seleccionado en el dashboard.',
     aquariumCreateDisplayParametersHint:
       'Puedes marcar varios parámetros para seguirlos en la pantalla principal.',
+    aquariumCreateAlertConfigurationTitle: 'Configuración de Alertas',
+    aquariumCreateAlertConfigurationSubtitle:
+      'Activa las alertas por parámetro y configura el valor deseado con límites mínimo y máximo.',
+    aquariumCreateAlertConfigurationHint: 'Ejemplo para pH: objetivo 7,0, mínimo 6,6 y máximo 7,2.',
+    aquariumCreateAlertChannelsTitle: 'Canales de Alerta',
+    aquariumCreateAlertChannelsSubtitle:
+      'Elige por qué canales se debe avisar al usuario cuando haya alertas.',
+    aquariumCreateAlertChannelDashboardLabel: 'Dashboard',
+    aquariumCreateAlertChannelEmailLabel: 'Correo',
+    aquariumCreateAlertParametersTitle: 'Parametrización de alertas',
+    aquariumCreateAlertMinimumLabel: 'Valor mínimo',
+    aquariumCreateAlertMinimumPlaceholder: 'ej.: 6,5',
+    aquariumCreateAlertMaximumLabel: 'Valor máximo',
+    aquariumCreateAlertMaximumPlaceholder: 'ej.: 7,5',
+    aquariumCreateAlertTargetLabel: 'Valor deseado',
+    aquariumCreateAlertTargetPlaceholder: 'ej.: 7,0',
     aquariumCreateDetailsTitle: 'Detalles Adicionales',
     aquariumCreateDetailsSubtitle: 'Agrega información adicional sobre tu acuario.',
     aquariumCreateDescriptionLabel: 'Observaciones',
@@ -983,11 +1044,16 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     aquariumCreatePhotoInvalidType: 'Elige una imagen JPG, PNG o WebP.',
     aquariumCreatePhotoTooLarge: 'La imagen debe tener como máximo 5MB.',
     aquariumCreatePhotoLocalOnly: 'Imagen seleccionada localmente, aún no se enviará:',
+    aquariumCreateSubmittingLabel: 'Creando acuario...',
     aquariumCreateSubmitLabel: 'Crear Acuario',
     aquariumCreateRequiredError: 'Campo obligatorio.',
     aquariumCreateNumberError: 'Ingresa un número válido.',
     aquariumCreatePositiveNumberError: 'Ingresa un valor mayor que cero.',
+    aquariumCreateAlertMaximumRangeError: 'El valor máximo debe ser mayor que el valor mínimo.',
+    aquariumCreateAlertTargetRangeError: 'El valor deseado debe estar entre el mínimo y el máximo.',
     aquariumCreateValidationSummary: 'Revisa los campos destacados antes de continuar.',
+    aquariumCreateSuccessMessage: 'Acuario creado correctamente.',
+    aquariumCreateErrorMessage: 'No se pudo crear el acuario. Inténtalo de nuevo.',
     aquariumCreateApiDisabledMessage:
       'Payload generado correctamente. La integración con la API aún no está habilitada.',
 

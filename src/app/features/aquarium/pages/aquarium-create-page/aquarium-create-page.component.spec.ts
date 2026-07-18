@@ -15,6 +15,7 @@ import {
 } from '../../constants/aquarium-display-parameter-options.constant';
 import { CreateAquariumPayload } from '../../models/aquarium-api.dto';
 import { SystemValueApiDto } from '../../models/system-value-api.dto';
+import { AquariumApiService } from '../../services/aquarium-api.service';
 import { SystemValuesApiService } from '../../services/system-values-api.service';
 
 const mockWaterTypes: SystemValueApiDto[] = [
@@ -95,7 +96,9 @@ const buildLanguageServiceMock = (lang: 'pt' | 'en' | 'es' = 'pt') => ({
 const buildPageTitleMock = () => ({ set: jest.fn() });
 
 const buildFeedbackMock = () => ({
+  showError: jest.fn(),
   showInformation: jest.fn(),
+  showSuccess: jest.fn(),
   showWarning: jest.fn(),
 });
 
@@ -110,8 +113,60 @@ const buildSystemValuesApiServiceMock = ({
   listAquariumTypes: jest.fn(() => aquariumTypesResponse),
 });
 
+const buildAquariumApiServiceMock = ({
+  createResponse = of({
+    id: 'aq-1',
+    ownerId: 'user-1',
+    name: 'Comunitario 60L',
+    description: 'Plantado com neons',
+    type: 'COMMUNITY',
+    waterType: 'FRESHWATER' as const,
+    volume: 102.38,
+    volumeUnit: 'LITER' as const,
+    setupDate: '2026-07-09T00:00:00.000Z',
+    primaryPhotoUrl: null,
+    photosCount: 0,
+    displayPreferences: {
+      displayPH: true,
+      displayGH: false,
+      displayKH: false,
+      displayNitrate: false,
+      displayNitrite: false,
+      displayAmmonia: false,
+      displayTemperature: true,
+      displayTDS: false,
+      displayCopper: false,
+      displayPhosphate: false,
+      displayIron: false,
+      displayCO2: false,
+      displayO2: false,
+      displayCalcium: false,
+      displaySilicates: false,
+      displayDensitySalinity: false,
+      displayMagnesium: false,
+      displayIodine: false,
+      displayMolybdenum: false,
+      displayStrontium: false,
+      displayPotassium: false,
+    },
+    alertParameters: {},
+    status: 'ACTIVE',
+    createdAt: '2026-07-16T19:20:03.239Z',
+    updatedAt: '2026-07-16T19:20:03.239Z',
+    deletedAt: null,
+  }),
+  uploadPhotoResponse = of(null),
+}: {
+  createResponse?: Observable<unknown>;
+  uploadPhotoResponse?: Observable<unknown>;
+} = {}) => ({
+  createAquarium: jest.fn(() => createResponse),
+  uploadAquariumPhoto: jest.fn(() => uploadPhotoResponse),
+});
+
 type AquariumCreateComponentTestApi = AquariumCreatePageComponent & {
   form: FormGroup;
+  isSubmitting: () => boolean;
   lastPayload: () => CreateAquariumPayload | null;
   onSubmit: () => void;
 };
@@ -120,14 +175,16 @@ async function createFixture(
   pageTitleMock = buildPageTitleMock(),
   feedbackMock = buildFeedbackMock(),
   systemValuesApiServiceMock = buildSystemValuesApiServiceMock(),
+  aquariumApiServiceMock = buildAquariumApiServiceMock(),
 ): Promise<ComponentFixture<AquariumCreatePageComponent>> {
   await TestBed.configureTestingModule({
     imports: [AquariumCreatePageComponent],
     providers: [
-      provideRouter([]),
+      provideRouter([{ path: 'home', children: [] }]),
       { provide: PageTitleService, useValue: pageTitleMock },
       { provide: LanguageService, useValue: buildLanguageServiceMock() },
       { provide: FeedbackMessageService, useValue: feedbackMock },
+      { provide: AquariumApiService, useValue: aquariumApiServiceMock },
       { provide: SystemValuesApiService, useValue: systemValuesApiServiceMock },
     ],
   }).compileComponents();
@@ -153,6 +210,21 @@ function fillValidForm(component: AquariumCreateComponentTestApi): void {
     heightCm: '65',
     volume: '',
     displayParameters: DEFAULT_DISPLAY_PARAMETER_KEYS,
+    alertChannels: {
+      dashboard: true,
+      email: false,
+    },
+    alertParameters: Object.fromEntries(
+      ALL_DISPLAY_PARAMETER_KEYS.map((key) => [
+        key,
+        {
+          enabled: key === 'displayPH',
+          minimumValue: key === 'displayPH' ? '6.6' : '',
+          maximumValue: key === 'displayPH' ? '7.2' : '',
+          targetValue: key === 'displayPH' ? '7.0' : '',
+        },
+      ]),
+    ),
     description: 'Plantado com neons',
   });
 }
@@ -175,6 +247,7 @@ describe('AquariumCreatePageComponent', () => {
     expect(text).toContain(TRANSLATIONS.pt.aquariumCreateBasicInfoTitle);
     expect(text).toContain(TRANSLATIONS.pt.aquariumCreateDimensionsTitle);
     expect(text).toContain(TRANSLATIONS.pt.aquariumCreateDisplayParametersTitle);
+    expect(text).toContain(TRANSLATIONS.pt.aquariumCreateAlertConfigurationTitle);
     expect(text).toContain(TRANSLATIONS.pt.aquariumCreateDetailsTitle);
     expect(text).toContain(TRANSLATIONS.pt.aquariumCreatePhotoTitle);
   });
@@ -247,10 +320,18 @@ describe('AquariumCreatePageComponent', () => {
     );
   });
 
-  it('generates the payload locally without calling an API', async () => {
+  it('submits the payload to the API and navigates on success', async () => {
     const feedbackMock = buildFeedbackMock();
-    const fixture = await createFixture(buildPageTitleMock(), feedbackMock);
+    const aquariumApiServiceMock = buildAquariumApiServiceMock();
+    const fixture = await createFixture(
+      buildPageTitleMock(),
+      feedbackMock,
+      buildSystemValuesApiServiceMock(),
+      aquariumApiServiceMock,
+    );
     const component = componentApi(fixture);
+    const router = TestBed.inject(Router);
+    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
 
     fillValidForm(component);
     component.onSubmit();
@@ -267,16 +348,68 @@ describe('AquariumCreatePageComponent', () => {
         displayPH: true,
         displayTemperature: true,
       }),
+      alertParameters: {
+        displayPH: {
+          minimumValue: 6.6,
+          maximumValue: 7.2,
+          targetValue: 7,
+        },
+      },
     });
-    expect(feedbackMock.showInformation).toHaveBeenCalledWith(
-      TRANSLATIONS.pt.aquariumCreateApiDisabledMessage,
+    expect(aquariumApiServiceMock.createAquarium).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'Comunitario 60L',
+        type: 'COMMUNITY',
+        waterType: 'FRESHWATER',
+      }),
+    );
+    expect(feedbackMock.showSuccess).toHaveBeenCalledWith(
+      TRANSLATIONS.pt.aquariumCreateSuccessMessage,
       expect.objectContaining({ hasIcon: true }),
     );
+    expect(navigateSpy).toHaveBeenCalledWith(['/home']);
+    expect(component.isSubmitting()).toBe(false);
   });
 
-  it('generates the payload using direct volume when dimensions mode is disabled', async () => {
+  it('uploads the selected photo after creating the aquarium', async () => {
     const feedbackMock = buildFeedbackMock();
-    const fixture = await createFixture(buildPageTitleMock(), feedbackMock);
+    const aquariumApiServiceMock = buildAquariumApiServiceMock();
+    const fixture = await createFixture(
+      buildPageTitleMock(),
+      feedbackMock,
+      buildSystemValuesApiServiceMock(),
+      aquariumApiServiceMock,
+    );
+    const component = componentApi(fixture) as AquariumCreateComponentTestApi & {
+      onPhotoSelected: (file: File) => void;
+    };
+    const router = TestBed.inject(Router);
+    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const file = new File(['image'], 'aquarium.jpg', { type: 'image/jpeg' });
+
+    fillValidForm(component);
+    component.onPhotoSelected(file);
+    component.onSubmit();
+
+    expect(aquariumApiServiceMock.createAquarium).toHaveBeenCalledTimes(1);
+    expect(aquariumApiServiceMock.uploadAquariumPhoto).toHaveBeenCalledWith('aq-1', file);
+    expect(feedbackMock.showSuccess).toHaveBeenCalledWith(
+      TRANSLATIONS.pt.aquariumCreateSuccessMessage,
+      expect.objectContaining({ hasIcon: true }),
+    );
+    expect(navigateSpy).toHaveBeenCalledWith(['/home']);
+    expect(component.isSubmitting()).toBe(false);
+  });
+
+  it('submits the payload using direct volume when dimensions mode is disabled', async () => {
+    const feedbackMock = buildFeedbackMock();
+    const aquariumApiServiceMock = buildAquariumApiServiceMock();
+    const fixture = await createFixture(
+      buildPageTitleMock(),
+      feedbackMock,
+      buildSystemValuesApiServiceMock(),
+      aquariumApiServiceMock,
+    );
     const component = componentApi(fixture);
 
     component.form.setValue({
@@ -290,6 +423,21 @@ describe('AquariumCreatePageComponent', () => {
       heightCm: '',
       volume: '120',
       displayParameters: ['displayPH', 'displayTemperature'],
+      alertChannels: {
+        dashboard: true,
+        email: true,
+      },
+      alertParameters: Object.fromEntries(
+        ALL_DISPLAY_PARAMETER_KEYS.map((key) => [
+          key,
+          {
+            enabled: key === 'displayTemperature',
+            minimumValue: key === 'displayTemperature' ? '24' : '',
+            maximumValue: key === 'displayTemperature' ? '27' : '',
+            targetValue: key === 'displayTemperature' ? '25' : '',
+          },
+        ]),
+      ),
       description: 'Recife principal',
     });
     component.onSubmit();
@@ -307,8 +455,196 @@ describe('AquariumCreatePageComponent', () => {
         displayTemperature: true,
         displayGH: false,
       }),
+      alertParameters: {
+        displayTemperature: {
+          minimumValue: 24,
+          maximumValue: 27,
+          targetValue: 25,
+        },
+      },
     });
-    expect(feedbackMock.showInformation).toHaveBeenCalled();
+    expect(aquariumApiServiceMock.createAquarium).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'Marinho 120L',
+        type: 'REEF_TANK',
+        waterType: 'SALTWATER',
+        volume: 120,
+      }),
+    );
+    expect(feedbackMock.showSuccess).toHaveBeenCalled();
+  });
+
+  it('shows an error message and clears loading when the API fails', async () => {
+    const feedbackMock = buildFeedbackMock();
+    const aquariumApiServiceMock = buildAquariumApiServiceMock({
+      createResponse: throwError(() => new Error('create failed')),
+    });
+    const fixture = await createFixture(
+      buildPageTitleMock(),
+      feedbackMock,
+      buildSystemValuesApiServiceMock(),
+      aquariumApiServiceMock,
+    );
+    const component = componentApi(fixture);
+
+    fillValidForm(component);
+    component.onSubmit();
+
+    expect(feedbackMock.showError).toHaveBeenCalledWith(
+      TRANSLATIONS.pt.aquariumCreateErrorMessage,
+      expect.objectContaining({ hasIcon: true }),
+    );
+    expect(component.isSubmitting()).toBe(false);
+  });
+
+  it('shows an error message when the photo upload fails after aquarium creation', async () => {
+    const feedbackMock = buildFeedbackMock();
+    const aquariumApiServiceMock = buildAquariumApiServiceMock({
+      uploadPhotoResponse: throwError(() => new Error('upload failed')),
+    });
+    const fixture = await createFixture(
+      buildPageTitleMock(),
+      feedbackMock,
+      buildSystemValuesApiServiceMock(),
+      aquariumApiServiceMock,
+    );
+    const component = componentApi(fixture) as AquariumCreateComponentTestApi & {
+      onPhotoSelected: (file: File) => void;
+    };
+    const router = TestBed.inject(Router);
+    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    fillValidForm(component);
+    component.onPhotoSelected(new File(['image'], 'aquarium.jpg', { type: 'image/jpeg' }));
+    component.onSubmit();
+
+    expect(aquariumApiServiceMock.createAquarium).toHaveBeenCalledTimes(1);
+    expect(aquariumApiServiceMock.uploadAquariumPhoto).toHaveBeenCalledTimes(1);
+    expect(feedbackMock.showError).toHaveBeenCalledWith(
+      TRANSLATIONS.pt.aquariumCreateErrorMessage,
+      expect.objectContaining({ hasIcon: true }),
+    );
+    expect(navigateSpy).not.toHaveBeenCalled();
+    expect(component.isSubmitting()).toBe(false);
+  });
+
+  it('keeps the submitting state until the create request completes', async () => {
+    const pendingResponse = new Subject<unknown>();
+    const aquariumApiServiceMock = buildAquariumApiServiceMock({
+      createResponse: pendingResponse.asObservable(),
+    });
+    const fixture = await createFixture(
+      buildPageTitleMock(),
+      buildFeedbackMock(),
+      buildSystemValuesApiServiceMock(),
+      aquariumApiServiceMock,
+    );
+    const component = componentApi(fixture);
+
+    fillValidForm(component);
+    component.onSubmit();
+
+    expect(component.isSubmitting()).toBe(true);
+
+    pendingResponse.next({});
+    pendingResponse.complete();
+
+    expect(component.isSubmitting()).toBe(false);
+  });
+
+  it('does not submit again while the create request is already in progress', async () => {
+    const pendingResponse = new Subject<unknown>();
+    const aquariumApiServiceMock = buildAquariumApiServiceMock({
+      createResponse: pendingResponse.asObservable(),
+    });
+    const fixture = await createFixture(
+      buildPageTitleMock(),
+      buildFeedbackMock(),
+      buildSystemValuesApiServiceMock(),
+      aquariumApiServiceMock,
+    );
+    const component = componentApi(fixture);
+
+    fillValidForm(component);
+    component.onSubmit();
+    component.onSubmit();
+
+    expect(aquariumApiServiceMock.createAquarium).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders the alert configuration fields', async () => {
+    const fixture = await createFixture();
+    const section = fixture.nativeElement.querySelector(
+      '[aria-labelledby="aquarium-alert-configuration-title"]',
+    ) as HTMLElement;
+    const toggles = Array.from(section.querySelectorAll('aq-switch'));
+
+    expect(toggles).toHaveLength(ALL_DISPLAY_PARAMETER_KEYS.length + 2);
+    expect(section.textContent).toContain(TRANSLATIONS.pt.aquariumCreateAlertConfigurationTitle);
+    expect(section.textContent).toContain(TRANSLATIONS.pt.aquariumCreateAlertChannelsTitle);
+    expect(section.textContent).toContain(TRANSLATIONS.pt.aquariumCreateAlertChannelDashboardLabel);
+    expect(section.textContent).toContain(TRANSLATIONS.pt.aquariumCreateAlertChannelEmailLabel);
+    expect(section.textContent).toContain(TRANSLATIONS.pt.paramNamePh);
+    expect(section.textContent).toContain(TRANSLATIONS.pt.paramNameTemperature);
+  });
+
+  it('updates selected alert channels when toggles change', async () => {
+    const fixture = await createFixture();
+    const component = componentApi(fixture) as AquariumCreateComponentTestApi & {
+      onAlertChannelToggle: (channel: 'dashboard' | 'email', checked: boolean) => void;
+    };
+
+    component.onAlertChannelToggle('dashboard', false);
+    component.onAlertChannelToggle('email', true);
+
+    expect(component.form.controls.alertChannels.value).toEqual({
+      dashboard: false,
+      email: true,
+    });
+  });
+
+  it('shows alert fields only after enabling a parameter alert', async () => {
+    const fixture = await createFixture();
+    const component = componentApi(fixture) as AquariumCreateComponentTestApi & {
+      onAlertParameterToggle: (parameter: string, checked: boolean) => void;
+    };
+
+    expect(
+      fixture.nativeElement.querySelectorAll(
+        '[aria-labelledby="aquarium-alert-configuration-title"] aq-text-formfield',
+      ).length,
+    ).toBe(0);
+
+    component.onAlertParameterToggle('displayPH', true);
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelectorAll(
+        '[aria-labelledby="aquarium-alert-configuration-title"] aq-text-formfield',
+      ).length,
+    ).toBe(3);
+  });
+
+  it('marks alert fields as invalid when the configured range is inconsistent', async () => {
+    const fixture = await createFixture();
+    const component = componentApi(fixture) as AquariumCreateComponentTestApi & {
+      onAlertParameterToggle: (parameter: string, checked: boolean) => void;
+    };
+
+    const phGroup = component.form.controls.alertParameters.controls.displayPH;
+    component.onAlertParameterToggle('displayPH', true);
+    fixture.detectChanges();
+
+    phGroup.patchValue({
+      minimumValue: '7.5',
+      maximumValue: '6.5',
+      targetValue: '8',
+    });
+    fixture.detectChanges();
+
+    expect(phGroup.controls.maximumValue.hasError('alertMaximumRange')).toBe(true);
+    expect(phGroup.controls.targetValue.hasError('alertTargetRange')).toBe(true);
+    expect(component.form.valid).toBe(false);
   });
 
   it('loads dashboard display parameter options selected by default', async () => {
@@ -604,14 +940,18 @@ describe('AquariumCreatePageComponent', () => {
     const fixture = await createFixture();
     const component = componentApi(fixture) as AquariumCreateComponentTestApi & {
       selectedPhotoName: () => string | null;
+      selectedPhotoFile: () => File | null;
       onPhotoSelected: (file: File) => void;
       onPhotoRejected: () => void;
     };
+    const file = new File(['image'], 'reef.webp', { type: 'image/webp' });
 
-    component.onPhotoSelected(new File(['image'], 'reef.webp', { type: 'image/webp' }));
+    component.onPhotoSelected(file);
     expect(component.selectedPhotoName()).toBe('reef.webp');
+    expect(component.selectedPhotoFile()).toBe(file);
 
     component.onPhotoRejected();
     expect(component.selectedPhotoName()).toBeNull();
+    expect(component.selectedPhotoFile()).toBeNull();
   });
 });

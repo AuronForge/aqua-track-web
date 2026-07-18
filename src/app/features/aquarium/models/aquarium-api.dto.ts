@@ -35,6 +35,14 @@ export interface AquariumDisplayPreferencesValues {
   readonly displayPotassium: boolean;
 }
 
+export interface AquariumAlertParameterPreferencesValues {
+  readonly minimumValue: number;
+  readonly maximumValue: number;
+  readonly targetValue: number;
+}
+
+export type AquariumAlertParameterPreference = AquariumAlertParameterPreferencesValues | false;
+
 export interface CreateAquariumPayload {
   readonly name: string;
   readonly description?: string | null;
@@ -44,4 +52,5 @@ export interface CreateAquariumPayload {
   readonly volumeUnit: AquariumVolumeUnit;
   readonly setupDate: string;
   readonly displayPreferences: AquariumDisplayPreferencesValues;
+  readonly alertParameters: Record<string, AquariumAlertParameterPreference>;
 }

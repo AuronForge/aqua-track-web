@@ -100,6 +100,60 @@
   gap: theme.$aq-space-md;
 }
 
+.aquarium-create-page__alert-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: theme.$aq-space-md;
+}
+
+.aquarium-create-page__alert-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: theme.$aq-space-md;
+}
+
+.aquarium-create-page__alert-item {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-md;
+  padding: theme.$aq-space-md;
+  border: 1px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-md;
+  background: color-mix(in srgb, theme.$aq-color-surface 92%, theme.$aq-color-surface-accent 8%);
+}
+
+.aquarium-create-page__alert-channels {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-md;
+}
+
+.aquarium-create-page__alert-channel-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: theme.$aq-space-md;
+}
+
+.aquarium-create-page__alert-subtitle {
+  margin: 0;
+  color: theme.$aq-color-text-primary;
+  font-size: theme.$aq-font-size-md;
+  font-weight: theme.$aq-font-weight-semibold;
+  line-height: theme.$aq-line-height-tight;
+}
+
+.aquarium-create-page__alert-item--compact {
+  min-height: auto;
+}
+
+.aquarium-create-page__alert-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: theme.$aq-space-md;
+}
+
 .aquarium-create-page__dimension-mode {
   display: flex;
   flex-direction: column;
@@ -202,6 +256,10 @@
 }
 
 @media (width <= 1080px) {
+  .aquarium-create-page__alert-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .aquarium-create-page__parameter-list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -293,6 +351,22 @@
   }
 
   .aquarium-create-page__dimensions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .aquarium-create-page__alert-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .aquarium-create-page__alert-list {
+    grid-template-columns: 1fr;
+  }
+
+  .aquarium-create-page__alert-header {
+    align-items: flex-start;
+  }
+
+  .aquarium-create-page__alert-channel-list {
     grid-template-columns: 1fr;
   }
 

@@ -1,9 +1,43 @@
-import { mapDisplayParameterSelectionToPreferences } from '../constants/aquarium-display-parameter-options.constant';
+import {
+  ALL_DISPLAY_PARAMETER_KEYS,
+  mapDisplayParameterSelectionToPreferences,
+} from '../constants/aquarium-display-parameter-options.constant';
 import { AQUARIUM_TYPE_MAPPINGS } from '../constants/aquarium-type-options.constant';
 import { CreateAquariumPayload } from '../models/aquarium-api.dto';
 import { AquariumCreateFormValue } from '../models/aquarium-create-form-value.model';
 import { calculateAquariumVolumeLiters, parseLocalizedNumber } from '../utils/aquarium-volume.util';
 import { dateOnlyToIso } from '../utils/date-only-to-iso.util';
+
+function mapAlertParameters(
+  value: AquariumCreateFormValue,
+): CreateAquariumPayload['alertParameters'] {
+  return Object.fromEntries(
+    ALL_DISPLAY_PARAMETER_KEYS.map((key) => {
+      const parameter = value.alertParameters[key];
+
+      if (!parameter.enabled) {
+        return [key, false];
+      }
+
+      const minimumValue = parseLocalizedNumber(parameter.minimumValue);
+      const maximumValue = parseLocalizedNumber(parameter.maximumValue);
+      const targetValue = parseLocalizedNumber(parameter.targetValue);
+
+      if (minimumValue === null || maximumValue === null || targetValue === null) {
+        throw new Error(`Alert parameter "${key}" must contain valid numeric thresholds.`);
+      }
+
+      return [
+        key,
+        {
+          minimumValue,
+          maximumValue,
+          targetValue,
+        },
+      ];
+    }),
+  );
+}
 
 export function mapAquariumCreateFormToPayload(
   value: AquariumCreateFormValue,
@@ -44,5 +78,6 @@ export function mapAquariumCreateFormToPayload(
     volumeUnit: 'LITER',
     setupDate: dateOnlyToIso(value.setupDate),
     displayPreferences: mapDisplayParameterSelectionToPreferences(value.displayParameters),
+    alertParameters: mapAlertParameters(value),
   };
 }

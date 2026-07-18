@@ -218,6 +218,20 @@ export interface TranslationDictionary {
   readonly aquariumCreateDisplayParametersTitle: string;
   readonly aquariumCreateDisplayParametersSubtitle: string;
   readonly aquariumCreateDisplayParametersHint: string;
+  readonly aquariumCreateAlertConfigurationTitle: string;
+  readonly aquariumCreateAlertConfigurationSubtitle: string;
+  readonly aquariumCreateAlertConfigurationHint: string;
+  readonly aquariumCreateAlertChannelsTitle: string;
+  readonly aquariumCreateAlertChannelsSubtitle: string;
+  readonly aquariumCreateAlertChannelDashboardLabel: string;
+  readonly aquariumCreateAlertChannelEmailLabel: string;
+  readonly aquariumCreateAlertParametersTitle: string;
+  readonly aquariumCreateAlertMinimumLabel: string;
+  readonly aquariumCreateAlertMinimumPlaceholder: string;
+  readonly aquariumCreateAlertMaximumLabel: string;
+  readonly aquariumCreateAlertMaximumPlaceholder: string;
+  readonly aquariumCreateAlertTargetLabel: string;
+  readonly aquariumCreateAlertTargetPlaceholder: string;
   readonly aquariumCreateDetailsTitle: string;
   readonly aquariumCreateDetailsSubtitle: string;
   readonly aquariumCreateDescriptionLabel: string;
@@ -230,11 +244,16 @@ export interface TranslationDictionary {
   readonly aquariumCreatePhotoInvalidType: string;
   readonly aquariumCreatePhotoTooLarge: string;
   readonly aquariumCreatePhotoLocalOnly: string;
+  readonly aquariumCreateSubmittingLabel: string;
   readonly aquariumCreateSubmitLabel: string;
   readonly aquariumCreateRequiredError: string;
   readonly aquariumCreateNumberError: string;
   readonly aquariumCreatePositiveNumberError: string;
+  readonly aquariumCreateAlertMaximumRangeError: string;
+  readonly aquariumCreateAlertTargetRangeError: string;
   readonly aquariumCreateValidationSummary: string;
+  readonly aquariumCreateSuccessMessage: string;
+  readonly aquariumCreateErrorMessage: string;
   readonly aquariumCreateApiDisabledMessage: string;
 
   // Measurement — create page (placeholder)

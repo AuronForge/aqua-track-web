@@ -1,6 +1,9 @@
 import { AquariumTypeOptionId } from '../models/aquarium-type-option.model';
 import { mapAquariumCreateFormToPayload } from './aquarium-create.mapper';
-import { DEFAULT_DISPLAY_PARAMETER_KEYS } from '../constants/aquarium-display-parameter-options.constant';
+import {
+  ALL_DISPLAY_PARAMETER_KEYS,
+  DEFAULT_DISPLAY_PARAMETER_KEYS,
+} from '../constants/aquarium-display-parameter-options.constant';
 
 describe('mapAquariumCreateFormToPayload', () => {
   const buildFormValue = (aquariumType: AquariumTypeOptionId = 'COMMUNITY_TANK') => ({
@@ -14,6 +17,21 @@ describe('mapAquariumCreateFormToPayload', () => {
     heightCm: '30',
     volume: '',
     displayParameters: DEFAULT_DISPLAY_PARAMETER_KEYS,
+    alertChannels: {
+      dashboard: true,
+      email: false,
+    },
+    alertParameters: Object.fromEntries(
+      ALL_DISPLAY_PARAMETER_KEYS.map((key) => [
+        key,
+        {
+          enabled: key === 'displayPH',
+          minimumValue: key === 'displayPH' ? '6.6' : '',
+          maximumValue: key === 'displayPH' ? '7.2' : '',
+          targetValue: key === 'displayPH' ? '7.0' : '',
+        },
+      ]),
+    ),
     description: '  Plantado com neons  ',
   });
 
@@ -33,6 +51,33 @@ describe('mapAquariumCreateFormToPayload', () => {
         displayTemperature: true,
         displayPotassium: true,
       }),
+      alertParameters: {
+        displayPH: {
+          minimumValue: 6.6,
+          maximumValue: 7.2,
+          targetValue: 7,
+        },
+        displayGH: false,
+        displayKH: false,
+        displayNitrate: false,
+        displayNitrite: false,
+        displayAmmonia: false,
+        displayTemperature: false,
+        displayTDS: false,
+        displayCopper: false,
+        displayPhosphate: false,
+        displayIron: false,
+        displayCO2: false,
+        displayO2: false,
+        displayCalcium: false,
+        displaySilicates: false,
+        displayDensitySalinity: false,
+        displayMagnesium: false,
+        displayIodine: false,
+        displayMolybdenum: false,
+        displayStrontium: false,
+        displayPotassium: false,
+      },
     });
     expect(payload).not.toHaveProperty('lengthCm');
     expect(payload).not.toHaveProperty('widthCm');
@@ -127,6 +172,53 @@ describe('mapAquariumCreateFormToPayload', () => {
       displayNitrite: false,
       displayAmmonia: true,
       displayTemperature: true,
+      displayTDS: false,
+      displayCopper: false,
+      displayPhosphate: false,
+      displayIron: false,
+      displayCO2: false,
+      displayO2: false,
+      displayCalcium: false,
+      displaySilicates: false,
+      displayDensitySalinity: false,
+      displayMagnesium: false,
+      displayIodine: false,
+      displayMolybdenum: false,
+      displayStrontium: false,
+      displayPotassium: false,
+    });
+  });
+
+  it('maps enabled alert parameters into numeric thresholds', () => {
+    const payload = mapAquariumCreateFormToPayload({
+      ...buildFormValue(),
+      alertParameters: {
+        ...buildFormValue().alertParameters,
+        displayTemperature: {
+          enabled: true,
+          minimumValue: '24',
+          maximumValue: '27',
+          targetValue: '25.5',
+        },
+      },
+    });
+
+    expect(payload.alertParameters).toEqual({
+      displayPH: {
+        minimumValue: 6.6,
+        maximumValue: 7.2,
+        targetValue: 7,
+      },
+      displayGH: false,
+      displayKH: false,
+      displayNitrate: false,
+      displayNitrite: false,
+      displayAmmonia: false,
+      displayTemperature: {
+        minimumValue: 24,
+        maximumValue: 27,
+        targetValue: 25.5,
+      },
       displayTDS: false,
       displayCopper: false,
       displayPhosphate: false,

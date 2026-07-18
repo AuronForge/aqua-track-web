@@ -12,7 +12,7 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { startWith } from 'rxjs';
+import { concatMap, of, startWith } from 'rxjs';
 
 import { PageTitleService } from '../../../../core/page-title/page-title.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
@@ -30,6 +30,7 @@ import { FeedbackMessageService } from '../../../../shared/services/feedback-mes
 import { LanguageService } from '../../../../shared/services/language.service';
 import { mapAquariumWaterTypeOptions } from '../../constants/aquarium-water-type-options.constant';
 import {
+  ALL_DISPLAY_PARAMETER_KEYS,
   AquariumDisplayParameterKey,
   DEFAULT_DISPLAY_PARAMETER_KEYS,
   mapDisplayParameterOptions,
@@ -42,6 +43,7 @@ import { mapAquariumCreateFormToPayload } from '../../mappers/aquarium-create.ma
 import { AquariumWaterType, CreateAquariumPayload } from '../../models/aquarium-api.dto';
 import { SystemValueApiDto } from '../../models/system-value-api.dto';
 import { AquariumTypeOptionId } from '../../models/aquarium-type-option.model';
+import { AquariumApiService } from '../../services/aquarium-api.service';
 import { SystemValuesApiService } from '../../services/system-values-api.service';
 import {
   calculateAquariumVolumeLiters,
@@ -49,6 +51,18 @@ import {
 } from '../../utils/aquarium-volume.util';
 import { positiveNumberValidator } from '../../validators/positive-number.validator';
 import { trimmedRequiredValidator } from '../../validators/trimmed-required.validator';
+import { AquariumCreateFormValue } from '../../models/aquarium-create-form-value.model';
+
+interface AlertParameterControls {
+  enabled: FormControl<boolean>;
+  minimumValue: FormControl<string>;
+  maximumValue: FormControl<string>;
+  targetValue: FormControl<string>;
+}
+
+type AlertParameterGroup = FormGroup<AlertParameterControls>;
+
+type AlertParametersControls = Record<AquariumDisplayParameterKey, AlertParameterGroup>;
 
 @Component({
   selector: 'app-aquarium-create-page',
@@ -76,15 +90,18 @@ export class AquariumCreatePageComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly elementRef: ElementRef<HTMLElement> = inject(ElementRef);
   private readonly systemValuesApiService = inject(SystemValuesApiService);
+  private readonly aquariumApiService = inject(AquariumApiService);
   protected readonly languageService = inject(LanguageService);
 
   protected readonly t = this.languageService.translation;
   protected readonly selectedPhotoName = signal<string | null>(null);
+  protected readonly selectedPhotoFile = signal<File | null>(null);
   protected readonly lastPayload = signal<CreateAquariumPayload | null>(null);
   protected readonly aquariumTypeOptionsLoading = signal(true);
   protected readonly aquariumTypeOptionsError = signal(false);
   protected readonly waterTypeOptionsLoading = signal(true);
   protected readonly waterTypeOptionsError = signal(false);
+  protected readonly isSubmitting = signal(false);
   private readonly aquariumTypeSystemValues = signal<readonly SystemValueApiDto[]>([]);
   private readonly waterTypeSystemValues = signal<readonly SystemValueApiDto[]>([]);
 
@@ -126,6 +143,11 @@ export class AquariumCreatePageComponent implements OnInit {
       DEFAULT_DISPLAY_PARAMETER_KEYS,
       { nonNullable: true },
     ),
+    alertChannels: new FormGroup({
+      dashboard: new FormControl(true, { nonNullable: true }),
+      email: new FormControl(false, { nonNullable: true }),
+    }),
+    alertParameters: this.buildAlertParametersGroup(),
     description: new FormControl('', { nonNullable: true }),
   });
 
@@ -207,6 +229,14 @@ export class AquariumCreatePageComponent implements OnInit {
     positive: this.t().aquariumCreatePositiveNumberError,
   }));
 
+  protected readonly alertValueErrorMessages = computed(() => ({
+    required: this.t().aquariumCreateRequiredError,
+    number: this.t().aquariumCreateNumberError,
+    positive: this.t().aquariumCreatePositiveNumberError,
+    alertMaximumRange: this.t().aquariumCreateAlertMaximumRangeError,
+    alertTargetRange: this.t().aquariumCreateAlertTargetRangeError,
+  }));
+
   constructor() {
     effect(() => {
       this.pageTitleService.set(this.t().aquariumFormTitle);
@@ -226,6 +256,20 @@ export class AquariumCreatePageComponent implements OnInit {
     effect(() => {
       this.syncDimensionValidators(this.formValue().usePhysicalDimensions ?? true);
     });
+
+    effect(() => {
+      this.formValue();
+      this.syncAlertParameterStates();
+      this.syncAlertThresholdErrors();
+    });
+
+    effect(() => {
+      this.waterTypeOptionsLoading();
+      this.waterTypeOptionsError();
+      this.aquariumTypeOptionsLoading();
+      this.aquariumTypeOptionsError();
+      this.syncSelectorControlStates();
+    });
   }
 
   ngOnInit(): void {
@@ -234,6 +278,10 @@ export class AquariumCreatePageComponent implements OnInit {
   }
 
   protected onSubmit(): void {
+    if (this.isSubmitting()) {
+      return;
+    }
+
     this.syncDimensionValidators(this.form.getRawValue().usePhysicalDimensions);
 
     if (this.form.invalid) {
@@ -247,14 +295,47 @@ export class AquariumCreatePageComponent implements OnInit {
       return;
     }
 
-    const payload = mapAquariumCreateFormToPayload(this.form.getRawValue());
+    const payload = mapAquariumCreateFormToPayload(
+      this.form.getRawValue() as AquariumCreateFormValue,
+    );
     this.lastPayload.set(payload);
+    this.isSubmitting.set(true);
 
-    this.feedbackMessageService.showInformation(this.t().aquariumCreateApiDisabledMessage, {
-      hasIcon: true,
-      horizontalPosition: 'top',
-      verticalPosition: 'end',
-    });
+    this.aquariumApiService
+      .createAquarium(payload)
+      .pipe(
+        concatMap((aquarium) => {
+          const selectedPhoto = this.selectedPhotoFile();
+
+          if (!selectedPhoto) {
+            return of(aquarium);
+          }
+
+          return this.aquariumApiService
+            .uploadAquariumPhoto(aquarium.id, selectedPhoto)
+            .pipe(concatMap(() => of(aquarium)));
+        }),
+      )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.isSubmitting.set(false);
+          this.feedbackMessageService.showSuccess(this.t().aquariumCreateSuccessMessage, {
+            hasIcon: true,
+            horizontalPosition: 'top',
+            verticalPosition: 'end',
+          });
+          this.router.navigate(['/home']);
+        },
+        error: () => {
+          this.isSubmitting.set(false);
+          this.feedbackMessageService.showError(this.t().aquariumCreateErrorMessage, {
+            hasIcon: true,
+            horizontalPosition: 'top',
+            verticalPosition: 'end',
+          });
+        },
+      });
   }
 
   protected onCancel(): void {
@@ -262,10 +343,12 @@ export class AquariumCreatePageComponent implements OnInit {
   }
 
   protected onPhotoSelected(file: File): void {
+    this.selectedPhotoFile.set(file);
     this.selectedPhotoName.set(file.name);
   }
 
   protected onPhotoRejected(): void {
+    this.selectedPhotoFile.set(null);
     this.selectedPhotoName.set(null);
   }
 
@@ -295,6 +378,22 @@ export class AquariumCreatePageComponent implements OnInit {
     this.form.controls.displayParameters.setValue(
       selectedParameters.filter((selectedParameter) => selectedParameter !== parameter),
     );
+  }
+
+  protected isAlertParameterEnabled(parameter: AquariumDisplayParameterKey): boolean {
+    return this.alertParameterGroup(parameter).controls.enabled.value;
+  }
+
+  protected onAlertParameterToggle(parameter: AquariumDisplayParameterKey, checked: boolean): void {
+    this.alertParameterGroup(parameter).controls.enabled.setValue(checked);
+  }
+
+  protected isAlertChannelEnabled(channel: 'dashboard' | 'email'): boolean {
+    return this.form.controls.alertChannels.controls[channel].value;
+  }
+
+  protected onAlertChannelToggle(channel: 'dashboard' | 'email', checked: boolean): void {
+    this.form.controls.alertChannels.controls[channel].setValue(checked);
   }
 
   private loadAquariumTypeOptions(): void {
@@ -347,6 +446,28 @@ export class AquariumCreatePageComponent implements OnInit {
     });
   }
 
+  private syncSelectorControlStates(): void {
+    this.setControlDisabledState(
+      this.form.controls.waterType,
+      this.waterTypeOptionsLoading() || this.waterTypeOptionsError(),
+    );
+    this.setControlDisabledState(
+      this.form.controls.aquariumType,
+      this.aquariumTypeOptionsLoading() || this.aquariumTypeOptionsError(),
+    );
+  }
+
+  private setControlDisabledState<T>(control: FormControl<T>, shouldDisable: boolean): void {
+    if (shouldDisable && control.enabled) {
+      control.disable({ emitEvent: false });
+      return;
+    }
+
+    if (!shouldDisable && control.disabled) {
+      control.enable({ emitEvent: false });
+    }
+  }
+
   private syncDimensionValidators(usePhysicalDimensions: boolean): void {
     const requiredPositiveValidators = [Validators.required, positiveNumberValidator()];
 
@@ -367,5 +488,111 @@ export class AquariumCreatePageComponent implements OnInit {
     this.form.controls.widthCm.updateValueAndValidity({ emitEvent: false });
     this.form.controls.heightCm.updateValueAndValidity({ emitEvent: false });
     this.form.controls.volume.updateValueAndValidity({ emitEvent: false });
+  }
+
+  private buildAlertParametersGroup(): FormGroup {
+    return new FormGroup<AlertParametersControls>(
+      Object.fromEntries(
+        ALL_DISPLAY_PARAMETER_KEYS.map((key) => [
+          key,
+          new FormGroup<AlertParameterControls>({
+            enabled: new FormControl(false, { nonNullable: true }),
+            minimumValue: new FormControl({ value: '', disabled: true }, { nonNullable: true }),
+            maximumValue: new FormControl({ value: '', disabled: true }, { nonNullable: true }),
+            targetValue: new FormControl({ value: '', disabled: true }, { nonNullable: true }),
+          }),
+        ]),
+      ) as AlertParametersControls,
+    );
+  }
+
+  private alertParameterGroup(parameter: AquariumDisplayParameterKey): AlertParameterGroup {
+    return this.form.controls.alertParameters.controls[parameter] as AlertParameterGroup;
+  }
+
+  private syncAlertParameterStates(): void {
+    ALL_DISPLAY_PARAMETER_KEYS.forEach((parameter) => {
+      const group = this.alertParameterGroup(parameter);
+      const enabled = group.controls.enabled.value;
+      const valueControls = [
+        group.controls.minimumValue,
+        group.controls.maximumValue,
+        group.controls.targetValue,
+      ];
+
+      valueControls.forEach((control) => {
+        control.setValidators(enabled ? [Validators.required, positiveNumberValidator()] : []);
+
+        if (enabled) {
+          control.enable({ emitEvent: false });
+        } else {
+          control.disable({ emitEvent: false });
+          control.setErrors(null);
+        }
+
+        control.updateValueAndValidity({ emitEvent: false });
+      });
+    });
+  }
+
+  private syncAlertThresholdErrors(): void {
+    ALL_DISPLAY_PARAMETER_KEYS.forEach((parameter) => {
+      const group = this.alertParameterGroup(parameter);
+      const enabled = group.controls.enabled.value;
+      const minimumControl = group.controls.minimumValue;
+      const maximumControl = group.controls.maximumValue;
+      const targetControl = group.controls.targetValue;
+
+      this.removeControlError(maximumControl, 'alertMaximumRange');
+      this.removeControlError(targetControl, 'alertTargetRange');
+
+      if (!enabled) {
+        return;
+      }
+
+      const minimum = parseLocalizedNumber(minimumControl.value);
+      const maximum = parseLocalizedNumber(maximumControl.value);
+      const target = parseLocalizedNumber(targetControl.value);
+
+      if (minimum === null || maximum === null || target === null) {
+        return;
+      }
+
+      if (maximum <= minimum) {
+        this.addControlError(maximumControl, 'alertMaximumRange');
+      }
+
+      if (target < minimum || target > maximum) {
+        this.addControlError(targetControl, 'alertTargetRange');
+      }
+    });
+  }
+
+  private addControlError(
+    control: FormControl<string>,
+    key: 'alertMaximumRange' | 'alertTargetRange',
+  ): void {
+    const currentErrors = control.errors ?? {};
+
+    if (currentErrors[key]) {
+      return;
+    }
+
+    control.setErrors({ ...currentErrors, [key]: true });
+  }
+
+  private removeControlError(
+    control: FormControl<string>,
+    key: 'alertMaximumRange' | 'alertTargetRange',
+  ): void {
+    const currentErrors = control.errors;
+
+    if (!currentErrors?.[key]) {
+      return;
+    }
+
+    const { [key]: removedError, ...remainingErrors } = currentErrors;
+    void removedError;
+    control.setErrors(Object.keys(remainingErrors).length ? remainingErrors : null);
   }
 }
