@@ -6,6 +6,9 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     // Shared
     languageSelectorLabel: 'Selecionar idioma',
     footer: 'Todos os direitos reservados.',
+    searchFormfieldAriaLabel: 'Buscar',
+    searchFormfieldClearLabel: 'Limpar busca',
+    searchFormfieldLoadingLabel: 'Buscando',
     listEmptyDefault: 'Nenhum item encontrado',
     listLoadingDefault: 'Carregando...',
 
@@ -419,6 +422,9 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
   en: {
     // Shared
     languageSelectorLabel: 'Select language',
+    searchFormfieldAriaLabel: 'Search',
+    searchFormfieldClearLabel: 'Clear search',
+    searchFormfieldLoadingLabel: 'Searching',
     listEmptyDefault: 'No items found',
     listLoadingDefault: 'Loading...',
     footer: 'All rights reserved.',
@@ -834,6 +840,9 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
   es: {
     // Shared
     languageSelectorLabel: 'Seleccionar idioma',
+    searchFormfieldAriaLabel: 'Buscar',
+    searchFormfieldClearLabel: 'Limpiar busqueda',
+    searchFormfieldLoadingLabel: 'Buscando',
     listEmptyDefault: 'No se encontraron elementos',
     listLoadingDefault: 'Cargando...',
     footer: 'Todos los derechos reservados.',

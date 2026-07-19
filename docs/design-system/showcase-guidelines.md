@@ -55,6 +55,7 @@ Seções recomendadas, na ordem: descrição → como usar (import + snippet) �
 | `app-dropdown-menu`                 | `dropdown-menu/`                                   | `/components/dropdown-menu`        | `pages/dropdown-menu/dropdown-menu-showcase.component.ts`       |
 | `aq-feedback-message` (+ container) | `feedback-message/`, `feedback-message-container/` | `/components/feedback-message`     | `pages/feedback-message/feedback-message-showcase.component.ts` |
 | `aq-text-formfield`                 | `formfields/text-formfield/`                       | `/components/text-formfield`       | `pages/formfields/text-formfield-showcase.component.ts`         |
+| `aq-search-formfield`               | `formfields/search-formfield/`                     | `/components/search-formfield`     | `pages/formfields/search-formfield-showcase.component.ts`       |
 | `aq-textarea-formfield`             | `formfields/textarea-formfield/`                   | `/components/textarea-formfield`   | `pages/formfields/textarea-formfield-showcase.component.ts`     |
 | `aq-select-formfield`               | `formfields/select-formfield/`                     | `/components/select-formfield`     | `pages/formfields/select-formfield-showcase.component.ts`       |
 | `aq-datepicker-formfield`           | `formfields/datepicker-formfield/`                 | `/components/datepicker-formfield` | `pages/formfields/datepicker-formfield-showcase.component.ts`   |

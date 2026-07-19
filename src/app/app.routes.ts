@@ -147,6 +147,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'search-formfield',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/formfields/search-formfield-showcase.component').then(
+            (m) => m.SearchFormfieldShowcaseComponent,
+          ),
+      },
+      {
         path: 'select-formfield',
         loadComponent: () =>
           import('./features/components-showcase/pages/formfields/select-formfield-showcase.component').then(

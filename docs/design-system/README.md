@@ -31,6 +31,7 @@ Documentação de referência do design system do AquaTrack (`aqua-track-web`), 
 | Dropdown Menu                  | Navegação/Overlay | [`components/dropdown-menu.md`](./components/dropdown-menu.md)               | ✅ `/components/dropdown-menu`        |
 | Feedback Message (+ Container) | Feedback/Overlay  | [`components/feedback-message.md`](./components/feedback-message.md)         | ✅ `/components/feedback-message`     |
 | Text Formfield                 | Formulário        | [`components/text-formfield.md`](./components/text-formfield.md)             | ✅ `/components/text-formfield`       |
+| Search Formfield               | Formulário        | [`components/search-formfield.md`](./components/search-formfield.md)         | ✅ `/components/search-formfield`     |
 | Textarea Formfield             | Formulário        | [`components/textarea-formfield.md`](./components/textarea-formfield.md)     | ✅ `/components/textarea-formfield`   |
 | Select Formfield               | Formulário        | [`components/select-formfield.md`](./components/select-formfield.md)         | ✅ `/components/select-formfield`     |
 | Datepicker Formfield           | Formulário        | [`components/datepicker-formfield.md`](./components/datepicker-formfield.md) | ✅ `/components/datepicker-formfield` |

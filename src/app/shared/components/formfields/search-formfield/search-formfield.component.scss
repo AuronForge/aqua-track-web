@@ -1,0 +1,203 @@
+@use '../../../theme' as theme;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.search-formfield {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-2xs;
+  width: 100%;
+}
+
+.search-formfield__label {
+  color: theme.$aq-color-text-primary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-md;
+  font-weight: theme.$aq-font-weight-medium;
+}
+
+.search-formfield__control {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-xs;
+  min-height: 3rem;
+  padding: 0 theme.$aq-space-md;
+  overflow: hidden;
+  border: 1.5px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-md;
+  background: theme.$aq-color-surface;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background-color 150ms ease;
+}
+
+.search-formfield__prefix,
+.search-formfield__suffix {
+  display: inline-flex;
+  align-items: center;
+  gap: theme.$aq-space-xs;
+  flex-shrink: 0;
+}
+
+.search-formfield__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  padding: theme.$aq-space-sm 0;
+  background: transparent;
+  color: theme.$aq-color-text-primary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-lg;
+  line-height: theme.$aq-line-height-base;
+  outline: none;
+
+  &::placeholder {
+    color: theme.$aq-color-text-secondary;
+  }
+
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-decoration,
+  &::-webkit-search-results-button,
+  &::-webkit-search-results-decoration {
+    appearance: none;
+  }
+}
+
+.search-formfield__icon,
+.search-formfield__action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: theme.$aq-color-text-secondary;
+  font-size: theme.$aq-size-icon-md;
+  line-height: 1;
+  user-select: none;
+}
+
+.search-formfield__spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid theme.$aq-color-border;
+  border-top-color: theme.$aq-color-accent-strong;
+  border-radius: theme.$aq-radius-pill;
+  animation: search-formfield-spin 900ms linear infinite;
+}
+
+.search-formfield__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: theme.$aq-radius-pill;
+  background: transparent;
+  color: theme.$aq-color-text-secondary;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &:not(:disabled):hover {
+    background: theme.$aq-color-surface-muted;
+    color: theme.$aq-color-primary;
+  }
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+  }
+}
+
+.search-formfield__hint,
+.search-formfield__error {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  line-height: theme.$aq-line-height-base;
+}
+
+.search-formfield__hint {
+  color: theme.$aq-color-text-secondary;
+}
+
+.search-formfield__error {
+  color: theme.$aq-color-error;
+}
+
+.search-formfield__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.search-formfield--focused .search-formfield__control {
+  @include theme.aq-focus-ring;
+}
+
+.search-formfield--filled .search-formfield__control {
+  border-color: theme.$aq-color-border-strong;
+}
+
+.search-formfield--invalid .search-formfield__control {
+  border-color: theme.$aq-color-error;
+  box-shadow: 0 0 0 4px rgb(217 48 37 / 10%);
+}
+
+.search-formfield--disabled .search-formfield__control {
+  background: theme.$aq-color-surface-muted;
+  border-color: theme.$aq-color-border;
+  opacity: 0.72;
+}
+
+.search-formfield--readonly .search-formfield__control {
+  background: rgb(223 231 239 / 24%);
+}
+
+.search-formfield:not(.search-formfield--disabled, .search-formfield--invalid)
+  .search-formfield__control:hover {
+  border-color: theme.$aq-color-border-strong;
+}
+
+@keyframes search-formfield-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (width <= 640px) {
+  .search-formfield__control {
+    min-height: 2.875rem;
+    padding-inline: theme.$aq-space-sm;
+  }
+
+  .search-formfield__input {
+    font-size: theme.$aq-font-size-md;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-formfield__control,
+  .search-formfield__action {
+    transition: none;
+  }
+
+  .search-formfield__spinner {
+    animation: none;
+  }
+}

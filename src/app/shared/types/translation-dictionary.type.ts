@@ -2,6 +2,9 @@ export interface TranslationDictionary {
   // Shared
   readonly languageSelectorLabel: string;
   readonly footer: string;
+  readonly searchFormfieldAriaLabel: string;
+  readonly searchFormfieldClearLabel: string;
+  readonly searchFormfieldLoadingLabel: string;
 
   // Auth — login
   readonly title: string;

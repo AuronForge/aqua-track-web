@@ -40,6 +40,7 @@ Documentação de referência do design system do AquaTrack (`aqua-track-web`), 
 | Dropdown Menu                  | Navegação/Overlay | [`components/dropdown-menu.md`](./components/dropdown-menu.md)               | ✅ `/components/dropdown-menu`        |
 | Feedback Message (+ Container) | Feedback/Overlay  | [`components/feedback-message.md`](./components/feedback-message.md)         | ✅ `/components/feedback-message`     |
 | Text Formfield                 | Formulário        | [`components/text-formfield.md`](./components/text-formfield.md)             | ✅ `/components/text-formfield`       |
+| Search Formfield               | Formulário        | [`components/search-formfield.md`](./components/search-formfield.md)         | ✅ `/components/search-formfield`     |
 | Textarea Formfield             | Formulário        | [`components/textarea-formfield.md`](./components/textarea-formfield.md)     | ✅ `/components/textarea-formfield`   |
 | Select Formfield               | Formulário        | [`components/select-formfield.md`](./components/select-formfield.md)         | ✅ `/components/select-formfield`     |
 | Datepicker Formfield           | Formulário        | [`components/datepicker-formfield.md`](./components/datepicker-formfield.md) | ✅ `/components/datepicker-formfield` |
@@ -416,6 +417,7 @@ Seções recomendadas, na ordem: descrição → como usar (import + snippet) �
 | `app-dropdown-menu`                 | `dropdown-menu/`                                   | `/components/dropdown-menu`        | `pages/dropdown-menu/dropdown-menu-showcase.component.ts`       |
 | `aq-feedback-message` (+ container) | `feedback-message/`, `feedback-message-container/` | `/components/feedback-message`     | `pages/feedback-message/feedback-message-showcase.component.ts` |
 | `aq-text-formfield`                 | `formfields/text-formfield/`                       | `/components/text-formfield`       | `pages/formfields/text-formfield-showcase.component.ts`         |
+| `aq-search-formfield`               | `formfields/search-formfield/`                     | `/components/search-formfield`     | `pages/formfields/search-formfield-showcase.component.ts`       |
 | `aq-textarea-formfield`             | `formfields/textarea-formfield/`                   | `/components/textarea-formfield`   | `pages/formfields/textarea-formfield-showcase.component.ts`     |
 | `aq-select-formfield`               | `formfields/select-formfield/`                     | `/components/select-formfield`     | `pages/formfields/select-formfield-showcase.component.ts`       |
 | `aq-datepicker-formfield`           | `formfields/datepicker-formfield/`                 | `/components/datepicker-formfield` | `pages/formfields/datepicker-formfield-showcase.component.ts`   |
@@ -2262,3 +2264,116 @@ Componente de composição puro — toda a lógica de interação (abrir menu, t
 ### Dependências internas
 
 `AvatarComponent`, `DropdownMenuComponent`, `LanguageSwitcherComponent`.
+
+---
+
+## 5.26. Search Formfield
+
+### Visão geral
+
+Campo de busca especializado do AquaTrack para filtros textuais, buscas explícitas por formulário
+e fluxos reativos baseados em `valueChanges`, com `ControlValueAccessor`, loading, limpeza e
+acessibilidade AA.
+
+### Localização
+
+`src/app/shared/components/formfields/search-formfield/` — componente, teste e barrel local.
+
+### Seletor
+
+`aq-search-formfield` (standalone, implementa `ControlValueAccessor`).
+
+### Decisão arquitetural
+
+Implementado como componente próprio, semanticamente especializado em busca. O componente reutiliza
+tipos, tokens, padrões de erro e contratos de acessibilidade dos formfields existentes, mas evita
+compor diretamente outro `ControlValueAccessor`, reduzindo risco com `NgControl`, `disabled`,
+`touched`, foco e mensagens de erro.
+
+### API
+
+#### Inputs
+
+| Nome                               | Tipo                     | Padrão               | Descrição                                              |
+| ---------------------------------- | ------------------------ | -------------------- | ------------------------------------------------------ |
+| `label`                            | `string`                 | `''`                 | Label visual opcional.                                 |
+| `ariaLabel`                        | `string`                 | tradução interna     | Nome acessível quando não houver label visual.         |
+| `placeholder`                      | `string`                 | `''`                 | Placeholder contextualizado.                           |
+| `hint`                             | `string`                 | `''`                 | Texto auxiliar enquanto não houver erro visível.       |
+| `id` / `name`                      | `string`                 | gerado / `undefined` | Atributos nativos repassados ao input.                 |
+| `autocomplete`                     | `string`                 | `'off'`              | Política de autocomplete do navegador.                 |
+| `showClearButton`                  | `boolean`                | `true`               | Controla a ação de limpar.                             |
+| `loading`                          | `boolean`                | `false`              | Exibe spinner e `aria-busy` sem apagar o valor.        |
+| `loadingLabel`                     | `string`                 | tradução interna     | Texto acessível anunciado quando loading entra.        |
+| `clearAriaLabel`                   | `string`                 | tradução interna     | Nome acessível do botão de limpar.                     |
+| `readonly` (alias `readonlyState`) | `boolean`                | `false`              | Mantém o valor visível sem permitir edição ou limpeza. |
+| `required` (alias `requiredState`) | `boolean`                | `false`              | Reflete obrigatoriedade nativa e `aria-required`.      |
+| `disabled` (alias `disabledState`) | `boolean`                | `false`              | Desabilita input e ações internas.                     |
+| `hideErrorMessage`                 | `boolean`                | `false`              | Oculta a mensagem visual de erro quando necessário.    |
+| `errorMessages`                    | `FormfieldErrorMessages` | `{}`                 | Mapa de mensagens por chave de validação.              |
+
+#### Outputs
+
+| Nome      | Tipo   | Quando dispara                                                       |
+| --------- | ------ | -------------------------------------------------------------------- |
+| `cleared` | `void` | Quando o usuário limpa explicitamente o campo por botão ou `Escape`. |
+
+#### Métodos públicos
+
+| Método    | Descrição                                                                      |
+| --------- | ------------------------------------------------------------------------------ |
+| `focus()` | Foca programaticamente o input interno quando o componente estiver habilitado. |
+
+#### Valor de forms
+
+O contrato de forms sempre trabalha com `string`. `null` e `undefined` são normalizados para `''`
+em `writeValue`.
+
+### Regras visuais
+
+- Usa a mesma linguagem visual dos demais formfields: borda `1.5px`, `radius` médio, tipografia do
+  tema e `aq-focus-ring`.
+- Estados suportados: vazio, preenchido, focused, invalid, disabled, readonly e loading.
+- O spinner de loading ocupa a área de sufixo e respeita `prefers-reduced-motion: reduce`.
+- O valor atual é preservado durante loading.
+
+### Regras de acionamento
+
+- Implementa `ControlValueAccessor` completo, funcionando com `formControlName` e `[formControl]`.
+- O botão de limpar aparece apenas quando `showClearButton`, existe valor e o campo não está
+  `disabled` nem `readonly`.
+- Ao limpar: o valor vira `''`, `onChange` e `onTouched` são disparados, o output `cleared` é
+  emitido e o foco volta ao input.
+- `Escape` limpa apenas quando houver valor; se o campo estiver vazio, o evento continua a propagar
+  para o container externo.
+- `Enter` não é interceptado, preservando o `ngSubmit` nativo do formulário.
+
+### Acessibilidade
+
+- Label visual associada por `for/id` quando `label` estiver presente.
+- Sem label visual, o input recebe `aria-label`.
+- `aria-describedby` aponta para o hint ou para o erro visível.
+- `aria-invalid`, `aria-required` e `aria-busy` refletem o estado atual.
+- Erro visual em `role="alert"`.
+- Loading acessível com live region `polite`.
+- Ícones decorativos usam `aria-hidden="true"`.
+- O botão de limpar possui nome acessível e funciona por teclado por ser um botão nativo.
+
+### Cenários de uso
+
+- Busca textual em listas, cards, cabeçalhos de tabela e barras de filtro.
+- Busca explícita por formulário com `ngSubmit`.
+- Busca reativa por `FormControl.valueChanges`.
+
+### Onde é usado
+
+- `src/app/features/components-showcase/pages/formfields/search-formfield-showcase.component.html`
+
+### Showcase
+
+`/components/search-formfield` →
+`src/app/features/components-showcase/pages/formfields/search-formfield-showcase.component.ts`
+
+### Dependências internas
+
+`LanguageService`, `FormfieldErrorMessages` e tokens do tema em `src/app/shared/theme/`.

@@ -48,6 +48,12 @@ export class ComponentsShowcaseComponent {
           route: '/components/datepicker-formfield',
         },
         {
+          id: 'search-formfield',
+          label: 'Search Formfield',
+          icon: 'search',
+          route: '/components/search-formfield',
+        },
+        {
           id: 'select-formfield',
           label: 'Select Formfield',
           icon: 'arrow_drop_down_circle',
