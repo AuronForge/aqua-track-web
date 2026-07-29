@@ -20,35 +20,36 @@ export class AquariumSummaryCardMapper {
   ): AquariumSummaryCardViewModel {
     return {
       id: aquarium.id,
-      title: aquarium.name,
-      subtitle: t[aquarium.typeLabelKey],
+      title: this.normalizeText(aquarium.name),
+      subtitle: this.normalizeText(aquarium.subtitle),
       status: this.mapStatus(aquarium.status),
-      statusLabel: this.mapStatusLabel(aquarium.status, t),
-      volumeLabel: `${aquarium.volumeLiters}L`,
-      installedLabel: t.aquariumListInstalledLabel,
-      installedValue: this.mapInstalledValue(aquarium.installedAmount, aquarium.installedUnit, t),
+      statusLabel: this.normalizeText(this.mapStatusLabel(aquarium.status, t)),
+      volumeLabel: `${this.formatNumber(aquarium.volumeLiters)}L`,
+      installedLabel: this.normalizeText(t.aquariumListInstalledLabel),
+      installedValue: this.normalizeText(
+        this.mapInstalledValue(aquarium.installedAmount, aquarium.installedUnit, t),
+      ),
       recentParameters: aquarium.recentParameters.map((parameter) =>
         this.mapParameter(parameter.key, parameter.value, t),
       ),
+      hasRecentParameters: aquarium.recentParameters.length > 0,
     };
   }
 
   private mapStatus(status: AquariumListStatus): InfoCardStatus {
     const map: Record<AquariumListStatus, InfoCardStatus> = {
-      STABLE: 'stable',
-      ATTENTION: 'attention',
-      CRITICAL: 'critical',
-      UNKNOWN: 'unknown',
+      ACTIVE: 'stable',
+      INACTIVE: 'attention',
+      ARCHIVED: 'unknown',
     };
     return map[status];
   }
 
   private mapStatusLabel(status: AquariumListStatus, t: TranslationDictionary): string {
     const map: Record<AquariumListStatus, string> = {
-      STABLE: t.statusStable,
-      ATTENTION: t.statusAttention,
-      CRITICAL: t.statusCritical,
-      UNKNOWN: t.statusUnknown,
+      ACTIVE: t.aquariumStatusActive,
+      INACTIVE: t.aquariumStatusInactive,
+      ARCHIVED: t.aquariumStatusArchived,
     };
     return map[status];
   }
@@ -76,17 +77,17 @@ export class AquariumSummaryCardMapper {
   ): AquariumSummaryCardParameterViewModel {
     const config: Record<AquariumParameterKey, { label: string; icon: string; value: string }> = {
       ph: {
-        label: t.aquariumListParameterPh,
+        label: this.normalizeText(t.aquariumListParameterPh),
         icon: 'science',
         value: this.formatNumber(value),
       },
       temperature: {
-        label: t.aquariumListParameterTemperature,
+        label: this.normalizeText(t.aquariumListParameterTemperature),
         icon: 'device_thermostat',
         value: `${this.formatNumber(value)}°C`,
       },
       nitrate: {
-        label: t.aquariumListParameterNitrate,
+        label: this.normalizeText(t.aquariumListParameterNitrate),
         icon: 'water_drop',
         value: this.formatNumber(value),
       },
@@ -100,5 +101,18 @@ export class AquariumSummaryCardMapper {
 
   private formatNumber(value: number): string {
     return Number.isInteger(value) ? String(value) : value.toFixed(1);
+  }
+
+  private normalizeText(value: string): string {
+    // Defensively recover common UTF-8-as-Latin1 mojibake from API/mock data.
+    if (!/[ÃÂ]/.test(value)) {
+      return value;
+    }
+
+    try {
+      return decodeURIComponent(escape(value));
+    } catch {
+      return value.replace(/Â(?=°)/g, '');
+    }
   }
 }

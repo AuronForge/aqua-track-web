@@ -8,14 +8,62 @@
 
 .aquarium-list-page__header {
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
+  flex-direction: column;
   gap: theme.$aq-space-md;
+}
+
+.aquarium-list-page__hero {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: theme.$aq-space-lg;
   flex-wrap: wrap;
 }
 
 .aquarium-list-page__add-button {
   flex-shrink: 0;
+  align-self: center;
+  padding-inline: theme.$aq-space-md theme.$aq-space-lg;
+  box-shadow:
+    0 16px 32px rgb(18 63 97 / 18%),
+    0 6px 14px rgb(18 63 97 / 10%);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 20px 36px rgb(18 63 97 / 20%),
+      0 8px 18px rgb(18 63 97 / 12%);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.aquarium-list-page__filters {
+  display: grid;
+  grid-template-columns: minmax(18rem, 2fr) minmax(12rem, 1fr);
+  gap: theme.$aq-space-md;
+  padding: theme.$aq-space-md;
+  border: 1px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-md;
+  background: theme.$aq-color-surface;
+  box-shadow: theme.$aq-shadow-card;
+}
+
+.aquarium-list-page__filter-feedback {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: theme.$aq-space-sm;
+  min-height: theme.$aq-space-xl;
+  color: theme.$aq-color-text-secondary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
 }
 
 .aquarium-list-page__grid {
@@ -51,6 +99,10 @@
   box-shadow: theme.$aq-shadow-card;
 }
 
+.aquarium-list-page__empty-state[role='alert'] {
+  border-color: theme.$aq-color-accent-strong;
+}
+
 .aquarium-list-page__empty-icon {
   font-size: 2rem;
   color: theme.$aq-color-accent-strong;
@@ -77,11 +129,25 @@
 }
 
 @media (width <= 768px) {
-  .aquarium-list-page__grid {
-    grid-template-columns: 1fr;
+  .aquarium-list-page__hero {
+    justify-content: stretch;
   }
 
   .aquarium-list-page__add-button {
     width: 100%;
+    justify-content: center;
+  }
+
+  .aquarium-list-page__filters {
+    grid-template-columns: 1fr;
+  }
+
+  .aquarium-list-page__filter-feedback {
+    grid-column: auto;
+    flex-wrap: wrap;
+  }
+
+  .aquarium-list-page__grid {
+    grid-template-columns: 1fr;
   }
 }

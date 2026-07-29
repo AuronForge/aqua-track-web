@@ -183,7 +183,7 @@ describe('HomePageComponent', () => {
   describe('empty state', () => {
     it('should render empty message when no aquariums', async () => {
       const fixture = await createFixture(buildFacadeMock({ hasAquariums: signal(false) }));
-      expect(fixture.nativeElement.textContent).toContain('Nenhum aquário cadastrado');
+      expect(fixture.nativeElement.textContent).toContain(TRANSLATIONS.pt.homeNoAquariums);
     });
   });
 

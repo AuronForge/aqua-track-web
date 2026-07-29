@@ -17,4 +17,5 @@ export interface AquariumSummaryCardViewModel {
   readonly installedLabel: string;
   readonly installedValue: string;
   readonly recentParameters: readonly AquariumSummaryCardParameterViewModel[];
+  readonly hasRecentParameters: boolean;
 }

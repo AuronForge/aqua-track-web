@@ -325,7 +325,7 @@ export class AquariumCreatePageComponent implements OnInit {
             horizontalPosition: 'top',
             verticalPosition: 'end',
           });
-          this.router.navigate(['/home']);
+          this.router.navigate(['/aquariums']);
         },
         error: () => {
           this.isSubmitting.set(false);
@@ -339,7 +339,7 @@ export class AquariumCreatePageComponent implements OnInit {
   }
 
   protected onCancel(): void {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/aquariums']);
   }
 
   protected onPhotoSelected(file: File): void {

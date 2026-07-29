@@ -1,26 +1,88 @@
 <section class="aquarium-list-page" [attr.aria-label]="t().homeMyAquariums">
   <div class="aquarium-list-page__header">
-    <a
-      aqButton
-      variant="flat"
-      color="primary"
-      size="medium"
-      class="aquarium-list-page__add-button"
-      routerLink="/aquariums/new"
-    >
-      <span class="material-icons-outlined" aria-hidden="true">add</span>
-      {{ t().aquariumListAddAction }}
-    </a>
+    <div class="aquarium-list-page__hero">
+      <a
+        aqButton
+        variant="flat"
+        color="primary"
+        size="medium"
+        class="aquarium-list-page__add-button"
+        routerLink="/aquariums/new"
+      >
+        <span class="material-icons-outlined" aria-hidden="true">add</span>
+        <span>{{ t().aquariumListAddAction }}</span>
+      </a>
+    </div>
+
+    <form class="aquarium-list-page__filters" [formGroup]="filtersForm">
+      <aq-search-formfield
+        formControlName="search"
+        [label]="t().homeAquariumFiltersSearchLabel"
+        [placeholder]="t().homeAquariumFiltersSearchPlaceholder"
+      />
+
+      <aq-select-formfield
+        formControlName="aquariumType"
+        [label]="t().homeAquariumFiltersTypeLabel"
+        [placeholder]="t().homeAquariumFiltersTypePlaceholder"
+        [options]="aquariumTypeOptions()"
+        [hint]="aquariumTypeHint()"
+        [loading]="aquariumTypeOptionsLoading()"
+      />
+
+      @if (aquariumTypeOptionsError()) {
+        <div class="aquarium-list-page__filter-feedback" role="alert" aria-live="polite">
+          <span>{{ t().aquariumListTypeLoadErrorHint }}</span>
+          <button
+            aqButton
+            type="button"
+            variant="basic"
+            color="primary"
+            size="medium"
+            (click)="retryAquariumTypes()"
+          >
+            {{ t().homeErrorRetry }}
+          </button>
+        </div>
+      }
+    </form>
   </div>
 
-  @if (hasAquariums()) {
+  @if (aquariumsLoading()) {
+    <div class="aquarium-list-page__empty-state" role="status" aria-live="polite">
+      <span class="material-icons-outlined aquarium-list-page__empty-icon" aria-hidden="true">
+        aquarium
+      </span>
+      <h3 class="aquarium-list-page__empty-title">{{ t().homeLoadingAquariums }}</h3>
+    </div>
+  } @else if (aquariumsError()) {
+    <div class="aquarium-list-page__empty-state" role="alert">
+      <span class="material-icons-outlined aquarium-list-page__empty-icon" aria-hidden="true">
+        error_outline
+      </span>
+      <h3 class="aquarium-list-page__empty-title">{{ t().aquariumListLoadErrorTitle }}</h3>
+      <p class="aquarium-list-page__empty-description">
+        {{ t().aquariumListLoadErrorDescription }}
+      </p>
+      <button
+        aqButton
+        type="button"
+        variant="flat"
+        color="primary"
+        size="medium"
+        (click)="retryAquariums()"
+      >
+        {{ t().homeErrorRetry }}
+      </button>
+    </div>
+  } @else if (hasAquariums()) {
     <div class="aquarium-list-page__grid">
       @for (aquarium of aquariums(); track aquarium.id) {
         <app-aquarium-summary-card [aquarium]="aquarium" />
       }
     </div>
 
-    <footer class="aquarium-list-page__footer" aria-label="Resumo dos aquários">
+    <footer class="aquarium-list-page__footer" aria-label="Resumo dos aquarios">
       <p class="aquarium-list-page__totals">
         {{ totalAquariumsLabel() }}
         <span aria-hidden="true">•</span>
@@ -30,10 +92,16 @@
   } @else {
     <div class="aquarium-list-page__empty-state" role="status">
       <span class="material-icons-outlined aquarium-list-page__empty-icon" aria-hidden="true">
-        water_drop
+        filter_alt_off
       </span>
-      <h3 class="aquarium-list-page__empty-title">{{ t().aquariumListEmptyTitle }}</h3>
-      <p class="aquarium-list-page__empty-description">{{ t().aquariumListEmptyDescription }}</p>
+      <h3 class="aquarium-list-page__empty-title">
+        {{ hasActiveFilters() ? t().homeAquariumFiltersEmptyTitle : t().aquariumListEmptyTitle }}
+      </h3>
+      <p class="aquarium-list-page__empty-description">
+        {{
+          hasActiveFilters() ? t().homeAquariumFiltersEmptyDesc : t().aquariumListEmptyDescription
+        }}
+      </p>
     </div>
   }
 </section>

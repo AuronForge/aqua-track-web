@@ -29,30 +29,32 @@
       </div>
     </div>
 
-    <hr class="aquarium-summary-card__divider" aria-hidden="true" />
+    @if (aquarium().hasRecentParameters) {
+      <hr class="aquarium-summary-card__divider" aria-hidden="true" />
 
-    <div class="aquarium-summary-card__parameters">
-      <p class="aquarium-summary-card__parameters-title">
-        {{ t().aquariumListRecentParametersTitle }}
-      </p>
+      <div class="aquarium-summary-card__parameters">
+        <p class="aquarium-summary-card__parameters-title">
+          {{ t().aquariumListRecentParametersTitle }}
+        </p>
 
-      <div class="aquarium-summary-card__parameter-grid">
-        @for (parameter of aquarium().recentParameters; track parameter.key) {
-          <div class="aquarium-summary-card__parameter-tile">
-            <span class="aquarium-summary-card__parameter-label">
-              <span
-                class="material-icons-outlined aquarium-summary-card__parameter-icon"
-                aria-hidden="true"
-              >
-                {{ parameter.icon }}
+        <div class="aquarium-summary-card__parameter-grid">
+          @for (parameter of aquarium().recentParameters; track parameter.key) {
+            <div class="aquarium-summary-card__parameter-tile">
+              <span class="aquarium-summary-card__parameter-label">
+                <span
+                  class="material-icons-outlined aquarium-summary-card__parameter-icon"
+                  aria-hidden="true"
+                >
+                  {{ parameter.icon }}
+                </span>
+                {{ parameter.label }}
               </span>
-              {{ parameter.label }}
-            </span>
-            <span class="aquarium-summary-card__parameter-value">{{ parameter.value }}</span>
-          </div>
-        }
+              <span class="aquarium-summary-card__parameter-value">{{ parameter.value }}</span>
+            </div>
+          }
+        </div>
       </div>
-    </div>
+    }
 
     <a
       aqButton

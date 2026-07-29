@@ -1,23 +1,20 @@
-import { AquariumWaterType } from './aquarium-api.dto';
+import { AquariumType, AquariumWaterType } from './aquarium-api.dto';
 
-export type AquariumListStatus = 'STABLE' | 'ATTENTION' | 'CRITICAL' | 'UNKNOWN';
+export type AquariumListStatus = 'ACTIVE' | 'INACTIVE' | 'ARCHIVED';
 
-export type AquariumInstallTimeUnit = 'MONTH' | 'YEAR';
+export type AquariumListInstallTimeUnit = 'MONTH' | 'YEAR';
 
 export type AquariumParameterKey = 'ph' | 'temperature' | 'nitrate';
 
 export interface AquariumListItemModel {
   readonly id: string;
   readonly name: string;
-  readonly typeLabelKey:
-    | 'waterTypeFreshwater'
-    | 'waterTypeSaltwater'
-    | 'aquariumCreateTypePlanted'
-    | 'aquariumCreateTypeCommunityTank';
+  readonly aquariumType: AquariumType;
   readonly waterType: AquariumWaterType;
+  readonly subtitle: string;
   readonly volumeLiters: number;
   readonly installedAmount: number;
-  readonly installedUnit: AquariumInstallTimeUnit;
+  readonly installedUnit: AquariumListInstallTimeUnit;
   readonly status: AquariumListStatus;
   readonly recentParameters: readonly AquariumRecentParameterModel[];
 }

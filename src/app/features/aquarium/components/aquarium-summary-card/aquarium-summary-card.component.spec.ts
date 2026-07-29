@@ -15,18 +15,19 @@ const buildLanguageServiceMock = (lang: 'pt' | 'en' | 'es' = 'pt') => ({
 
 const MOCK_AQUARIUM: AquariumSummaryCardViewModel = {
   id: 'aq-community',
-  title: 'Aquário Comunitário',
-  subtitle: 'Água Doce',
+  title: 'AquÃ¡rio ComunitÃ¡rio',
+  subtitle: 'Ãgua Doce',
   status: 'stable',
-  statusLabel: 'Estável',
+  statusLabel: 'Ativo',
   volumeLabel: '75L',
   installedLabel: 'Instalado',
-  installedValue: '2 anos atrás',
+  installedValue: '2 anos atrÃ¡s',
   recentParameters: [
     { key: 'ph', label: 'pH', icon: 'science', value: '7.2' },
-    { key: 'temperature', label: 'Temp', icon: 'device_thermostat', value: '24°C' },
+    { key: 'temperature', label: 'Temp', icon: 'device_thermostat', value: '24Â°C' },
     { key: 'nitrate', label: 'NO3', icon: 'water_drop', value: '16' },
   ],
+  hasRecentParameters: true,
 };
 
 async function createFixture(
@@ -53,9 +54,9 @@ describe('AquariumSummaryCardComponent', () => {
     const fixture = await createFixture();
     const text = fixture.nativeElement.textContent;
 
-    expect(text).toContain('Aquário Comunitário');
-    expect(text).toContain('Água Doce');
-    expect(text).toContain('Estável');
+    expect(text).toContain('AquÃ¡rio ComunitÃ¡rio');
+    expect(text).toContain('Ãgua Doce');
+    expect(text).toContain('Ativo');
   });
 
   it('should render the volume and installed information', async () => {
@@ -65,7 +66,7 @@ describe('AquariumSummaryCardComponent', () => {
     expect(text).toContain('Volume');
     expect(text).toContain('75L');
     expect(text).toContain('Instalado');
-    expect(text).toContain('2 anos atrás');
+    expect(text).toContain('2 anos atrÃ¡s');
   });
 
   it('should render the three recent parameters with their values', async () => {
@@ -77,7 +78,7 @@ describe('AquariumSummaryCardComponent', () => {
     expect(text).toContain('Temp');
     expect(text).toContain('NO3');
     expect(text).toContain('7.2');
-    expect(text).toContain('24°C');
+    expect(text).toContain('24Â°C');
     expect(text).toContain('16');
   });
 
@@ -85,7 +86,7 @@ describe('AquariumSummaryCardComponent', () => {
     const fixture = await createFixture();
     const link = fixture.nativeElement.querySelector('a[aqbutton]') as HTMLAnchorElement;
 
-    expect(link.getAttribute('aria-label')).toBe('Ver detalhes do aquário Aquário Comunitário');
+    expect(link.getAttribute('aria-label')).toBe('Ver detalhes do aquário AquÃ¡rio ComunitÃ¡rio');
     expect(link.getAttribute('href')).toContain('/aquariums/aq-community');
   });
 
@@ -101,9 +102,19 @@ describe('AquariumSummaryCardComponent', () => {
     const fixture = await createFixture({
       ...MOCK_AQUARIUM,
       status: 'critical',
-      statusLabel: 'Crítico',
+      statusLabel: 'Arquivado',
     });
 
-    expect(fixture.nativeElement.textContent).toContain('Crítico');
+    expect(fixture.nativeElement.textContent).toContain('Arquivado');
+  });
+
+  it('should hide the recent parameters section when the API data does not include it', async () => {
+    const fixture = await createFixture({
+      ...MOCK_AQUARIUM,
+      recentParameters: [],
+      hasRecentParameters: false,
+    });
+
+    expect(fixture.nativeElement.textContent).not.toContain('ParÃ¢metros recentes');
   });
 });
