@@ -26,7 +26,7 @@ if (!apiBaseUrl) {
   console.error(
     '[set-env] Missing API_BASE_URL environment variable. ' +
       'Set it in Vercel Project Settings -> Environment Variables (Production) ' +
-      'or export it locally before running `npm run build:prod`.'
+      'or export it locally before running `npm run build:prod`.',
   );
   process.exit(1);
 }
