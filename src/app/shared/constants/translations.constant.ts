@@ -282,7 +282,7 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
     aquariumCreateApiDisabledMessage:
       'Payload gerado com sucesso. A integração com a API ainda não está habilitada.',
     aquariumListPageSubtitle: 'Monitore e acompanhe a visão geral dos seus aquários.',
-    aquariumListAddAction: 'Adicionar Aquário',
+    aquariumListAddAction: 'Novo Aquário',
     aquariumListVolumeLabel: 'Volume',
     aquariumListInstalledLabel: 'Instalado',
     aquariumListInstalledMonthSingular: '1 mês atrás',

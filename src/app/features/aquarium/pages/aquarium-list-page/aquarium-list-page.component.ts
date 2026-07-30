@@ -1,12 +1,16 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  OnDestroy,
   OnInit,
+  TemplateRef,
   computed,
   effect,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -45,7 +49,7 @@ import { SystemValuesApiService } from '../../services/system-values-api.service
   styleUrl: './aquarium-list-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AquariumListPageComponent implements OnInit {
+export class AquariumListPageComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly pageTitleService = inject(PageTitleService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly languageService = inject(LanguageService);
@@ -111,6 +115,7 @@ export class AquariumListPageComponent implements OnInit {
   protected readonly combinedVolumeLabel = computed(
     () => `${this.t().aquariumListCombinedVolumeLabel}: ${this.combinedVolumeLiters()}L`,
   );
+  private readonly toolbarContentTemplate = viewChild<TemplateRef<unknown>>('toolbarContent');
 
   constructor() {
     effect(() => {
@@ -145,6 +150,14 @@ export class AquariumListPageComponent implements OnInit {
   ngOnInit(): void {
     this.loadAquariumTypes();
     this.watchAquariums();
+  }
+
+  ngAfterViewInit(): void {
+    this.pageTitleService.setToolbarContent(this.toolbarContentTemplate() ?? null);
+  }
+
+  ngOnDestroy(): void {
+    this.pageTitleService.setToolbarContent(null);
   }
 
   protected retryAquariumTypes(): void {

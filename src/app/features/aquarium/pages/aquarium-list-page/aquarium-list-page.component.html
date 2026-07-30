@@ -1,52 +1,50 @@
 <section class="aquarium-list-page" [attr.aria-label]="t().homeMyAquariums">
-  <div class="aquarium-list-page__header">
-    <div class="aquarium-list-page__hero">
-      <a
-        aqButton
-        variant="flat"
-        color="primary"
-        size="medium"
-        class="aquarium-list-page__add-button"
-        routerLink="/aquariums/new"
-      >
-        <span class="material-icons-outlined" aria-hidden="true">add</span>
-        <span>{{ t().aquariumListAddAction }}</span>
-      </a>
-    </div>
+  <ng-template #toolbarContent>
+    <a
+      aqButton
+      variant="flat"
+      color="primary"
+      size="medium"
+      class="aquarium-list-page__add-button"
+      routerLink="/aquariums/new"
+    >
+      <span class="material-icons">add</span>
+      {{ t().aquariumListAddAction }}
+    </a>
+  </ng-template>
 
-    <form class="aquarium-list-page__filters" [formGroup]="filtersForm">
-      <aq-search-formfield
-        formControlName="search"
-        [label]="t().homeAquariumFiltersSearchLabel"
-        [placeholder]="t().homeAquariumFiltersSearchPlaceholder"
-      />
+  <form class="aquarium-list-page__filters" [formGroup]="filtersForm">
+    <aq-search-formfield
+      formControlName="search"
+      [label]="t().homeAquariumFiltersSearchLabel"
+      [placeholder]="t().homeAquariumFiltersSearchPlaceholder"
+    />
 
-      <aq-select-formfield
-        formControlName="aquariumType"
-        [label]="t().homeAquariumFiltersTypeLabel"
-        [placeholder]="t().homeAquariumFiltersTypePlaceholder"
-        [options]="aquariumTypeOptions()"
-        [hint]="aquariumTypeHint()"
-        [loading]="aquariumTypeOptionsLoading()"
-      />
+    <aq-select-formfield
+      formControlName="aquariumType"
+      [label]="t().homeAquariumFiltersTypeLabel"
+      [placeholder]="t().homeAquariumFiltersTypePlaceholder"
+      [options]="aquariumTypeOptions()"
+      [hint]="aquariumTypeHint()"
+      [loading]="aquariumTypeOptionsLoading()"
+    />
 
-      @if (aquariumTypeOptionsError()) {
-        <div class="aquarium-list-page__filter-feedback" role="alert" aria-live="polite">
-          <span>{{ t().aquariumListTypeLoadErrorHint }}</span>
-          <button
-            aqButton
-            type="button"
-            variant="basic"
-            color="primary"
-            size="medium"
-            (click)="retryAquariumTypes()"
-          >
-            {{ t().homeErrorRetry }}
-          </button>
-        </div>
-      }
-    </form>
-  </div>
+    @if (aquariumTypeOptionsError()) {
+      <div class="aquarium-list-page__filter-feedback" role="alert" aria-live="polite">
+        <span>{{ t().aquariumListTypeLoadErrorHint }}</span>
+        <button
+          aqButton
+          type="button"
+          variant="basic"
+          color="primary"
+          size="medium"
+          (click)="retryAquariumTypes()"
+        >
+          {{ t().homeErrorRetry }}
+        </button>
+      </div>
+    }
+  </form>
 
   @if (aquariumsLoading()) {
     <div class="aquarium-list-page__empty-state" role="status" aria-live="polite">
@@ -85,7 +83,7 @@
     <footer class="aquarium-list-page__footer" aria-label="Resumo dos aquarios">
       <p class="aquarium-list-page__totals">
         {{ totalAquariumsLabel() }}
-        <span aria-hidden="true">•</span>
+        <span aria-hidden="true">&bull;</span>
         {{ combinedVolumeLabel() }}
       </p>
     </footer>

@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
 import { CodeBlockComponent } from '../../../../shared/components/code-block/code-block.component';
 import { DropdownMenuItem } from '../../../../shared/components/dropdown-menu/dropdown-menu-item.model';
-import { LanguageCode } from '../../../../shared/types/language-code.type';
 import { ToolbarComponent } from '../../../../shared/components/toolbar/toolbar.component';
+import { LanguageCode } from '../../../../shared/types/language-code.type';
 
 @Component({
   selector: 'app-toolbar-showcase',
@@ -35,7 +35,13 @@ readonly language = signal<LanguageCode>('pt');`;
   [userMenuItems]="menuItems"
   (languageChange)="language.set($event)"
   (userMenuItemClick)="onMenuItemClick($event)"
-/>`;
+>
+  <div slot="center" class="toolbar-showcase__center-demo">
+    <button type="button">Todos</button>
+    <button type="button">Ativos</button>
+    <button type="button">Inativos</button>
+  </div>
+</app-toolbar>`;
 
   readonly toolbarMenuItems: DropdownMenuItem[] = [
     { id: 'profile', label: 'My Profile', icon: 'person' },
@@ -44,6 +50,7 @@ readonly language = signal<LanguageCode>('pt');`;
   ];
 
   readonly toolbarLanguage = signal<LanguageCode>('pt');
+  readonly toolbarCenterFilters = ['Todos', 'Água doce', 'Marinho'];
   readonly toolbarLastMenuItem = signal<string | null>(null);
 
   onToolbarLanguageChange(code: LanguageCode): void {

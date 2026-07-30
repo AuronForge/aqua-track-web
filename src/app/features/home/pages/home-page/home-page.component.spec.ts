@@ -31,7 +31,7 @@ const buildFacadeMock = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
-const buildPageTitleMock = () => ({ set: jest.fn() });
+const buildPageTitleMock = () => ({ set: jest.fn(), setToolbarContent: jest.fn() });
 
 const MOCK_CARDS: AquariumCardViewModel[] = [
   {
@@ -131,15 +131,61 @@ describe('HomePageComponent', () => {
     );
   });
 
+  it('should register toolbar content on init and clear it on destroy', async () => {
+    const pageTitleMock = buildPageTitleMock();
+    await TestBed.configureTestingModule({
+      imports: [HomePageComponent],
+      providers: [
+        provideRouter([]),
+        { provide: HomeDashboardFacade, useValue: buildFacadeMock() },
+        { provide: PageTitleService, useValue: pageTitleMock },
+        { provide: LanguageService, useValue: buildLanguageServiceMock('pt') },
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(HomePageComponent);
+    fixture.detectChanges();
+
+    expect(pageTitleMock.setToolbarContent).toHaveBeenCalledWith(expect.anything());
+
+    fixture.destroy();
+
+    expect(pageTitleMock.setToolbarContent).toHaveBeenLastCalledWith(null);
+  });
+
+  it('should fallback to null toolbar content when the toolbar template is unavailable', async () => {
+    const pageTitleMock = buildPageTitleMock();
+    await TestBed.configureTestingModule({
+      imports: [HomePageComponent],
+      providers: [
+        provideRouter([]),
+        { provide: HomeDashboardFacade, useValue: buildFacadeMock() },
+        { provide: PageTitleService, useValue: pageTitleMock },
+        { provide: LanguageService, useValue: buildLanguageServiceMock('pt') },
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(HomePageComponent);
+
+    Object.defineProperty(fixture.componentInstance, 'toolbarContentTemplate', {
+      value: () => undefined,
+    });
+
+    fixture.componentInstance.ngAfterViewInit();
+
+    expect(pageTitleMock.setToolbarContent).toHaveBeenCalledTimes(1);
+    expect(pageTitleMock.setToolbarContent).toHaveBeenCalledWith(null);
+  });
+
   it('should keep the aquarium section accessible without rendering a visible title block', async () => {
     const fixture = await createFixture(buildFacadeMock());
     const section: HTMLElement | null = fixture.nativeElement.querySelector('.home-page__section');
     const title = fixture.nativeElement.querySelector('#aquariums-title');
     const subtitle = fixture.nativeElement.querySelector('.home-page__section-subtitle');
+    const addButton = fixture.nativeElement.querySelector('.home-page__add-aquarium-btn');
 
     expect(section?.getAttribute('aria-label')).toBe(TRANSLATIONS.pt.homeMyAquariums);
     expect(title).toBeNull();
     expect(subtitle).toBeNull();
+    expect(addButton).toBeNull();
   });
 
   describe('loading state', () => {

@@ -120,7 +120,10 @@ const buildLanguageServiceMock = (lang: 'pt' | 'en' | 'es' = 'pt') => ({
   setLanguage: jest.fn(),
 });
 
-const buildPageTitleMock = () => ({ set: jest.fn() });
+const buildPageTitleMock = () => ({
+  set: jest.fn(),
+  setToolbarContent: jest.fn(),
+});
 
 const buildSystemValuesApiServiceMock = (
   aquariumTypes$ = of(aquariumTypesResponse),
@@ -177,6 +180,7 @@ describe('AquariumListPageComponent', () => {
       TRANSLATIONS.pt.homeMyAquariums,
       TRANSLATIONS.pt.homeMyAquariumsSubtitle,
     );
+    expect(pageTitleMock.setToolbarContent).toHaveBeenCalledWith(expect.anything());
     expect(systemValuesApiServiceMock.listAquariumTypes).toHaveBeenCalledWith({
       forceRefresh: false,
     });
@@ -186,17 +190,37 @@ describe('AquariumListPageComponent', () => {
     });
   });
 
-  it('should render the filters and add action in the page header', async () => {
-    const fixture = await createFixture();
+  it('should register toolbar content and keep the page landmark label', async () => {
+    const pageTitleMock = buildPageTitleMock();
+    const fixture = await createFixture({ pageTitleMock });
     const text = fixture.nativeElement.textContent;
     const section = fixture.nativeElement.querySelector('section') as HTMLElement;
-    const hero = fixture.nativeElement.querySelector('.aquarium-list-page__hero') as HTMLElement;
 
-    expect(text).toContain(TRANSLATIONS.pt.aquariumListAddAction);
     expect(section.getAttribute('aria-label')).toBe(TRANSLATIONS.pt.homeMyAquariums);
-    expect(hero.textContent).toContain(TRANSLATIONS.pt.aquariumListAddAction);
-    expect(fixture.nativeElement.querySelectorAll('aq-search-formfield')).toHaveLength(1);
-    expect(fixture.nativeElement.querySelectorAll('aq-select-formfield')).toHaveLength(1);
+    expect(text).toContain('Aquário Comunitário');
+    expect(pageTitleMock.setToolbarContent).toHaveBeenCalledWith(expect.anything());
+  });
+
+  it('should clear the toolbar content when the page is destroyed', async () => {
+    const pageTitleMock = buildPageTitleMock();
+    const fixture = await createFixture({ pageTitleMock });
+
+    fixture.destroy();
+
+    expect(pageTitleMock.setToolbarContent).toHaveBeenLastCalledWith(null);
+  });
+
+  it('should render the filters in the main content before the listing', async () => {
+    const fixture = await createFixture();
+    const filters = fixture.nativeElement.querySelector('.aquarium-list-page__filters');
+    const cardsGrid = fixture.nativeElement.querySelector('.aquarium-list-page__grid');
+
+    expect(filters).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('aq-search-formfield')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('aq-select-formfield')).toBeTruthy();
+    expect(filters.compareDocumentPosition(cardsGrid) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(
+      0,
+    );
   });
 
   it('should render aquarium summary cards from the API response', async () => {
@@ -251,9 +275,6 @@ describe('AquariumListPageComponent', () => {
     expect(component.aquariumTypeOptionsLoading()).toBe(true);
     expect(component.aquariumTypeHint()).toBe(TRANSLATIONS.pt.aquariumListTypeLoadingHint);
     expect(component.filtersForm.controls.aquariumType.disabled).toBe(true);
-    expect(fixture.nativeElement.textContent).toContain(
-      TRANSLATIONS.pt.aquariumListTypeLoadingHint,
-    );
   });
 
   it('should re-enable the aquarium type filter after the catalog finishes loading', async () => {
@@ -274,6 +295,15 @@ describe('AquariumListPageComponent', () => {
     expect(component.filtersForm.controls.aquariumType.disabled).toBe(false);
   });
 
+  it('should clear the aquarium type hint after the catalog loads successfully', async () => {
+    const fixture = await createFixture();
+    const component = fixture.componentInstance as AquariumListPageComponent & {
+      aquariumTypeHint: () => string;
+    };
+
+    expect(component.aquariumTypeHint()).toBe('');
+  });
+
   it('should keep the type filter usable when loading the catalog fails and retry successfully', async () => {
     const systemValuesApiServiceMock = {
       listAquariumTypes: jest
@@ -290,9 +320,6 @@ describe('AquariumListPageComponent', () => {
     fixture.detectChanges();
 
     expect(component.aquariumTypeOptionsError()).toBe(true);
-    expect(fixture.nativeElement.textContent).toContain(
-      TRANSLATIONS.pt.aquariumListTypeLoadErrorHint,
-    );
 
     component.retryAquariumTypes();
     fixture.detectChanges();
@@ -301,6 +328,21 @@ describe('AquariumListPageComponent', () => {
       forceRefresh: true,
     });
     expect(component.aquariumTypeOptionsError()).toBe(false);
+  });
+
+  it('should expose the error hint when loading aquarium types fails', async () => {
+    const fixture = await createFixture({
+      systemValuesApiServiceMock: buildSystemValuesApiServiceMock(
+        throwError(() => new Error('boom')),
+      ),
+    });
+    const component = fixture.componentInstance as AquariumListPageComponent & {
+      aquariumTypeHint: () => string;
+    };
+
+    fixture.detectChanges();
+
+    expect(component.aquariumTypeHint()).toBe(TRANSLATIONS.pt.aquariumListTypeLoadErrorHint);
   });
 
   it('should keep only the all-types option when the API returns an empty catalog', async () => {
@@ -358,6 +400,27 @@ describe('AquariumListPageComponent', () => {
     expect(component.aquariumsError()).toBe(false);
   });
 
+  it('should set the error state when retryAquariums fails', async () => {
+    const aquariumApiServiceMock = {
+      listAquariums: jest
+        .fn()
+        .mockReturnValueOnce(of(aquariumListResponse))
+        .mockReturnValueOnce(throwError(() => new Error('retry failed'))),
+    } satisfies Pick<AquariumApiService, 'listAquariums'>;
+    const fixture = await createFixture({ aquariumApiServiceMock });
+    const component = fixture.componentInstance as AquariumListPageComponent & {
+      retryAquariums: () => void;
+      aquariumsError: () => boolean;
+      aquariumsLoading: () => boolean;
+    };
+
+    component.retryAquariums();
+    fixture.detectChanges();
+
+    expect(component.aquariumsError()).toBe(true);
+    expect(component.aquariumsLoading()).toBe(false);
+  });
+
   it('should render the empty state for active filters when the API returns no results', async () => {
     const aquariumApiServiceMock = buildAquariumApiServiceMock(of([]));
     const fixture = await createFixture({ aquariumApiServiceMock });
@@ -375,6 +438,25 @@ describe('AquariumListPageComponent', () => {
       TRANSLATIONS.pt.homeAquariumFiltersEmptyDesc,
     );
     expect(fixture.nativeElement.querySelector('.aquarium-list-page__footer')).toBeNull();
+  });
+
+  it('should treat aquarium type selection alone as an active filter', async () => {
+    const aquariumApiServiceMock = buildAquariumApiServiceMock(of([]));
+    const fixture = await createFixture({ aquariumApiServiceMock });
+    const component = fixture.componentInstance as AquariumListPageComponent & {
+      filtersForm: AquariumListPageComponent['filtersForm'];
+    };
+
+    component.filtersForm.controls.aquariumType.setValue('REEF_TANK');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain(
+      TRANSLATIONS.pt.homeAquariumFiltersEmptyTitle,
+    );
+    expect(aquariumApiServiceMock.listAquariums).toHaveBeenLastCalledWith({
+      name: undefined,
+      type: 'REEF_TANK',
+    });
   });
 
   it('should keep the registration empty state when the search contains only whitespace', async () => {
@@ -405,14 +487,13 @@ describe('AquariumListPageComponent', () => {
     );
   });
 
-  it('should link the create action to the aquarium creation route', async () => {
-    const fixture = await createFixture();
-    const link = fixture.nativeElement.querySelector(
-      '.aquarium-list-page__add-button',
-    ) as HTMLAnchorElement;
+  it('should render the singular total label when there is exactly one aquarium', async () => {
+    const fixture = await createFixture({
+      aquariumApiServiceMock: buildAquariumApiServiceMock(of([aquariumListResponse[0]])),
+    });
 
-    expect(link.getAttribute('href')).toContain('/aquariums/new');
-    expect(link.textContent).toContain(TRANSLATIONS.pt.aquariumListAddAction);
+    expect(fixture.nativeElement.textContent).toContain('Total: 1 aquário');
+    expect(fixture.nativeElement.textContent).toContain('Volume combinado: 75L');
   });
 
   it('should use the aquarium id in the details link', async () => {

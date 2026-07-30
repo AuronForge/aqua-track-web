@@ -50,6 +50,7 @@ describe('AuthenticatedLayoutComponent', () => {
   const pageTitleServiceMock = () => ({
     title: signal('Dashboard'),
     subtitle: signal('Overview'),
+    toolbarContent: signal(null),
   });
 
   const languageServiceMock = () => {

@@ -1,20 +1,19 @@
 <div class="home-page">
+  <ng-template #toolbarContent>
+    <a
+      aqButton
+      variant="flat"
+      color="primary"
+      size="medium"
+      class="home-page__add-aquarium-btn"
+      routerLink="/aquariums/new"
+    >
+      <span class="material-icons">add</span>
+      {{ t().homeAddAquarium }}
+    </a>
+  </ng-template>
   <!-- ── Seção: Meus Aquários ──────────────────────────────────────────────── -->
   <section class="home-page__section" [attr.aria-label]="t().homeMyAquariums">
-    <div class="home-page__section-header home-page__section-header--actions-only">
-      <a
-        aqButton
-        variant="flat"
-        color="primary"
-        size="medium"
-        class="home-page__add-aquarium-btn"
-        routerLink="/aquariums/new"
-      >
-        <span class="material-icons">add</span>
-        {{ t().homeAddAquarium }}
-      </a>
-    </div>
-
     <!-- Loading -->
     @if (facade.loading()) {
       <div

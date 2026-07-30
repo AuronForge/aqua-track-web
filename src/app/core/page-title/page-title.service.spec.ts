@@ -1,3 +1,4 @@
+import { TemplateRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { PageTitleService } from './page-title.service';
@@ -17,6 +18,7 @@ describe('PageTitleService', () => {
   it('should start with empty title and subtitle', () => {
     expect(service.title()).toBe('');
     expect(service.subtitle()).toBe('');
+    expect(service.toolbarContent()).toBeNull();
   });
 
   it('should set title and subtitle explicitly', () => {
@@ -32,5 +34,15 @@ describe('PageTitleService', () => {
 
     expect(service.title()).toBe('Home');
     expect(service.subtitle()).toBe('');
+  });
+
+  it('should set and clear toolbar content explicitly', () => {
+    const template = {} as TemplateRef<unknown>;
+
+    service.setToolbarContent(template);
+    expect(service.toolbarContent()).toBe(template);
+
+    service.setToolbarContent(null);
+    expect(service.toolbarContent()).toBeNull();
   });
 });

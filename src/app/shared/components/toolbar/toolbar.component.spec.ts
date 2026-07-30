@@ -30,7 +30,9 @@ const STUB_MENU_ITEMS: DropdownMenuItem[] = [
       [userMenuItems]="userMenuItems()"
       (languageChange)="onLanguageChange($event)"
       (userMenuItemClick)="onUserMenuItemClick($event)"
-    />
+    >
+      <div slot="center" class="test-toolbar-center">Center actions</div>
+    </app-toolbar>
   `,
 })
 class TestHostComponent {
@@ -193,6 +195,13 @@ describe('ToolbarComponent', () => {
 
   it('should render the actions section', () => {
     expect(element.querySelector('.toolbar__actions')).toBeTruthy();
+  });
+
+  it('should project custom center content when provided', () => {
+    const center = element.querySelector('.test-toolbar-center');
+
+    expect(element.querySelector('.toolbar__center-content')).toBeTruthy();
+    expect(center?.textContent?.trim()).toBe('Center actions');
   });
 
   // ── Language switcher ─────────────────────────────────────────────────────
