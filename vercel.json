@@ -3,7 +3,9 @@
   "git": {
     "deploymentEnabled": {
       "feature/*": false,
-      "develop": false
+      "develop": false,
+      "release/*": false,
+      "main": false
     }
   },
   "buildCommand": "npm run build:prod",

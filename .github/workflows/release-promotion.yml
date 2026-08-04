@@ -1,16 +1,16 @@
-name: Develop Promotion
+name: Release Promotion
 
 on:
   push:
     branches:
-      - develop
+      - 'release/*'
 
 concurrency:
-  group: develop-promotion-${{ github.ref }}
+  group: release-promotion-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
   pull-requests: write
 
 jobs:
@@ -36,11 +36,11 @@ jobs:
       - name: Run build
         run: npm run build
 
-  lint:
+  test-coverage:
     needs:
       - build
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Checkout repository
@@ -57,63 +57,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run lint
-        run: npm run lint
-
-  test:
-    needs:
-      - build
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests
-        run: npm test -- --watch=false --runInBand
-
-  format-check:
-    needs:
-      - build
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run format check
-        run: npm run format:check
+      - name: Run coverage tests
+        run: npm run test:coverage -- --watch=false --runInBand
 
   deploy:
     needs:
-      - build
-      - lint
-      - test
-      - format-check
+      - test-coverage
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -192,7 +141,7 @@ jobs:
       - name: Deploy staging to Vercel
         run: vercel deploy --prebuilt --target=staging --token=${{ secrets.VERCEL_TOKEN }}
 
-  validate-tag-and-create-release-pr:
+  validate-tag-and-sync-main-pr:
     needs:
       - deploy
     runs-on: ubuntu-latest
@@ -209,91 +158,54 @@ jobs:
         with:
           node-version: 22
 
-      - name: Resolve release version
-        id: version
+      - name: Resolve release metadata
+        id: release
         shell: bash
         run: |
           version="$(node -p "require('./package.json').version")"
+          branch="${GITHUB_REF_NAME}"
+          expected_branch="release/${version}"
+
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "tag=v$version" >> "$GITHUB_OUTPUT"
-          echo "branch=release/$version" >> "$GITHUB_OUTPUT"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "expected_branch=$expected_branch" >> "$GITHUB_OUTPUT"
+
+          if [ "$branch" != "$expected_branch" ]; then
+            echo "::error title=Invalid release branch::Current branch '$branch' does not match the expected release branch '$expected_branch' for version $version."
+            exit 1
+          fi
 
       - name: Validate release tag availability
         id: tag_check
         shell: bash
         run: |
-          if git ls-remote --exit-code --tags origin "refs/tags/${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
-            echo "published=true" >> "$GITHUB_OUTPUT"
-            echo "::error title=Tag already exists::The tag ${{ steps.version.outputs.tag }} has already been published. Update package.json to a new version before creating the release branch."
+          if git ls-remote --exit-code --tags origin "refs/tags/${{ steps.release.outputs.tag }}" >/dev/null 2>&1; then
+            echo "::error title=Tag already exists::The tag ${{ steps.release.outputs.tag }} has already been published. Update package.json to a new version before promoting this release branch to main."
             exit 1
-          else
-            echo "published=false" >> "$GITHUB_OUTPUT"
-            echo "Tag ${{ steps.version.outputs.tag }} is available for promotion."
           fi
 
-      - name: Ensure release branch exists
+          echo "Tag ${{ steps.release.outputs.tag }} is available for promotion."
+
+      - name: Create or update pull request from release branch to main
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const branch = '${{ steps.version.outputs.branch }}';
-            const baseBranch = 'main';
-
-            try {
-              const { data: existingRef } = await github.rest.git.getRef({
-                owner,
-                repo,
-                ref: `heads/${branch}`
-              });
-
-              core.info(`Release branch already exists at ${existingRef.object.sha}.`);
-            } catch (error) {
-              if (error.status !== 404) {
-                throw error;
-              }
-
-              const { data: baseRef } = await github.rest.git.getRef({
-                owner,
-                repo,
-                ref: `heads/${baseBranch}`
-              });
-
-              await github.rest.git.createRef({
-                owner,
-                repo,
-                ref: `refs/heads/${branch}`,
-                sha: baseRef.object.sha
-              });
-
-              core.info(`Created release branch ${branch} from ${baseBranch} (${baseRef.object.sha}).`);
-            }
-
-      - name: Create pull request from develop to release branch
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const head = 'develop';
-            const base = '${{ steps.version.outputs.branch }}';
-            const version = '${{ steps.version.outputs.version }}';
-            const title = `release: prepare ${base} from develop (v${version})`;
+            const head = '${{ steps.release.outputs.branch }}';
+            const base = 'main';
+            const version = '${{ steps.release.outputs.version }}';
+            const tag = '${{ steps.release.outputs.tag }}';
+            const title = `release: promote ${head} to main (${tag})`;
             const body = [
-              'Automated release PR created after promotion on `develop`.',
-              '',
-              `Version detected: \`v${version}\`.`,
-              `Release branch: \`${base}\`.`,
-              `Remote tag check: \`v${version}\` is available and has not been published yet.`,
-              '',
-              'Quality gates passed before this PR was opened:',
-              '- `npm run build`',
-              '- `npm run lint`',
-              '- `npm test -- --watch=false --runInBand`',
-              '- `npm run format:check`',
-              '- Vercel staging deploy from `develop`'
+              `Automated release PR created after updates to \`${head}\`.`,
+              ``,
+              `Version detected: \`${tag}\`.`,
+              `Coverage gate: passed via \`npm run test:coverage\`.`,
+              `Tag validation: \`${tag}\` is available and has not been published yet.`,
+              `Release deploy: Vercel staging completed successfully before PR synchronization.`
             ].join('\n');
 
             const { data: existingPrs } = await github.rest.pulls.list({
@@ -305,7 +217,17 @@ jobs:
             });
 
             if (existingPrs.length > 0) {
-              core.info(`Open PR already exists: ${existingPrs[0].html_url}`);
+              const current = existingPrs[0];
+
+              await github.rest.pulls.update({
+                owner,
+                repo,
+                pull_number: current.number,
+                title,
+                body
+              });
+
+              core.info(`Updated existing PR: ${current.html_url}`);
               return;
             }
 
