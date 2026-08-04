@@ -34,7 +34,9 @@ jobs:
         run: npm ci
 
       - name: Run build
-        run: npm run build
+        env:
+          DEVELOPMENT_API_BASE_URL: ${{ secrets.DEVELOPMENT_API_BASE_URL }}
+        run: npm run build:dev
 
   lint:
     needs:
@@ -117,6 +119,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
+      DEVELOPMENT_API_BASE_URL: ${{ secrets.DEVELOPMENT_API_BASE_URL }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
@@ -157,6 +160,11 @@ jobs:
 
           if [ -z "${VERCEL_PROJECT_ID}" ]; then
             echo "::error title=Missing secret::VERCEL_PROJECT_ID is not configured in GitHub Actions secrets."
+            missing=1
+          fi
+
+          if [ -z "${DEVELOPMENT_API_BASE_URL}" ]; then
+            echo "::error title=Missing secret::DEVELOPMENT_API_BASE_URL is not configured in GitHub Actions secrets."
             missing=1
           fi
 
