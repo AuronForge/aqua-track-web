@@ -1,0 +1,33 @@
+<div [class]="wrapperClass()">
+  <label class="textarea-formfield__label" [for]="inputId()">{{ label() }}</label>
+
+  <div class="textarea-formfield__control">
+    <textarea
+      class="textarea-formfield__input"
+      [id]="inputId()"
+      [value]="value()"
+      [rows]="rows()"
+      [style.resize]="resize()"
+      [attr.name]="name() || null"
+      [attr.placeholder]="placeholder() || null"
+      [attr.autocomplete]="autocomplete() || null"
+      [readOnly]="readonlyState()"
+      [disabled]="isDisabled() || null"
+      [required]="requiredState() || null"
+      [attr.aria-invalid]="showError() ? true : null"
+      [attr.aria-required]="requiredState() ? true : null"
+      [attr.aria-describedby]="describedBy()"
+      (input)="onInput($event)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+    ></textarea>
+  </div>
+
+  @if (showError()) {
+    <p [id]="errorId()" class="textarea-formfield__error" role="alert">
+      {{ resolvedErrorMessage() }}
+    </p>
+  } @else if (hint()) {
+    <p [id]="hintId()" class="textarea-formfield__hint">{{ hint() }}</p>
+  }
+</div>

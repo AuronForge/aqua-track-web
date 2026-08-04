@@ -1,0 +1,117 @@
+<section class="showcase__section">
+  <h2 class="showcase__section-title">Photo Upload</h2>
+  <p class="showcase__section-desc">
+    Dropzone genérico para fotos e imagens com clique, drag and drop, validação de formato e
+    tamanho, preview opcional e emissão de <code>FormData</code> pronta para qualquer API.
+  </p>
+
+  <h3 class="showcase__group-title">Como usar</h3>
+  <div class="showcase__usage">
+    <aq-code-block language="typescript" [code]="codeTs" />
+    <aq-code-block language="html" [code]="codeHtml" />
+  </div>
+
+  <h3 class="showcase__group-title">Propriedades</h3>
+  <div class="showcase__props">
+    <table class="showcase__props-table">
+      <thead>
+        <tr>
+          <th>Input / Output</th>
+          <th>Tipo</th>
+          <th>Padrão</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="showcase__props-name">accept</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">'image/jpeg,image/png,image/webp'</span></td>
+          <td>Lista de MIME types ou extensões aceitas</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">maxFileSizeBytes</span></td>
+          <td><span class="showcase__props-type">number</span></td>
+          <td><span class="showcase__props-default">5242880</span></td>
+          <td>Tamanho máximo permitido para o arquivo</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">fieldName</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">'file'</span></td>
+          <td>Nome da chave usada no <code>FormData</code> emitido</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">showPreview</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">false</span></td>
+          <td>Exibe um preview local da imagem selecionada</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">errorMessage</span></td>
+          <td><span class="showcase__props-type">string | null</span></td>
+          <td><span class="showcase__props-default">null</span></td>
+          <td>Permite mostrar um erro vindo da API ou do contexto consumidor</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">fileSelected</span>
+            <span class="showcase__props-output">output</span>
+          </td>
+          <td><span class="showcase__props-type">File</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Emitido quando um arquivo válido é selecionado</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">formDataSelected</span>
+            <span class="showcase__props-output">output</span>
+          </td>
+          <td><span class="showcase__props-type">FormData</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Entrega o payload pronto para enviar com <code>HttpClient</code></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">fileRejected</span>
+            <span class="showcase__props-output">output</span>
+          </td>
+          <td><span class="showcase__props-type">PhotoUploadRejection</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Informa o motivo da rejeição quando a validação local falha</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="showcase__group-title">Exemplo</h3>
+  <div class="showcase__card showcase__card--full">
+    <div class="showcase__card-stage showcase__card-stage--padded">
+      <aq-photo-upload
+        fieldName="photo"
+        [showPreview]="true"
+        (fileSelected)="onFileSelected($event)"
+        (formDataSelected)="onFormDataSelected($event)"
+        (fileRejected)="onFileRejected($event)"
+      />
+    </div>
+  </div>
+
+  @if (selectedFileName()) {
+    <p class="photo-upload-showcase__event-log">
+      Arquivo selecionado: <strong>{{ selectedFileName() }}</strong>
+    </p>
+  }
+
+  @if (selectedFieldName()) {
+    <p class="photo-upload-showcase__event-log">
+      Chave enviada no FormData: <strong>{{ selectedFieldName() }}</strong>
+    </p>
+  }
+
+  @if (rejectionMessage()) {
+    <p class="photo-upload-showcase__event-log photo-upload-showcase__event-log--error">
+      Última rejeição: <strong>{{ rejectionMessage() }}</strong>
+    </p>
+  }
+</section>

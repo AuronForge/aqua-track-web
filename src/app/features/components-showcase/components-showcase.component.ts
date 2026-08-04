@@ -17,6 +17,12 @@ export class ComponentsShowcaseComponent {
     { id: 'avatar', label: 'Avatar', icon: 'account_circle', route: '/components/avatar' },
     { id: 'badge', label: 'Badge', icon: 'local_offer', route: '/components/badge' },
     { id: 'button', label: 'Button', icon: 'smart_button', route: '/components/button' },
+    {
+      id: 'card-selection',
+      label: 'Card Selection',
+      icon: 'dashboard_customize',
+      route: '/components/card-selection',
+    },
     { id: 'chip', label: 'Chip', icon: 'label', route: '/components/chip' },
     {
       id: 'dropdown-menu',
@@ -30,13 +36,38 @@ export class ComponentsShowcaseComponent {
       icon: 'announcement',
       route: '/components/feedback-message',
     },
-    { id: 'info-card', label: 'Info Card', icon: 'info', route: '/components/info-card' },
     {
-      id: 'info-list-item',
-      label: 'Info List Item',
-      icon: 'format_list_bulleted',
-      route: '/components/info-list-item',
+      id: 'formfields',
+      label: 'Formfields',
+      icon: 'text_fields',
+      children: [
+        {
+          id: 'datepicker-formfield',
+          label: 'Datepicker Formfield',
+          icon: 'calendar_month',
+          route: '/components/datepicker-formfield',
+        },
+        {
+          id: 'select-formfield',
+          label: 'Select Formfield',
+          icon: 'arrow_drop_down_circle',
+          route: '/components/select-formfield',
+        },
+        {
+          id: 'text-formfield',
+          label: 'Text Formfield',
+          icon: 'text_fields',
+          route: '/components/text-formfield',
+        },
+        {
+          id: 'textarea-formfield',
+          label: 'Textarea Formfield',
+          icon: 'notes',
+          route: '/components/textarea-formfield',
+        },
+      ],
     },
+    { id: 'info-card', label: 'Info Card', icon: 'info', route: '/components/info-card' },
     {
       id: 'info-list',
       label: 'Info List',
@@ -44,13 +75,19 @@ export class ComponentsShowcaseComponent {
       route: '/components/info-list',
     },
     {
-      id: 'input-select',
-      label: 'Input Select',
-      icon: 'unfold_more',
-      route: '/components/input-select',
+      id: 'info-list-item',
+      label: 'Info List Item',
+      icon: 'format_list_bulleted',
+      route: '/components/info-list-item',
     },
     { id: 'menu', label: 'Nav Menu', icon: 'menu', route: '/components/menu' },
     { id: 'modal', label: 'Modal', icon: 'open_in_new', route: '/components/modal' },
+    {
+      id: 'photo-upload',
+      label: 'Photo Upload',
+      icon: 'upload_file',
+      route: '/components/photo-upload',
+    },
     { id: 'toolbar', label: 'Toolbar', icon: 'web_asset', route: '/components/toolbar' },
   ];
 }

@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, effect, inject, input, output } fro
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { SelectFormfieldOption } from '../../../../shared/components/formfields/select-formfield/select-formfield-option.model';
 import { LANGUAGE_OPTIONS } from '../../../../shared/constants/language-options.constant';
-import { InputSelectOption } from '../../../../shared/components/select/input-select-option.model';
 import { SegmentedControlOption } from '../../../../shared/components/segmented-control/segmented-control-option.model';
 import { SegmentedControlComponent } from '../../../../shared/components/segmented-control/segmented-control.component';
 import { SettingsCardComponent } from '../../../../shared/components/settings-card/settings-card.component';
@@ -51,7 +51,7 @@ export class PreferencesCardComponent {
   protected readonly t = this.languageService.translation;
 
   readonly preferences = input.required<ProfilePreferences>();
-  readonly aquariumOptions = input<InputSelectOption[]>([]);
+  readonly aquariumOptions = input<SelectFormfieldOption[]>([]);
   readonly saving = input<boolean>(false);
   readonly saveSuccess = input<boolean>(false);
   readonly error = input<string | null>(null);

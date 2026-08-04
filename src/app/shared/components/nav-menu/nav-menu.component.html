@@ -9,18 +9,55 @@
   <ul class="nav-menu__list">
     @for (item of visibleItems(); track item.id) {
       <li class="nav-menu__item">
-        <a
-          class="nav-menu__link"
-          [routerLink]="item.route"
-          routerLinkActive="nav-menu__link--active"
-          [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
-          [title]="collapsed() ? item.label : ''"
-        >
-          <span class="material-icons nav-menu__link-icon">{{ item.icon }}</span>
-          @if (!collapsed()) {
-            <span class="nav-menu__link-label">{{ item.label }}</span>
+        @if (hasChildren(item)) {
+          <button
+            type="button"
+            class="nav-menu__group-trigger"
+            [class.nav-menu__group-trigger--expanded]="isGroupExpanded(item)"
+            [title]="collapsed() ? item.label : ''"
+            [attr.aria-expanded]="collapsed() ? null : isGroupExpanded(item)"
+            (click)="toggleGroup(item)"
+          >
+            <span class="material-icons nav-menu__link-icon">{{ item.icon }}</span>
+            @if (!collapsed()) {
+              <span class="nav-menu__link-label">{{ item.label }}</span>
+              <span class="material-icons nav-menu__group-arrow" aria-hidden="true">
+                expand_more
+              </span>
+            }
+          </button>
+
+          @if (!collapsed() && isGroupExpanded(item)) {
+            <ul class="nav-menu__sublist">
+              @for (child of item.children; track child.id) {
+                <li class="nav-menu__subitem">
+                  <a
+                    class="nav-menu__sublink"
+                    [routerLink]="child.route!"
+                    routerLinkActive="nav-menu__sublink--active"
+                    [routerLinkActiveOptions]="{ exact: child.exact ?? false }"
+                  >
+                    <span class="material-icons nav-menu__sublink-icon">{{ child.icon }}</span>
+                    <span class="nav-menu__sublink-label">{{ child.label }}</span>
+                  </a>
+                </li>
+              }
+            </ul>
           }
-        </a>
+        } @else {
+          <a
+            class="nav-menu__link"
+            [routerLink]="item.route!"
+            routerLinkActive="nav-menu__link--active"
+            [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+            [title]="collapsed() ? item.label : ''"
+          >
+            <span class="material-icons nav-menu__link-icon">{{ item.icon }}</span>
+            @if (!collapsed()) {
+              <span class="nav-menu__link-label">{{ item.label }}</span>
+            }
+          </a>
+        }
       </li>
     }
   </ul>

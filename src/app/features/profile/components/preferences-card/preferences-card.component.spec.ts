@@ -1,7 +1,7 @@
 import { Component, computed, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { InputSelectOption } from '../../../../shared/components/select/input-select-option.model';
+import { SelectFormfieldOption } from '../../../../shared/components/formfields/select-formfield/select-formfield-option.model';
 import { TRANSLATIONS } from '../../../../shared/constants/translations.constant';
 import { LanguageService } from '../../../../shared/services/language.service';
 import { LanguageCode } from '../../../../shared/types/language-code.type';
@@ -27,7 +27,7 @@ const PREFERENCES: ProfilePreferences = {
   nitrateAlertsEnabled: true,
 };
 
-const AQUARIUM_OPTIONS: InputSelectOption[] = [
+const AQUARIUM_OPTIONS: SelectFormfieldOption[] = [
   { id: 'aquarium-1', title: 'Reef Tank' },
   { id: 'aquarium-2', title: 'Betta Tank' },
 ];
@@ -48,7 +48,7 @@ const AQUARIUM_OPTIONS: InputSelectOption[] = [
 })
 class TestHostComponent {
   readonly preferences = signal<ProfilePreferences>(PREFERENCES);
-  readonly aquariumOptions = signal<InputSelectOption[]>(AQUARIUM_OPTIONS);
+  readonly aquariumOptions = signal<SelectFormfieldOption[]>(AQUARIUM_OPTIONS);
   readonly saving = signal(false);
   readonly saveSuccess = signal(false);
   readonly error = signal<string | null>(null);

@@ -1,0 +1,312 @@
+<section class="showcase__section">
+  <h2 class="showcase__section-title">Text Formfield</h2>
+  <p class="showcase__section-desc">
+    Campo textual reutilizável do AquaTrack para formulários com Reactive Forms. Centraliza label,
+    hint, erro, prefixos, sufixos, ações por ícone e suporte opcional a senha com toggle, mantendo
+    acessibilidade e estados visuais consistentes.
+  </p>
+
+  <h3 class="showcase__group-title">Como usar</h3>
+  <div class="showcase__usage">
+    <aq-code-block language="typescript" [code]="codeTs" />
+    <aq-code-block language="html" [code]="codeHtml" />
+  </div>
+
+  <h3 class="showcase__group-title">Propriedades</h3>
+  <div class="showcase__props">
+    <table class="showcase__props-table">
+      <thead>
+        <tr>
+          <th>Input / Output</th>
+          <th>Tipo</th>
+          <th>Padrão</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="showcase__props-name">label</span>
+            <span class="showcase__props-required">required</span>
+          </td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Label visível e associada semanticamente ao input</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">placeholder</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">''</span></td>
+          <td>Texto de apoio opcional dentro do campo</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">hint</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">''</span></td>
+          <td>Mensagem auxiliar exibida enquanto não houver erro visível</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">type</span></td>
+          <td>
+            <span class="showcase__props-type">
+              'text' | 'password' | 'email' | 'search' | 'tel' | 'url'
+            </span>
+          </td>
+          <td><span class="showcase__props-default">'text'</span></td>
+          <td>Tipo nativo do input</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">prefixText / suffixText</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">undefined</span></td>
+          <td>Texto contextual exibido antes ou depois do valor</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">prefixIcon / suffixIcon</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">undefined</span></td>
+          <td>Nome do ícone Material decorativo em prefixo ou sufixo</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">actions</span></td>
+          <td><span class="showcase__props-type">FormfieldAction[]</span></td>
+          <td><span class="showcase__props-default">[]</span></td>
+          <td>Ações clicáveis no prefixo ou sufixo com <code>ariaLabel</code> obrigatório</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">passwordToggle</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">false</span></td>
+          <td>
+            Habilita a ação interna de mostrar/ocultar senha quando <code>type="password"</code>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">errorMessages</span></td>
+          <td><span class="showcase__props-type">Record&lt;string, string&gt;</span></td>
+          <td><span class="showcase__props-default">&#123;&#125;</span></td>
+          <td>Mapa de mensagens personalizadas por chave de erro</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">actionClick</span>
+            <span class="showcase__props-output">output</span>
+          </td>
+          <td><span class="showcase__props-type">FormfieldAction</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Emitido ao clicar em uma action habilitada</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="showcase__group-title">Exemplos</h3>
+
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Campo simples</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-formfield">
+          <aq-text-formfield
+            [formControl]="exampleForm.controls.fullName"
+            label="Full Name"
+            placeholder="John Doe"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Campo com hint</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-formfield">
+          <aq-text-formfield
+            [formControl]="hintControl"
+            label="Nome do aquário"
+            placeholder="Ex: Aquário principal"
+            hint="Use um nome fácil de reconhecer nos relatórios."
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Obrigatório</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-formfield">
+          <aq-text-formfield
+            [formControl]="requiredControl"
+            label="Username"
+            placeholder="john_doe"
+            [errorMessages]="{ required: 'Campo obrigatório.' }"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Minlength</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-formfield">
+          <aq-text-formfield
+            [formControl]="minlengthControl"
+            label="Nome completo"
+            placeholder="Digite pelo menos 3 caracteres"
+            [errorMessages]="{ minlength: 'Informe pelo menos 3 caracteres.' }"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Prefixo textual</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-formfield">
+          <aq-text-formfield
+            [formControl]="prefixControl"
+            label="Telefone"
+            prefixText="+55"
+            prefixIcon="call"
+            type="tel"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Sufixo textual</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-formfield">
+          <aq-text-formfield
+            [formControl]="suffixControl"
+            label="Volume"
+            suffixText="L"
+            suffixIcon="water_drop"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Action icon</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-formfield">
+          <aq-text-formfield
+            [formControl]="exampleForm.controls.username"
+            label="Username"
+            prefixIcon="alternate_email"
+            [actions]="usernameActions"
+            (actionClick)="onActionClick($event)"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Senha com toggle</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-formfield">
+          <aq-text-formfield
+            [formControl]="exampleForm.controls.password"
+            label="Senha"
+            type="password"
+            placeholder="Digite sua senha"
+            [passwordToggle]="true"
+            hint="A senha deve ter pelo menos 8 caracteres."
+            [errorMessages]="{
+              required: 'Campo obrigatório.',
+              minlength: 'A senha deve ter pelo menos 8 caracteres.',
+            }"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Disabled</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-formfield">
+          <aq-text-formfield [formControl]="disabledControl" label="Aquário" />
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Readonly</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-formfield">
+          <aq-text-formfield
+            [formControl]="exampleForm.controls.readonlyName"
+            label="Nome completo"
+            [readonly]="true"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">Campo inválido</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-formfield">
+          <aq-text-formfield
+            [formControl]="invalidControl"
+            label="E-mail"
+            type="email"
+            placeholder="joao@email.com"
+            [errorMessages]="{ required: 'Informe um e-mail válido para continuar.' }"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Reactive Forms com ações</h3>
+  <div class="showcase__card showcase__card--full">
+    <div class="showcase__card-stage showcase__card-stage--padded">
+      <form class="demo-form" [formGroup]="exampleForm">
+        <aq-text-formfield
+          formControlName="fullName"
+          label="Nome completo"
+          placeholder="Ex: José Eduardo Trindade Marques"
+          hint="Use o nome que será exibido no seu perfil"
+          [actions]="nameActions"
+          [errorMessages]="{
+            required: 'Informe seu nome.',
+            minlength: 'O nome deve ter pelo menos 3 caracteres.',
+          }"
+          (actionClick)="onActionClick($event)"
+        />
+
+        <aq-text-formfield
+          formControlName="search"
+          label="Busca rápida"
+          placeholder="Pesquisar aquários"
+          suffixIcon="search"
+        />
+
+        <aq-text-formfield
+          formControlName="temperature"
+          label="Temperatura"
+          suffixText="°C"
+          suffixIcon="device_thermostat"
+        />
+      </form>
+    </div>
+  </div>
+
+  @if (lastAction()) {
+    <p class="showcase__event-log">
+      Última ação disparada: <strong>{{ lastAction() }}</strong>
+    </p>
+  }
+</section>

@@ -27,55 +27,24 @@
       }
 
       <form class="login-card__form" [formGroup]="loginForm" (ngSubmit)="submit()">
-        <div class="login-card__field">
-          <label class="login-card__label" for="email">{{ translation().emailLabel }}</label>
-          <input
-            id="email"
-            type="email"
-            class="login-card__input"
-            [class.login-card__input--error]="
-              loginForm.controls.email.invalid && loginForm.controls.email.touched
-            "
-            formControlName="email"
-            [placeholder]="translation().emailPlaceholder"
-            autocomplete="email"
-            [attr.aria-invalid]="
-              loginForm.controls.email.invalid && loginForm.controls.email.touched
-            "
-          />
-          @if (loginForm.controls.email.invalid && loginForm.controls.email.touched) {
-            <span class="login-card__error" role="alert">
-              @if (loginForm.controls.email.hasError('required')) {
-                {{ translation().emailRequired }}
-              } @else if (loginForm.controls.email.hasError('email')) {
-                {{ translation().emailInvalid }}
-              }
-            </span>
-          }
-        </div>
+        <aq-text-formfield
+          formControlName="email"
+          [label]="translation().emailLabel"
+          [placeholder]="translation().emailPlaceholder"
+          type="email"
+          autocomplete="email"
+          [errorMessages]="emailErrorMessages()"
+        />
 
-        <div class="login-card__field">
-          <label class="login-card__label" for="password">{{ translation().passwordLabel }}</label>
-          <input
-            id="password"
-            type="password"
-            class="login-card__input"
-            [class.login-card__input--error]="
-              loginForm.controls.password.invalid && loginForm.controls.password.touched
-            "
-            formControlName="password"
-            [placeholder]="translation().passwordPlaceholder"
-            autocomplete="current-password"
-            [attr.aria-invalid]="
-              loginForm.controls.password.invalid && loginForm.controls.password.touched
-            "
-          />
-          @if (loginForm.controls.password.invalid && loginForm.controls.password.touched) {
-            <span class="login-card__error" role="alert">
-              {{ translation().passwordRequired }}
-            </span>
-          }
-        </div>
+        <aq-text-formfield
+          formControlName="password"
+          [label]="translation().passwordLabel"
+          [placeholder]="translation().passwordPlaceholder"
+          type="password"
+          autocomplete="current-password"
+          [passwordToggle]="true"
+          [errorMessages]="passwordErrorMessages()"
+        />
 
         <a class="login-card__forgot-password" routerLink="/forgot-password">
           {{ translation().forgotPassword }}

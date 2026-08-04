@@ -30,5 +30,5 @@
 .layout__main {
   flex: 1;
   overflow-y: auto;
-  padding: theme.$aq-space-xl;
+  padding: theme.$aq-space-xl theme.$aq-space-xl theme.$aq-space-md;
 }

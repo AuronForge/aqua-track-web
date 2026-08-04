@@ -7,7 +7,7 @@ import { UserService } from '../../core/users/services/user.service';
 import { PageTitleService } from '../../core/page-title/page-title.service';
 import { NavMenuComponent } from '../../shared/components/nav-menu/nav-menu.component';
 import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.component';
-import { DropdownMenuItem } from '../../shared/ui/dropdown-menu/dropdown-menu-item.model';
+import { DropdownMenuItem } from '../../shared/components/dropdown-menu/dropdown-menu-item.model';
 import { NavMenuItem } from '../../shared/components/nav-menu/nav-menu-item.model';
 import { LanguageCode } from '../../shared/types/language-code.type';
 import { LanguageService } from '../../shared/services/language.service';

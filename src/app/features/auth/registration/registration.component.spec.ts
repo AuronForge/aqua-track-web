@@ -3,9 +3,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { NEVER, Observable, of, throwError } from 'rxjs';
 
+import { LoginResponse } from '../../../core/auth/models/login-response.model';
 import { AuthApiService } from '../../../core/auth/services/auth-api.service';
 import { AuthService } from '../../../core/auth/services/auth.service';
-import { LoginResponse } from '../../../core/auth/models/login-response.model';
 import { RegistrationComponent } from './registration.component';
 
 const mockRegisterResponse: LoginResponse = {
@@ -26,8 +26,8 @@ const VALID_FORM_VALUES = {
   fullName: 'Test User',
   email: 'test@example.com',
   birthDate: '1990-01-15',
-  password: 'password123',
-  confirmPassword: 'password123',
+  password: 'Password1!',
+  confirmPassword: 'Password1!',
 };
 
 describe('RegistrationComponent', () => {
@@ -165,8 +165,9 @@ describe('RegistrationComponent', () => {
       fixture.componentInstance.submit();
       fixture.detectChanges();
 
-      const texts = errorTexts(fixture);
-      expect(texts).toContain('O nome completo é obrigatório.');
+      expect(errorTexts(fixture)).toContain(
+        fixture.componentInstance.translation().fullNameRequired,
+      );
     });
 
     it('should show the email required error after submit', async () => {
@@ -175,7 +176,7 @@ describe('RegistrationComponent', () => {
       fixture.componentInstance.submit();
       fixture.detectChanges();
 
-      expect(errorTexts(fixture)).toContain('O e-mail é obrigatório.');
+      expect(errorTexts(fixture)).toContain(fixture.componentInstance.translation().emailRequired);
     });
 
     it('should show the email invalid error when the format is wrong', async () => {
@@ -185,7 +186,7 @@ describe('RegistrationComponent', () => {
       fixture.componentInstance.registrationForm.controls.email.markAsTouched();
       fixture.detectChanges();
 
-      expect(errorTexts(fixture)).toContain('Informe um e-mail válido.');
+      expect(errorTexts(fixture)).toContain(fixture.componentInstance.translation().emailInvalid);
     });
 
     it('should show the password required error after submit', async () => {
@@ -194,7 +195,9 @@ describe('RegistrationComponent', () => {
       fixture.componentInstance.submit();
       fixture.detectChanges();
 
-      expect(errorTexts(fixture)).toContain('A senha é obrigatória.');
+      expect(errorTexts(fixture)).toContain(
+        fixture.componentInstance.translation().passwordRequired,
+      );
     });
 
     it('should show the password minlength error when the password is too short', async () => {
@@ -204,7 +207,9 @@ describe('RegistrationComponent', () => {
       fixture.componentInstance.registrationForm.controls.password.markAsTouched();
       fixture.detectChanges();
 
-      expect(errorTexts(fixture)).toContain('A senha deve ter pelo menos 8 caracteres.');
+      expect(errorTexts(fixture)).toContain(
+        fixture.componentInstance.translation().changePasswordRequirementsError,
+      );
     });
 
     it('should show the confirmPassword required error after submit', async () => {
@@ -213,7 +218,9 @@ describe('RegistrationComponent', () => {
       fixture.componentInstance.submit();
       fixture.detectChanges();
 
-      expect(errorTexts(fixture)).toContain('A confirmação de senha é obrigatória.');
+      expect(errorTexts(fixture)).toContain(
+        fixture.componentInstance.translation().confirmPasswordRequired,
+      );
     });
 
     it('should show the passwords mismatch error when passwords differ', async () => {
@@ -226,7 +233,42 @@ describe('RegistrationComponent', () => {
       fixture.componentInstance.registrationForm.controls.confirmPassword.markAsTouched();
       fixture.detectChanges();
 
-      expect(errorTexts(fixture)).toContain('As senhas não coincidem.');
+      expect(errorTexts(fixture)).toContain(
+        fixture.componentInstance.translation().passwordsMismatch,
+      );
+    });
+
+    it('should render the password requirements list', async () => {
+      await createComponent();
+
+      const element: HTMLElement = fixture.nativeElement;
+      expect(
+        element.querySelector('.registration-password-requirements__title h3')?.textContent?.trim(),
+      ).toBe(fixture.componentInstance.translation().changePasswordRequirementsTitle);
+      expect(element.textContent).toContain(
+        fixture.componentInstance.translation().changePasswordRequirementMinLength,
+      );
+      expect(element.textContent).toContain(
+        fixture.componentInstance.translation().changePasswordRequirementUppercase,
+      );
+      expect(element.textContent).toContain(
+        fixture.componentInstance.translation().changePasswordRequirementNumber,
+      );
+      expect(element.textContent).toContain(
+        fixture.componentInstance.translation().changePasswordRequirementSpecial,
+      );
+    });
+
+    it('should update password requirements in real time', async () => {
+      await createComponent();
+
+      fixture.componentInstance.registrationForm.controls.password.setValue('Password1!');
+      fixture.detectChanges();
+
+      const metRequirements = fixture.nativeElement.querySelectorAll(
+        '.registration-password-requirements__item--met',
+      );
+      expect(metRequirements).toHaveLength(4);
     });
   });
 
@@ -251,7 +293,7 @@ describe('RegistrationComponent', () => {
         name: 'Test User',
         email: 'test@example.com',
         birthDate: '1990-01-15',
-        password: 'password123',
+        password: 'Password1!',
       });
     });
 
@@ -326,7 +368,9 @@ describe('RegistrationComponent', () => {
 
       const errorEl = fixture.nativeElement.querySelector('.login-card__api-error');
       expect(errorEl).not.toBeNull();
-      expect(errorEl.textContent.trim()).toBe('Não foi possível criar a conta. Tente novamente.');
+      expect(errorEl.textContent.trim()).toBe(
+        fixture.componentInstance.translation().registrationError,
+      );
     });
 
     it('should clear the API error before a new request', async () => {
@@ -349,6 +393,8 @@ describe('RegistrationComponent', () => {
 });
 
 function errorTexts(fixture: ComponentFixture<RegistrationComponent>): string[] {
-  const nodes: NodeListOf<Element> = fixture.nativeElement.querySelectorAll('.login-card__error');
+  const nodes: NodeListOf<Element> = fixture.nativeElement.querySelectorAll(
+    '.text-formfield__error, .login-card__error',
+  );
   return Array.from(nodes).map((el) => el.textContent?.trim() ?? '');
 }

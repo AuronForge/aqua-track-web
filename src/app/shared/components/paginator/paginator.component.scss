@@ -15,16 +15,11 @@
 
 .paginator__size {
   display: flex;
-  align-items: center;
-  gap: theme.$aq-space-xs;
+  align-items: flex-end;
 }
 
-.paginator__size-label {
-  font-family: theme.$aq-font-family-base;
-  font-size: theme.$aq-font-size-sm;
-  font-weight: theme.$aq-font-weight-regular;
-  color: theme.$aq-color-text-secondary;
-  white-space: nowrap;
+.paginator__size-field {
+  width: min(100%, 10rem);
 }
 
 .paginator__nav {
