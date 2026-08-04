@@ -126,20 +126,20 @@ jobs:
             exit 1
           fi
 
-          if ! vercel pull --yes --environment=staging --token="${{ secrets.VERCEL_TOKEN }}" >/tmp/vercel-pull.log 2>&1; then
+          if ! vercel pull --yes --environment=preview --token="${{ secrets.VERCEL_TOKEN }}" >/tmp/vercel-pull.log 2>&1; then
             cat /tmp/vercel-pull.log
-            echo "::error title=Vercel staging access failed::Could not load the staging environment using VERCEL_ORG_ID and VERCEL_PROJECT_ID. Check project access, confirm the custom environment 'staging' exists on Vercel, and ensure your Vercel plan supports custom environments."
+            echo "::error title=Vercel preview access failed::Could not load the preview environment using VERCEL_ORG_ID and VERCEL_PROJECT_ID. Check project access and confirm the preview environment is available for this Vercel project."
             exit 1
           fi
 
-      - name: Pull Vercel staging environment
-        run: vercel pull --yes --environment=staging --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Pull Vercel preview environment
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build Vercel project
-        run: vercel build --target=staging --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Deploy staging to Vercel
-        run: vercel deploy --prebuilt --target=staging --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy preview to Vercel
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
 
   validate-tag-and-sync-main-pr:
     needs:
@@ -205,7 +205,7 @@ jobs:
               `Version detected: \`${tag}\`.`,
               `Coverage gate: passed via \`npm run test:coverage\`.`,
               `Tag validation: \`${tag}\` is available and has not been published yet.`,
-              `Release deploy: Vercel staging completed successfully before PR synchronization.`
+              `Release deploy: Vercel preview completed successfully before PR synchronization.`
             ].join('\n');
 
             const { data: existingPrs } = await github.rest.pulls.list({
