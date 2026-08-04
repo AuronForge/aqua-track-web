@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../../../environments/environment';
 import { ForgotPasswordRequest } from '../models/forgot-password-request.model';
 import { ForgotPasswordResponse } from '../models/forgot-password-response.model';
 import { LoginRequest } from '../models/login-request.model';
@@ -13,7 +14,7 @@ import { RegisterRequest } from '../models/register-request.model';
 })
 export class AuthApiService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:3000/auth';
+  private readonly baseUrl = `${environment.apiBaseUrl}/auth`;
 
   login(request: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.baseUrl}/login`, request);

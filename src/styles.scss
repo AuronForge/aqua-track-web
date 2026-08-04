@@ -1,6 +1,7 @@
 @use 'app/shared/theme/reset';
 @use 'app/shared/theme/root';
 @use 'app/shared/theme' as theme;
+@use 'app/features/auth/auth-layout';
 
 body {
   font-family: theme.$aq-font-family-base;
