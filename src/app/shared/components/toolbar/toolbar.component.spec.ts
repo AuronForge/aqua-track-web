@@ -1,10 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AvatarColor } from '../../ui/avatar/avatar-color.type';
-import { AvatarComponent } from '../../ui/avatar/avatar.component';
-import { DropdownMenuItem } from '../../ui/dropdown-menu/dropdown-menu-item.model';
-import { DropdownMenuComponent } from '../../ui/dropdown-menu/dropdown-menu.component';
+import { AvatarColor } from '../avatar/avatar-color.type';
+import { AvatarComponent } from '../avatar/avatar.component';
+import { DropdownMenuItem } from '../dropdown-menu/dropdown-menu-item.model';
+import { DropdownMenuComponent } from '../dropdown-menu/dropdown-menu.component';
 import { LanguageCode } from '../../types/language-code.type';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 import { ToolbarComponent } from './toolbar.component';

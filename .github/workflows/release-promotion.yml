@@ -1,0 +1,243 @@
+name: Release Promotion
+
+on:
+  push:
+    branches:
+      - 'release/*'
+
+concurrency:
+  group: release-promotion-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run build
+        run: npm run build
+
+  test-coverage:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run coverage tests
+        run: npm run test:coverage -- --watch=false --runInBand
+
+  deploy:
+    needs:
+      - test-coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Validate Vercel secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          missing=0
+
+          if [ -z "${{ secrets.VERCEL_TOKEN }}" ]; then
+            echo "::error title=Missing secret::VERCEL_TOKEN is not configured in GitHub Actions secrets."
+            missing=1
+          fi
+
+          if [ -z "${VERCEL_ORG_ID}" ]; then
+            echo "::error title=Missing secret::VERCEL_ORG_ID is not configured in GitHub Actions secrets."
+            missing=1
+          fi
+
+          if [ -z "${VERCEL_PROJECT_ID}" ]; then
+            echo "::error title=Missing secret::VERCEL_PROJECT_ID is not configured in GitHub Actions secrets."
+            missing=1
+          fi
+
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Remove previous Vercel link
+        run: rm -rf .vercel
+
+      - name: Diagnose Vercel access
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if ! vercel project ls --token="${{ secrets.VERCEL_TOKEN }}" >/dev/null 2>&1; then
+            echo "::error title=Vercel access failed::The VERCEL_TOKEN is invalid or does not have access to the expected Vercel scope."
+            exit 1
+          fi
+
+          if ! vercel pull --yes --environment=preview --token="${{ secrets.VERCEL_TOKEN }}" >/tmp/vercel-pull.log 2>&1; then
+            cat /tmp/vercel-pull.log
+            echo "::error title=Vercel preview access failed::Could not load the preview environment using VERCEL_ORG_ID and VERCEL_PROJECT_ID. Check project access and confirm the preview environment is available for this Vercel project."
+            exit 1
+          fi
+
+      - name: Pull Vercel preview environment
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Vercel project
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy preview to Vercel
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+
+  validate-tag-and-sync-main-pr:
+    needs:
+      - deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Resolve release metadata
+        id: release
+        shell: bash
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          branch="${GITHUB_REF_NAME}"
+          expected_branch="release/${version}"
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "expected_branch=$expected_branch" >> "$GITHUB_OUTPUT"
+
+          if [ "$branch" != "$expected_branch" ]; then
+            echo "::error title=Invalid release branch::Current branch '$branch' does not match the expected release branch '$expected_branch' for version $version."
+            exit 1
+          fi
+
+      - name: Validate release tag availability
+        id: tag_check
+        shell: bash
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/${{ steps.release.outputs.tag }}" >/dev/null 2>&1; then
+            echo "::error title=Tag already exists::The tag ${{ steps.release.outputs.tag }} has already been published. Update package.json to a new version before promoting this release branch to main."
+            exit 1
+          fi
+
+          echo "Tag ${{ steps.release.outputs.tag }} is available for promotion."
+
+      - name: Create or update pull request from release branch to main
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const head = '${{ steps.release.outputs.branch }}';
+            const base = 'main';
+            const version = '${{ steps.release.outputs.version }}';
+            const tag = '${{ steps.release.outputs.tag }}';
+            const title = `release: promote ${head} to main (${tag})`;
+            const body = [
+              `Automated release PR created after updates to \`${head}\`.`,
+              ``,
+              `Version detected: \`${tag}\`.`,
+              `Coverage gate: passed via \`npm run test:coverage\`.`,
+              `Tag validation: \`${tag}\` is available and has not been published yet.`,
+              `Release deploy: Vercel preview completed successfully before PR synchronization.`
+            ].join('\n');
+
+            const { data: existingPrs } = await github.rest.pulls.list({
+              owner,
+              repo,
+              state: 'open',
+              head: `${owner}:${head}`,
+              base
+            });
+
+            if (existingPrs.length > 0) {
+              const current = existingPrs[0];
+
+              await github.rest.pulls.update({
+                owner,
+                repo,
+                pull_number: current.number,
+                title,
+                body
+              });
+
+              core.info(`Updated existing PR: ${current.html_url}`);
+              return;
+            }
+
+            const { data: pr } = await github.rest.pulls.create({
+              owner,
+              repo,
+              head,
+              base,
+              title,
+              body
+            });
+
+            core.info(`Created PR: ${pr.html_url}`);

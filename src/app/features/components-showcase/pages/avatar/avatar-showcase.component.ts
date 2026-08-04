@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { AvatarComponent } from '../../../../shared/ui/avatar/avatar.component';
+import { AvatarComponent } from '../../../../shared/components/avatar/avatar.component';
 import { CodeBlockComponent } from '../../../../shared/components/code-block/code-block.component';
 
 @Component({
@@ -12,7 +12,7 @@ import { CodeBlockComponent } from '../../../../shared/components/code-block/cod
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AvatarShowcaseComponent {
-  readonly codeTs = `import { AvatarComponent } from '../../shared/ui/avatar/avatar.component';`;
+  readonly codeTs = `import { AvatarComponent } from '../../shared/components/avatar/avatar.component';`;
 
   readonly codeHtml = `<!-- Iniciais -->
 <app-avatar variant="initials" color="primary" size="normal" initials="JD" />

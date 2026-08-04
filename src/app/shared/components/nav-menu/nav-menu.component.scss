@@ -1,20 +1,14 @@
 @use '../../theme' as theme;
 
-// ── Layout variables ───────────────────────────────────────────────────────────
-
 $width-expanded: 240px;
 $width-collapsed: 72px;
 $item-height: 48px;
 $brand-height: 72px;
 
-// ── Host ───────────────────────────────────────────────────────────────────────
-
 :host {
   display: block;
   height: 100%;
 }
-
-// ── Block ──────────────────────────────────────────────────────────────────────
 
 .nav-menu {
   display: flex;
@@ -26,8 +20,6 @@ $brand-height: 72px;
   transition: width 200ms ease;
   overflow: hidden;
 }
-
-// ── Brand ──────────────────────────────────────────────────────────────────────
 
 .nav-menu__brand {
   display: flex;
@@ -70,8 +62,6 @@ $brand-height: 72px;
   white-space: nowrap;
 }
 
-// ── List ───────────────────────────────────────────────────────────────────────
-
 .nav-menu__list {
   flex: 1;
   list-style: none;
@@ -84,37 +74,54 @@ $brand-height: 72px;
   display: block;
 }
 
-// ── Link ───────────────────────────────────────────────────────────────────────
-
-.nav-menu__link {
+.nav-menu__link,
+.nav-menu__group-trigger,
+.nav-menu__sublink {
   display: flex;
   align-items: center;
   gap: theme.$aq-space-sm;
-  height: $item-height;
+  width: 100%;
+  min-height: $item-height;
   padding: 0 theme.$aq-space-sm;
+  border: none;
   border-radius: theme.$aq-radius-sm;
+  background: transparent;
   color: theme.$aq-color-text-secondary;
   text-decoration: none;
+  font-family: theme.$aq-font-family-base;
   font-size: 0.875rem;
   font-weight: 500;
   white-space: nowrap;
+  text-align: left;
+  cursor: pointer;
   transition:
     background-color 150ms ease,
     color 150ms ease;
-
-  &:hover {
-    background-color: rgb(18 63 97 / 6%);
-    color: theme.$aq-color-text-primary;
-  }
-
-  &:focus-visible {
-    @include theme.aq-focus-ring;
-
-    outline: none;
-  }
 }
 
-.nav-menu__link--active {
+.nav-menu__sublink {
+  min-height: 44px;
+  padding-left: calc(theme.$aq-space-sm + 1.5rem + theme.$aq-space-sm + theme.$aq-space-xs);
+  font-size: 0.875rem;
+}
+
+.nav-menu__link:hover,
+.nav-menu__group-trigger:hover,
+.nav-menu__sublink:hover {
+  background-color: rgb(18 63 97 / 6%);
+  color: theme.$aq-color-text-primary;
+}
+
+.nav-menu__link:focus-visible,
+.nav-menu__group-trigger:focus-visible,
+.nav-menu__sublink:focus-visible {
+  @include theme.aq-focus-ring;
+
+  outline: none;
+}
+
+.nav-menu__link--active,
+.nav-menu__sublink--active {
   background-color: theme.$aq-color-primary;
   color: theme.$aq-color-surface;
 
@@ -124,7 +131,8 @@ $brand-height: 72px;
   }
 }
 
-.nav-menu__link-icon {
+.nav-menu__link-icon,
+.nav-menu__sublink-icon {
   font-size: 1.25rem;
   flex-shrink: 0;
   width: 1.5rem;
@@ -132,12 +140,32 @@ $brand-height: 72px;
   user-select: none;
 }
 
-.nav-menu__link-label {
+.nav-menu__link-label,
+.nav-menu__sublink-label {
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-// ── Footer ─────────────────────────────────────────────────────────────────────
+.nav-menu__group-arrow {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 1.125rem;
+  transition: transform 150ms ease;
+}
+
+.nav-menu__group-trigger--expanded .nav-menu__group-arrow {
+  transform: rotate(180deg);
+}
+
+.nav-menu__sublist {
+  list-style: none;
+  margin: 0;
+  padding: theme.$aq-space-2xs 0 theme.$aq-space-xs;
+}
+
+.nav-menu__subitem {
+  display: block;
+}
 
 .nav-menu__footer {
   flex-shrink: 0;
@@ -181,8 +209,6 @@ $brand-height: 72px;
   font-family: theme.$aq-font-family-base;
 }
 
-// ── Block modifier: collapsed ──────────────────────────────────────────────────
-
 .nav-menu--collapsed {
   width: $width-collapsed;
 
@@ -191,11 +217,8 @@ $brand-height: 72px;
     padding: 0;
   }
 
-  .nav-menu__link {
-    justify-content: center;
-    padding: 0;
-  }
-
+  .nav-menu__link,
+  .nav-menu__group-trigger,
   .nav-menu__toggle {
     justify-content: center;
     padding: 0;

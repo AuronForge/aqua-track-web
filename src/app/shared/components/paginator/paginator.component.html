@@ -1,24 +1,24 @@
 <div class="paginator__size">
-  <span class="paginator__size-label">Itens por página</span>
-  <aq-input-select
-    size="compact"
+  <aq-select-formfield
+    class="paginator__size-field"
+    [formControl]="pageSizeControl"
+    label="Itens por pagina"
+    placeholder="Selecionar"
     [options]="pageSizeSelectOptions()"
-    [selectedOption]="selectedSizeOption()"
-    [disabled]="disabled()"
     (selectionChange)="onSizeChange($event)"
   />
 </div>
 
 <div class="paginator__nav">
   <span class="paginator__info" aria-live="polite">
-    {{ pageStart() }}–{{ pageEnd() }} de {{ totalItems() }}
+    {{ pageStart() }}-{{ pageEnd() }} de {{ totalItems() }}
   </span>
 
   <div class="paginator__controls">
     <button
       class="paginator__button"
       type="button"
-      aria-label="Página anterior"
+      aria-label="Pagina anterior"
       [disabled]="!hasPreviousPage()"
       (click)="onPrevious()"
     >
@@ -28,7 +28,7 @@
     <button
       class="paginator__button"
       type="button"
-      aria-label="Próxima página"
+      aria-label="Proxima pagina"
       [disabled]="!hasNextPage()"
       (click)="onNext()"
     >

@@ -1,0 +1,105 @@
+<div [class]="wrapperClass()">
+  @if (label()) {
+    <label class="text-formfield__label" [for]="inputId()">{{ label() }}</label>
+  }
+
+  <div class="text-formfield__control">
+    @if (hasPrefix()) {
+      <div class="text-formfield__prefix">
+        @if (prefixIcon()) {
+          <span [attr.class]="iconClass(prefixIconFamily())" aria-hidden="true">{{
+            prefixIcon()
+          }}</span>
+        }
+
+        @if (prefixText()) {
+          <span class="text-formfield__text">{{ prefixText() }}</span>
+        }
+
+        @for (action of prefixActions(); track action.id) {
+          <button
+            type="button"
+            class="text-formfield__action"
+            [disabled]="isDisabled() || action.disabled || null"
+            [attr.aria-label]="action.ariaLabel"
+            (click)="onActionClick(action)"
+          >
+            <span [attr.class]="actionIconClass(action.iconFamily)" aria-hidden="true">{{
+              action.icon
+            }}</span>
+          </button>
+        }
+      </div>
+    }
+
+    <input
+      #inputElement
+      class="text-formfield__input"
+      [id]="inputId()"
+      [type]="resolvedInputType()"
+      [value]="value()"
+      [attr.name]="name() || null"
+      [attr.placeholder]="placeholder() || null"
+      [attr.autocomplete]="autocomplete() || null"
+      [readOnly]="readonlyState()"
+      [disabled]="isDisabled() || null"
+      [required]="requiredState() || null"
+      [attr.aria-invalid]="showError() ? true : null"
+      [attr.aria-required]="requiredState() ? true : null"
+      [attr.aria-describedby]="describedBy()"
+      (input)="onInput($event)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+    />
+
+    @if (hasSuffix()) {
+      <div class="text-formfield__suffix">
+        @if (suffixText()) {
+          <span class="text-formfield__text">{{ suffixText() }}</span>
+        }
+
+        @if (suffixIcon()) {
+          <span [attr.class]="iconClass(suffixIconFamily())" aria-hidden="true">{{
+            suffixIcon()
+          }}</span>
+        }
+
+        @for (action of suffixActions(); track action.id) {
+          <button
+            type="button"
+            class="text-formfield__action"
+            [disabled]="isDisabled() || action.disabled || null"
+            [attr.aria-label]="action.ariaLabel"
+            (click)="onActionClick(action)"
+          >
+            <span [attr.class]="actionIconClass(action.iconFamily)" aria-hidden="true">{{
+              action.icon
+            }}</span>
+          </button>
+        }
+
+        @if (showPasswordToggle()) {
+          <button
+            type="button"
+            class="text-formfield__action"
+            [disabled]="isDisabled() || null"
+            [attr.aria-label]="passwordToggleAriaLabel()"
+            (click)="togglePasswordVisibility()"
+          >
+            <span [attr.class]="actionIconClass('material-icons-outlined')" aria-hidden="true">{{
+              passwordToggleIcon()
+            }}</span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+
+  @if (showError() && !hideErrorMessage()) {
+    <p [id]="errorId()" class="text-formfield__error" role="alert">
+      {{ resolvedErrorMessage() }}
+    </p>
+  } @else if (hint()) {
+    <p [id]="hintId()" class="text-formfield__hint">{{ hint() }}</p>
+  }
+</div>

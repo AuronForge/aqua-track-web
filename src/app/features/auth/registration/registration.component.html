@@ -1,4 +1,4 @@
-<main class="login-page">
+<main class="login-page login-page--registration">
   <div class="login-page__glow login-page__glow--top"></div>
   <div class="login-page__glow login-page__glow--left"></div>
   <div class="login-page__glow login-page__glow--bottom"></div>
@@ -12,7 +12,7 @@
   </header>
 
   <section class="login-page__content">
-    <article class="login-card login-card--compact">
+    <article class="login-card login-card--compact login-card--registration">
       <div class="login-card__brand" aria-hidden="true">
         <img class="login-card__brand-image" src="/app-icon.svg" alt="" />
       </div>
@@ -26,27 +26,28 @@
         </div>
       }
 
-      <form class="login-card__form" [formGroup]="registrationForm" (ngSubmit)="submit()">
+      <form
+        class="login-card__form login-card__form--registration"
+        [formGroup]="registrationForm"
+        (ngSubmit)="submit()"
+      >
         <div class="login-card__field">
           <label class="login-card__label" for="full-name">{{ translation().fullNameLabel }}</label>
-          <input
+          <aq-text-formfield
             id="full-name"
-            type="text"
-            class="login-card__input"
-            [class.login-card__input--error]="
-              registrationForm.controls.fullName.invalid &&
-              registrationForm.controls.fullName.touched
-            "
             formControlName="fullName"
             [placeholder]="translation().fullNamePlaceholder"
+            type="text"
             autocomplete="name"
-            [attr.aria-invalid]="
-              registrationForm.controls.fullName.invalid &&
+            [hideErrorMessage]="
+              registrationForm.controls.fullName.hasError('required') &&
               registrationForm.controls.fullName.touched
             "
-          />
+            [errorMessages]="fullNameErrorMessages()"
+          ></aq-text-formfield>
           @if (
-            registrationForm.controls.fullName.invalid && registrationForm.controls.fullName.touched
+            registrationForm.controls.fullName.hasError('required') &&
+            registrationForm.controls.fullName.touched
           ) {
             <span class="login-card__error" role="alert">{{ translation().fullNameRequired }}</span>
           }
@@ -54,109 +55,136 @@
 
         <div class="login-card__field">
           <label class="login-card__label" for="email">{{ translation().emailLabel }}</label>
-          <input
+          <aq-text-formfield
             id="email"
-            type="email"
-            class="login-card__input"
-            [class.login-card__input--error]="
-              registrationForm.controls.email.invalid && registrationForm.controls.email.touched
-            "
             formControlName="email"
             [placeholder]="translation().emailPlaceholder"
+            type="email"
             autocomplete="email"
-            [attr.aria-invalid]="
-              registrationForm.controls.email.invalid && registrationForm.controls.email.touched
+            [hideErrorMessage]="
+              registrationForm.controls.email.hasError('required') &&
+              registrationForm.controls.email.touched
             "
-          />
-          @if (registrationForm.controls.email.invalid && registrationForm.controls.email.touched) {
-            <span class="login-card__error" role="alert">
-              @if (registrationForm.controls.email.hasError('required')) {
-                {{ translation().emailRequired }}
-              } @else if (registrationForm.controls.email.hasError('email')) {
-                {{ translation().emailInvalid }}
-              }
-            </span>
+            [errorMessages]="emailErrorMessages()"
+          ></aq-text-formfield>
+          @if (
+            registrationForm.controls.email.hasError('required') &&
+            registrationForm.controls.email.touched
+          ) {
+            <span class="login-card__error" role="alert">{{ translation().emailRequired }}</span>
           }
         </div>
 
         <div class="login-card__field">
-          <label class="login-card__label" for="birthdate">{{
-            translation().birthdateLabel
-          }}</label>
-          <app-datepicker
-            inputId="birthdate"
+          <aq-datepicker-formfield
             formControlName="birthDate"
+            id="birthdate"
+            [label]="translation().birthdateLabel"
             [locale]="selectedLanguage()"
-            [hasError]="
-              registrationForm.controls.birthDate.invalid &&
-              registrationForm.controls.birthDate.touched
-            "
+            [required]="true"
+            [errorMessages]="{ required: translation().birthdateRequired }"
           />
-          @if (
-            registrationForm.controls.birthDate.invalid &&
-            registrationForm.controls.birthDate.touched
-          ) {
-            <span class="login-card__error" role="alert">{{
-              translation().birthdateRequired
-            }}</span>
-          }
         </div>
 
         <div class="login-card__field">
           <label class="login-card__label" for="password">{{ translation().passwordLabel }}</label>
-          <input
+          <aq-text-formfield
             id="password"
-            type="password"
-            class="login-card__input"
-            [class.login-card__input--error]="
-              registrationForm.controls.password.invalid &&
-              registrationForm.controls.password.touched
-            "
             formControlName="password"
             [placeholder]="translation().registrationPasswordPlaceholder"
+            type="password"
             autocomplete="new-password"
-            [attr.aria-invalid]="
-              registrationForm.controls.password.invalid &&
+            [passwordToggle]="true"
+            [hideErrorMessage]="
+              registrationForm.controls.password.hasError('required') &&
               registrationForm.controls.password.touched
             "
-          />
+            [errorMessages]="passwordErrorMessages()"
+          ></aq-text-formfield>
           @if (
-            registrationForm.controls.password.invalid && registrationForm.controls.password.touched
+            registrationForm.controls.password.hasError('required') &&
+            registrationForm.controls.password.touched
           ) {
-            <span class="login-card__error" role="alert">
-              @if (registrationForm.controls.password.hasError('required')) {
-                {{ translation().passwordRequired }}
-              } @else if (registrationForm.controls.password.hasError('minlength')) {
-                {{ translation().passwordMinLength }}
-              }
-            </span>
+            <span class="login-card__error" role="alert">{{ translation().passwordRequired }}</span>
           }
+
+          <section
+            class="registration-password-requirements"
+            aria-labelledby="registration-password-requirements-title"
+          >
+            <div class="registration-password-requirements__title">
+              <span class="material-icons-outlined" aria-hidden="true">verified_user</span>
+              <h3 id="registration-password-requirements-title">
+                {{ translation().changePasswordRequirementsTitle }}
+              </h3>
+            </div>
+
+            <ul class="registration-password-requirements__list">
+              <li
+                class="registration-password-requirements__item"
+                [class.registration-password-requirements__item--met]="
+                  passwordPolicyState().minLength
+                "
+              >
+                <span class="material-icons-outlined" aria-hidden="true">{{
+                  requirementIcon(passwordPolicyState().minLength)
+                }}</span>
+                {{ translation().changePasswordRequirementMinLength }}
+              </li>
+              <li
+                class="registration-password-requirements__item"
+                [class.registration-password-requirements__item--met]="
+                  passwordPolicyState().uppercase
+                "
+              >
+                <span class="material-icons-outlined" aria-hidden="true">{{
+                  requirementIcon(passwordPolicyState().uppercase)
+                }}</span>
+                {{ translation().changePasswordRequirementUppercase }}
+              </li>
+              <li
+                class="registration-password-requirements__item"
+                [class.registration-password-requirements__item--met]="passwordPolicyState().number"
+              >
+                <span class="material-icons-outlined" aria-hidden="true">{{
+                  requirementIcon(passwordPolicyState().number)
+                }}</span>
+                {{ translation().changePasswordRequirementNumber }}
+              </li>
+              <li
+                class="registration-password-requirements__item"
+                [class.registration-password-requirements__item--met]="
+                  passwordPolicyState().special
+                "
+              >
+                <span class="material-icons-outlined" aria-hidden="true">{{
+                  requirementIcon(passwordPolicyState().special)
+                }}</span>
+                {{ translation().changePasswordRequirementSpecial }}
+              </li>
+            </ul>
+          </section>
         </div>
 
         <div class="login-card__field">
           <label class="login-card__label" for="confirm-password">{{
             translation().confirmPasswordLabel
           }}</label>
-          <input
+          <aq-text-formfield
             id="confirm-password"
-            type="password"
-            class="login-card__input"
-            [class.login-card__input--error]="
-              (registrationForm.controls.confirmPassword.invalid &&
-                registrationForm.controls.confirmPassword.touched) ||
-              (registrationForm.hasError('passwordsMismatch') &&
-                registrationForm.controls.confirmPassword.touched)
-            "
             formControlName="confirmPassword"
             [placeholder]="translation().confirmPasswordPlaceholder"
+            type="password"
             autocomplete="new-password"
-            [attr.aria-invalid]="
-              (registrationForm.controls.confirmPassword.invalid &&
+            [passwordToggle]="true"
+            [hideErrorMessage]="
+              (registrationForm.controls.confirmPassword.hasError('required') &&
                 registrationForm.controls.confirmPassword.touched) ||
               (registrationForm.hasError('passwordsMismatch') &&
                 registrationForm.controls.confirmPassword.touched)
             "
-          />
+            [errorMessages]="confirmPasswordErrorMessages()"
+          ></aq-text-formfield>
           @if (registrationForm.controls.confirmPassword.touched) {
             @if (registrationForm.controls.confirmPassword.hasError('required')) {
               <span class="login-card__error" role="alert">{{

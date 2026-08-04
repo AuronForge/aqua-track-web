@@ -18,8 +18,15 @@ import { NavMenuItem } from '../../shared/components/nav-menu/nav-menu-item.mode
 
 readonly items: NavMenuItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: 'dashboard', route: '/', exact: true },
-  { id: 'settings', label: 'Configurações', icon: 'settings', route: '/settings' },
-  // Itens com roles só aparecem para usuários com ao menos uma delas:
+  {
+    id: 'formfields',
+    label: 'Formfields',
+    icon: 'text_fields',
+    children: [
+      { id: 'text', label: 'Text Formfield', icon: 'text_fields', route: '/components/text-formfield' },
+      { id: 'select', label: 'Select Formfield', icon: 'arrow_drop_down_circle', route: '/components/select-formfield' },
+    ],
+  },
   { id: 'admin', label: 'Admin', icon: 'admin_panel_settings', route: '/admin', roles: ['admin'] },
 ];`;
 
@@ -27,16 +34,41 @@ readonly items: NavMenuItem[] = [
 
   readonly navMenuItems: NavMenuItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: 'dashboard', route: '/', exact: true },
-    { id: 'aquariums', label: 'Aquários', icon: 'waves', route: '/aquariums' },
-    { id: 'measurements', label: 'Medições', icon: 'monitor_heart', route: '/measurements' },
+    { id: 'aquariums', label: 'Aquarios', icon: 'waves', route: '/aquariums' },
+    { id: 'measurements', label: 'Medicoes', icon: 'monitor_heart', route: '/measurements' },
+    {
+      id: 'formfields',
+      label: 'Formfields',
+      icon: 'text_fields',
+      children: [
+        {
+          id: 'text-formfield',
+          label: 'Text Formfield',
+          icon: 'text_fields',
+          route: '/components/text-formfield',
+        },
+        {
+          id: 'textarea-formfield',
+          label: 'Textarea Formfield',
+          icon: 'notes',
+          route: '/components/textarea-formfield',
+        },
+        {
+          id: 'select-formfield',
+          label: 'Select Formfield',
+          icon: 'arrow_drop_down_circle',
+          route: '/components/select-formfield',
+        },
+      ],
+    },
     { id: 'alerts', label: 'Alertas', icon: 'notifications', route: '/alerts' },
-    { id: 'aquatic-life', label: 'Vida Aquática', icon: 'set_meal', route: '/aquatic-life' },
+    { id: 'aquatic-life', label: 'Vida Aquatica', icon: 'set_meal', route: '/aquatic-life' },
     { id: 'products', label: 'Produtos', icon: 'inventory_2', route: '/products' },
     { id: 'dosage', label: 'Calculadora de Dosagem', icon: 'calculate', route: '/dosage' },
-    { id: 'settings', label: 'Configurações', icon: 'settings', route: '/settings' },
+    { id: 'settings', label: 'Configuracoes', icon: 'settings', route: '/settings' },
     {
       id: 'admin',
-      label: 'Administração',
+      label: 'Administracao',
       icon: 'admin_panel_settings',
       route: '/admin',
       roles: ['admin'],

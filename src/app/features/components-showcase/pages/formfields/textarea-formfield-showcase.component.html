@@ -1,0 +1,78 @@
+<section class="showcase__section">
+  <h2 class="showcase__section-title">Textarea Formfield</h2>
+  <p class="showcase__section-desc">
+    Campo multilinha reutilizável do AquaTrack para observações, descrições e notas longas com
+    suporte a Reactive Forms, hint, mensagens de erro e estados visuais consistentes.
+  </p>
+
+  <h3 class="showcase__group-title">Como usar</h3>
+  <div class="showcase__usage">
+    <aq-code-block language="typescript" [code]="codeTs" />
+    <aq-code-block language="html" [code]="codeHtml" />
+  </div>
+
+  <h3 class="showcase__group-title">Exemplos</h3>
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Com hint</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-textarea">
+          <aq-textarea-formfield
+            [formControl]="exampleForm.controls.history"
+            label="Histórico"
+            hint="Use esse campo para registrar contexto das últimas alterações."
+            [rows]="5"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Readonly</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-textarea">
+          <aq-textarea-formfield
+            [formControl]="readonlyControl"
+            label="Descrição"
+            [readonly]="true"
+            [rows]="5"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Validação</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-textarea">
+          <aq-textarea-formfield
+            [formControl]="exampleForm.controls.notes"
+            label="Observações"
+            placeholder="Descreva o aquário"
+            hint="Esse texto ajuda a identificar o contexto do cadastro."
+            [rows]="5"
+            [errorMessages]="{
+              required: 'Campo obrigatorio.',
+              minlength: 'Informe pelo menos 10 caracteres.',
+            }"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Disabled</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-textarea">
+          <aq-textarea-formfield
+            [formControl]="disabledControl"
+            label="Notas internas"
+            [rows]="5"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

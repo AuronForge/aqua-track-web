@@ -48,19 +48,6 @@
   color: theme.$aq-color-text-primary;
 }
 
-.confirmation-dialog__input {
-  border: 1px solid theme.$aq-color-border-strong;
-  border-radius: theme.$aq-radius-sm;
-  padding: theme.$aq-space-sm;
-  font-family: theme.$aq-font-family-base;
-  font-size: theme.$aq-font-size-md;
-  color: theme.$aq-color-text-primary;
-
-  &:focus-visible {
-    @include theme.aq-focus-ring;
-  }
-}
-
 .confirmation-dialog__actions {
   display: flex;
   justify-content: flex-end;

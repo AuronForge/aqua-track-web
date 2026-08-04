@@ -17,11 +17,12 @@ import { LANGUAGE_STORAGE_KEY } from '../../../shared/constants/language-storage
 import { LanguageCode } from '../../../shared/types/language-code.type';
 import { TRANSLATIONS } from '../../../shared/constants/translations.constant';
 import { LanguageSwitcherComponent } from '../../../shared/components/language-switcher/language-switcher.component';
+import { TextFormfieldComponent } from '../../../shared/components/formfields/text-formfield/text-formfield.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, LanguageSwitcherComponent],
+  imports: [ReactiveFormsModule, RouterLink, LanguageSwitcherComponent, TextFormfieldComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -47,6 +48,13 @@ export class LoginComponent {
   readonly translation = computed(() => TRANSLATIONS[this.selectedLanguage()]);
   readonly isLoading = signal(false);
   readonly apiError = signal<string | null>(null);
+  protected readonly emailErrorMessages = computed(() => ({
+    required: this.translation().emailRequired,
+    email: this.translation().emailInvalid,
+  }));
+  protected readonly passwordErrorMessages = computed(() => ({
+    required: this.translation().passwordRequired,
+  }));
 
   changeLanguage(language: LanguageCode): void {
     this.selectedLanguage.set(language);

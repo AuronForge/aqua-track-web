@@ -1,15 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, output } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
-import { InputSelectChangeEvent } from '../select/input-select-change-event.model';
-import { InputSelectOption } from '../select/input-select-option.model';
-import { InputSelectComponent } from '../select/input-select.component';
+import { SelectFormfieldOption } from '../formfields/select-formfield/select-formfield-option.model';
+import { SelectFormfieldComponent } from '../formfields/select-formfield/select-formfield.component';
 import { PaginatorChange } from './paginator-change.model';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'aq-paginator',
   standalone: true,
-  imports: [InputSelectComponent],
+  imports: [ReactiveFormsModule, SelectFormfieldComponent],
   templateUrl: './paginator.component.html',
   styleUrl: './paginator.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,16 +26,14 @@ export class PaginatorComponent {
 
   readonly pageChange = output<PaginatorChange>();
 
+  protected readonly pageSizeControl = new FormControl<string>('', { nonNullable: true });
+
   protected readonly hostClass = computed(() =>
     ['paginator', this.disabled() ? 'paginator--disabled' : ''].filter(Boolean).join(' '),
   );
 
-  protected readonly pageSizeSelectOptions = computed<InputSelectOption[]>(() =>
+  protected readonly pageSizeSelectOptions = computed<SelectFormfieldOption[]>(() =>
     this.pageSizeOptions().map((size) => ({ id: String(size), title: String(size) })),
-  );
-
-  protected readonly selectedSizeOption = computed<InputSelectOption | null>(
-    () => this.pageSizeSelectOptions().find((o) => o.id === String(this.pageSize())) ?? null,
   );
 
   protected readonly hasPreviousPage = computed(() => this.pageIndex() > 0);
@@ -52,6 +50,24 @@ export class PaginatorComponent {
     Math.min((this.pageIndex() + 1) * this.pageSize(), this.totalItems()),
   );
 
+  constructor() {
+    effect(() => {
+      const nextPageSize = String(this.pageSize());
+
+      if (this.pageSizeControl.value !== nextPageSize) {
+        this.pageSizeControl.setValue(nextPageSize, { emitEvent: false });
+      }
+    });
+
+    effect(() => {
+      if (this.disabled()) {
+        this.pageSizeControl.disable({ emitEvent: false });
+      } else {
+        this.pageSizeControl.enable({ emitEvent: false });
+      }
+    });
+  }
+
   protected onPrevious(): void {
     if (!this.hasPreviousPage()) return;
     this.pageChange.emit({ pageIndex: this.pageIndex() - 1, pageSize: this.pageSize() });
@@ -62,7 +78,7 @@ export class PaginatorComponent {
     this.pageChange.emit({ pageIndex: this.pageIndex() + 1, pageSize: this.pageSize() });
   }
 
-  protected onSizeChange(event: InputSelectChangeEvent): void {
+  protected onSizeChange(event: { option: SelectFormfieldOption }): void {
     this.pageChange.emit({ pageIndex: 0, pageSize: Number(event.option.id) });
   }
 }
