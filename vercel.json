@@ -1,5 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": {
+      "feature/*": false
+    }
+  },
   "buildCommand": "npm run build:prod",
   "outputDirectory": "dist/aqua-track-web/browser",
   "rewrites": [
