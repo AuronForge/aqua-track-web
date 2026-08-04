@@ -50,7 +50,17 @@ npm install
 npm start
 ```
 
+This command starts the app with the Angular `development` configuration.
+
 The application will be available at `http://localhost:4200`.
+
+If you want to be explicit, you can also run:
+
+```bash
+npm run start:dev
+```
+
+Before running locally, export `DEVELOPMENT_API_BASE_URL` with the API endpoint for the `development` environment.
 
 ---
 
@@ -137,6 +147,20 @@ Production build:
 ```bash
 npm run build:prod
 ```
+
+Environment endpoints currently expected by this repository:
+
+- `development` (`npm start`, `develop`, local): `DEVELOPMENT_API_BASE_URL`
+- `homologation` (`release`): `HOMOLOGATION_API_BASE_URL`
+- `production`: `API_BASE_URL`
+
+Current values used outside the repository:
+
+- `DEVELOPMENT_API_BASE_URL=https://emily-consent-pharmaceutical-cleaners.trycloudflare.com`
+- `HOMOLOGATION_API_BASE_URL=https://patients-tires-treatment-justin.trycloudflare.com`
+- `API_BASE_URL=https://scholarship-soccer-lyric-trailer.trycloudflare.com`
+
+Important: each build reads the API URL from its environment variable before `ng serve` or `ng build`. Every value must include the protocol, for example `https://...`.
 
 ---
 
