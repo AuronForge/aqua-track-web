@@ -23,6 +23,7 @@
       [selectedLanguage]="selectedLanguage()"
       [languageSelectorLabel]="languageService.translation().languageSelectorLabel"
       [userMenuItems]="userMenuItems()"
+      [centerContentTemplate]="pageTitleService.toolbarContent()"
       (languageChange)="onLanguageChange($event)"
       (userMenuItemClick)="onUserMenuItemClick($event)"
     />

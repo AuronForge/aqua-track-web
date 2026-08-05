@@ -1,0 +1,141 @@
+@use '../../../../shared/theme' as theme;
+
+.aquarium-list-page {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-xl;
+}
+
+.aquarium-list-page__add-button {
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.aquarium-list-page__filters {
+  display: grid;
+  grid-template-columns: minmax(18rem, 2fr) minmax(12rem, 1fr);
+  gap: theme.$aq-space-md;
+  min-width: 0;
+  padding: theme.$aq-space-md;
+  border: 1px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-md;
+  background: theme.$aq-color-surface;
+  box-shadow: theme.$aq-shadow-card;
+}
+
+.aquarium-list-page__filter-feedback {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: theme.$aq-space-sm;
+  min-height: theme.$aq-space-xl;
+  color: theme.$aq-color-text-secondary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+}
+
+.aquarium-list-page__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: theme.$aq-space-lg;
+  align-items: stretch;
+}
+
+.aquarium-list-page__skeleton-card {
+  height: 160px;
+  background: linear-gradient(
+    90deg,
+    theme.$aq-color-border 25%,
+    theme.$aq-color-surface-muted 50%,
+    theme.$aq-color-border 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: theme.$aq-radius-md;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.aquarium-list-page__footer {
+  padding-top: theme.$aq-space-lg;
+  border-top: 1px solid theme.$aq-color-border;
+}
+
+.aquarium-list-page__totals {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-md;
+  color: theme.$aq-color-text-secondary;
+  text-align: center;
+}
+
+.aquarium-list-page__empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: theme.$aq-space-sm;
+  padding: theme.$aq-space-2xl;
+  background: theme.$aq-color-surface;
+  border: 1px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-md;
+  text-align: center;
+  box-shadow: theme.$aq-shadow-card;
+}
+
+.aquarium-list-page__empty-state[role='alert'] {
+  border-color: theme.$aq-color-accent-strong;
+}
+
+.aquarium-list-page__empty-icon {
+  font-size: 2rem;
+  color: theme.$aq-color-accent-strong;
+}
+
+.aquarium-list-page__empty-title {
+  margin: 0;
+  font-family: theme.$aq-font-family-heading;
+  font-size: theme.$aq-font-size-xl;
+  color: theme.$aq-color-text-primary;
+}
+
+.aquarium-list-page__empty-description {
+  margin: 0;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-md;
+  color: theme.$aq-color-text-secondary;
+}
+
+@media (width <= 1200px) {
+  .aquarium-list-page__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (width <= 768px) {
+  .aquarium-list-page__filters {
+    grid-template-columns: 1fr;
+  }
+
+  .aquarium-list-page__add-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .aquarium-list-page__filter-feedback {
+    grid-column: auto;
+    flex-wrap: wrap;
+  }
+
+  .aquarium-list-page__grid {
+    grid-template-columns: 1fr;
+  }
+}

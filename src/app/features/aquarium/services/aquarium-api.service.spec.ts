@@ -21,6 +21,30 @@ describe('AquariumApiService', () => {
     httpMock.verify();
   });
 
+  it('gets the aquarium list without query string filters when none are provided', () => {
+    service.listAquariums().subscribe();
+
+    const req = httpMock.expectOne('http://localhost:3000/aquariums');
+    expect(req.request.method).toBe('GET');
+    expect(req.request.params.keys()).toEqual([]);
+    req.flush([]);
+  });
+
+  it('gets the aquarium list with supported query string filters', () => {
+    service
+      .listAquariums({
+        name: 'principal',
+        type: 'COMMUNITY_TANK',
+      })
+      .subscribe();
+
+    const req = httpMock.expectOne(
+      'http://localhost:3000/aquariums?name=principal&type=COMMUNITY_TANK',
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
+  });
+
   it('posts the aquarium payload to the aquariums endpoint', () => {
     const payload = {
       name: 'Main Tank',

@@ -1,18 +1,29 @@
 @use '../../shared/theme' as theme;
 
+:host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+}
+
 .showcase {
   display: flex;
-  min-height: 100vh;
+  height: 100%;
+  min-height: 0;
   background: theme.$aq-color-background;
 }
 
 .showcase__sidebar {
   flex-shrink: 0;
+  height: 100%;
+  min-height: 0;
 }
 
 .showcase__main {
   flex: 1;
   min-width: 0;
+  height: 100%;
+  min-height: 0;
   padding: theme.$aq-space-xl theme.$aq-space-xl theme.$aq-space-2xl;
-  overflow: auto;
+  overflow-y: auto;
 }

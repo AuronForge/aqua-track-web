@@ -37,6 +37,22 @@ const AQUARIUM_TYPE_LABELS: Record<string, (t: TranslationDictionary) => string>
   TURTLE_TANK: (t) => t.aquariumCreateTypeTurtleTank,
 };
 
+export function resolveAquariumTypeLabel(
+  systemValue: string,
+  t: TranslationDictionary,
+  fallbackLabel?: string | null,
+): string {
+  const translatedLabel = AQUARIUM_TYPE_LABELS[systemValue]?.(t);
+
+  if (translatedLabel) {
+    return translatedLabel;
+  }
+
+  const normalizedFallbackLabel = fallbackLabel?.trim();
+
+  return normalizedFallbackLabel ? normalizedFallbackLabel : systemValue;
+}
+
 const ALLOWED_AQUARIUM_TYPES_BY_WATER_TYPE: Record<AquariumWaterType, readonly string[]> = {
   FRESHWATER: [
     'BREEDING',
@@ -116,7 +132,7 @@ export function mapAquariumTypeOptions(
 ): CardSelectionOption<AquariumTypeOptionId>[] {
   return values.map((value) => ({
     value: value.systemValue,
-    title: AQUARIUM_TYPE_LABELS[value.systemValue]?.(t) ?? value.displayValue,
+    title: resolveAquariumTypeLabel(value.systemValue, t, value.displayValue),
     description: value.description ?? '',
     iconName: iconNameForAquariumType(value.systemValue),
     disabled: !isAquariumTypeAllowedForWaterType(value.systemValue, waterType),

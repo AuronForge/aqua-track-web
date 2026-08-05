@@ -72,7 +72,7 @@ export class AuthenticatedLayoutComponent {
         label: t.navAquariums,
         icon: 'water_drop',
         route: '/aquariums',
-        displayRoute: false,
+        displayRoute: true,
       },
       {
         id: 'measurements',

@@ -3,7 +3,11 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
-import { CreateAquariumPayload } from '../models/aquarium-api.dto';
+import {
+  AquariumListResponseDto,
+  AquariumType,
+  CreateAquariumPayload,
+} from '../models/aquarium-api.dto';
 
 export interface CreateAquariumResponse extends CreateAquariumPayload {
   readonly id: string;
@@ -22,6 +26,18 @@ export interface CreateAquariumResponse extends CreateAquariumPayload {
 export class AquariumApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiBaseUrl}/aquariums`;
+
+  listAquariums(filters?: {
+    name?: string;
+    type?: AquariumType | null;
+  }): Observable<readonly AquariumListResponseDto[]> {
+    return this.http.get<readonly AquariumListResponseDto[]>(this.baseUrl, {
+      params: {
+        ...(filters?.name ? { name: filters.name } : {}),
+        ...(filters?.type ? { type: filters.type } : {}),
+      },
+    });
+  }
 
   createAquarium(payload: CreateAquariumPayload): Observable<CreateAquariumResponse> {
     return this.http.post<CreateAquariumResponse>(this.baseUrl, payload);
