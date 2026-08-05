@@ -12,10 +12,16 @@
  *   node scripts/set-env.js homologation
  *   node scripts/set-env.js production
  *
- * Required env vars by target:
+ * Required configuration keys by target:
  *   development  -> DEVELOPMENT_API_BASE_URL
  *   homologation -> HOMOLOGATION_API_BASE_URL
  *   production   -> API_BASE_URL
+ *
+ * Resolution order:
+ *   1. Process environment variables (terminal, CI, or deploy platform)
+ *   2. .env.local
+ *   3. .env
+ *   4. Matching .vercel/.env.*.local file
  *
  * Optional:
  *   APP_VERSION - falls back to the version in package.json
@@ -51,9 +57,10 @@ if (!environmentTarget || !targetConfigs[environmentTarget]) {
 }
 
 const targetConfig = targetConfigs[environmentTarget];
-const targetFile = path.join(__dirname, '..', 'src', 'environments', targetConfig.fileName);
+const projectRoot = path.join(__dirname, '..');
+const targetFile = path.join(projectRoot, 'src', 'environments', targetConfig.fileName);
 
-function readVercelEnvFile(filePath, envVarName) {
+function readEnvFile(filePath, envVarName) {
   if (!fs.existsSync(filePath)) {
     return undefined;
   }
@@ -77,13 +84,23 @@ function resolveApiBaseUrl(config) {
     return directValue;
   }
 
+  const localEnvFiles = [path.join(projectRoot, '.env.local'), path.join(projectRoot, '.env')];
+
+  for (const localEnvFile of localEnvFiles) {
+    const localValue = readEnvFile(localEnvFile, config.envVarName);
+
+    if (localValue) {
+      return localValue;
+    }
+  }
+
   const vercelEnvFileByTarget = {
-    development: path.join(__dirname, '..', '.vercel', '.env.preview.local'),
-    homologation: path.join(__dirname, '..', '.vercel', '.env.preview.local'),
-    production: path.join(__dirname, '..', '.vercel', '.env.production.local'),
+    development: path.join(projectRoot, '.vercel', '.env.preview.local'),
+    homologation: path.join(projectRoot, '.vercel', '.env.preview.local'),
+    production: path.join(projectRoot, '.vercel', '.env.production.local'),
   };
 
-  return readVercelEnvFile(vercelEnvFileByTarget[environmentTarget], config.envVarName);
+  return readEnvFile(vercelEnvFileByTarget[environmentTarget], config.envVarName);
 }
 
 const rawApiBaseUrl = resolveApiBaseUrl(targetConfig);
@@ -91,7 +108,7 @@ const rawApiBaseUrl = resolveApiBaseUrl(targetConfig);
 if (!rawApiBaseUrl) {
   console.error(
     `[set-env] Missing ${targetConfig.envVarName} for ${environmentTarget}. ` +
-      'Set it in your deploy platform environment settings, export it locally before running the command, ' +
+      'Set it in your deploy platform environment settings, export it locally, add it to .env.local, ' +
       'or ensure the matching .vercel/.env.*.local file contains it when using `vercel build`.',
   );
   process.exit(1);
