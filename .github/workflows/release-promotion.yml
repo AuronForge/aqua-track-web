@@ -34,7 +34,9 @@ jobs:
         run: npm ci
 
       - name: Run build
-        run: npm run build
+        env:
+          HOMOLOGATION_API_BASE_URL: ${{ secrets.HOMOLOGATION_API_BASE_URL }}
+        run: npm run build:hom
 
   test-coverage:
     needs:
@@ -66,6 +68,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
+      DEPLOY_API_BASE_URL: ${{ secrets.HOMOLOGATION_API_BASE_URL }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
@@ -109,6 +112,11 @@ jobs:
             missing=1
           fi
 
+          if [ -z "${DEPLOY_API_BASE_URL}" ]; then
+            echo "::error title=Missing secret::HOMOLOGATION_API_BASE_URL is not configured in GitHub Actions secrets."
+            missing=1
+          fi
+
           if [ "$missing" -ne 0 ]; then
             exit 1
           fi
@@ -134,6 +142,15 @@ jobs:
 
       - name: Pull Vercel preview environment
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Sync preview build environment for release
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s\n' \
+            "API_BASE_URL=${DEPLOY_API_BASE_URL}" \
+            "HOMOLOGATION_API_BASE_URL=${DEPLOY_API_BASE_URL}" \
+            > .vercel/.env.preview.local
 
       - name: Build Vercel project
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
