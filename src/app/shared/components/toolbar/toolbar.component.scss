@@ -51,7 +51,7 @@
 // ── Page info ─────────────────────────────────────────────────────────────
 
 .toolbar__page-info {
-  flex: 1;
+  flex: 0 1 24rem;
   min-width: 0;
 }
 
@@ -71,6 +71,14 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.toolbar__center-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+  min-width: 0;
 }
 
 // ── Actions ───────────────────────────────────────────────────────────────
@@ -141,4 +149,27 @@
   border-radius: 50%;
   background: theme.$aq-color-success;
   flex-shrink: 0;
+}
+
+@media (width <= 768px) {
+  .toolbar {
+    height: auto;
+    min-height: 4.5rem;
+    flex-wrap: wrap;
+    align-items: stretch;
+    padding-block: theme.$aq-space-md;
+  }
+
+  .toolbar__page-info {
+    flex: 1 1 100%;
+  }
+
+  .toolbar__center-content {
+    flex: 1 1 100%;
+    justify-content: stretch;
+  }
+
+  .toolbar__user-info {
+    display: none;
+  }
 }

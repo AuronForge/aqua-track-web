@@ -147,6 +147,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'search-formfield',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/formfields/search-formfield-showcase.component').then(
+            (m) => m.SearchFormfieldShowcaseComponent,
+          ),
+      },
+      {
         path: 'select-formfield',
         loadComponent: () =>
           import('./features/components-showcase/pages/formfields/select-formfield-showcase.component').then(
@@ -188,11 +195,9 @@ export const routes: Routes = [
           import('./features/profile/profile.routes').then((m) => m.PROFILE_ROUTES),
       },
       {
-        path: 'aquariums/new',
-        loadComponent: () =>
-          import('./features/aquarium/pages/aquarium-create-page/aquarium-create-page.component').then(
-            (m) => m.AquariumCreatePageComponent,
-          ),
+        path: 'aquariums',
+        loadChildren: () =>
+          import('./features/aquarium/aquarium.routes').then((m) => m.AQUARIUM_ROUTES),
       },
       {
         path: 'measurements/new',

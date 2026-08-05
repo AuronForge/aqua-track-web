@@ -1,4 +1,5 @@
 import { computed, signal } from '@angular/core';
+import { Location } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { Router, provideRouter } from '@angular/router';
@@ -180,7 +181,10 @@ async function createFixture(
   await TestBed.configureTestingModule({
     imports: [AquariumCreatePageComponent],
     providers: [
-      provideRouter([{ path: 'home', children: [] }]),
+      provideRouter([
+        { path: 'home', children: [] },
+        { path: 'aquariums', children: [] },
+      ]),
       { provide: PageTitleService, useValue: pageTitleMock },
       { provide: LanguageService, useValue: buildLanguageServiceMock() },
       { provide: FeedbackMessageService, useValue: feedbackMock },
@@ -367,7 +371,7 @@ describe('AquariumCreatePageComponent', () => {
       TRANSLATIONS.pt.aquariumCreateSuccessMessage,
       expect.objectContaining({ hasIcon: true }),
     );
-    expect(navigateSpy).toHaveBeenCalledWith(['/home']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/aquariums']);
     expect(component.isSubmitting()).toBe(false);
   });
 
@@ -397,7 +401,7 @@ describe('AquariumCreatePageComponent', () => {
       TRANSLATIONS.pt.aquariumCreateSuccessMessage,
       expect.objectContaining({ hasIcon: true }),
     );
-    expect(navigateSpy).toHaveBeenCalledWith(['/home']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/aquariums']);
     expect(component.isSubmitting()).toBe(false);
   });
 
@@ -926,14 +930,28 @@ describe('AquariumCreatePageComponent', () => {
     expect(component.aquariumTypeHint()).toBe(TRANSLATIONS.pt.aquariumCreateTypeLoadErrorHint);
   });
 
-  it('navigates back to home when cancelling', async () => {
+  it('navigates back to aquarium list when cancelling', async () => {
     const fixture = await createFixture();
     const router = TestBed.inject(Router);
     const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
 
     componentApi(fixture).onCancel();
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/home']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/aquariums']);
+  });
+
+  it('returns to the previous history entry from the back link', async () => {
+    const fixture = await createFixture();
+    const location = TestBed.inject(Location);
+    const backSpy = jest.spyOn(location, 'back').mockImplementation();
+    const backLink = fixture.nativeElement.querySelector(
+      '.aquarium-create-page__back-link',
+    ) as HTMLAnchorElement;
+
+    backLink.click();
+
+    expect(backSpy).toHaveBeenCalled();
+    expect(backLink.getAttribute('href')).toBe('/aquariums');
   });
 
   it('tracks selected and rejected photo state locally', async () => {

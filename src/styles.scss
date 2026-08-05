@@ -2,6 +2,7 @@
 @use 'app/shared/theme/root';
 @use 'app/shared/theme' as theme;
 @use 'app/features/auth/auth-layout';
+@use 'app/features/auth/auth-registration';
 
 body {
   font-family: theme.$aq-font-family-base;

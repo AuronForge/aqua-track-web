@@ -1,4 +1,5 @@
 import { provideHttpClient } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
@@ -74,5 +75,81 @@ describe('SystemValuesApiService', () => {
     );
 
     req.flush(mockResponse);
+  });
+
+  it('should share the same request across simultaneous subscribers', () => {
+    const responses: SystemValueApiDto[][] = [];
+
+    service.listAquariumTypes().subscribe((response) => responses.push(response));
+    service.listAquariumTypes().subscribe((response) => responses.push(response));
+
+    const req = httpMock.expectOne(
+      (request) => request.params.get('rootSystemValue') === 'AQUARIUM_TYPE',
+    );
+
+    req.flush(mockResponse);
+
+    expect(responses).toEqual([mockResponse, mockResponse]);
+  });
+
+  it('should return the cached response for repeated subscribers after success', () => {
+    let firstResponse: SystemValueApiDto[] | undefined;
+    let secondResponse: SystemValueApiDto[] | undefined;
+
+    service.listAquariumTypes().subscribe((response) => {
+      firstResponse = response;
+    });
+
+    httpMock
+      .expectOne((request) => request.params.get('rootSystemValue') === 'AQUARIUM_TYPE')
+      .flush(mockResponse);
+
+    service.listAquariumTypes().subscribe((response) => {
+      secondResponse = response;
+    });
+
+    httpMock.expectNone((request) => request.params.get('rootSystemValue') === 'AQUARIUM_TYPE');
+    expect(firstResponse).toEqual(mockResponse);
+    expect(secondResponse).toEqual(mockResponse);
+  });
+
+  it('should allow retrying after a failed request', () => {
+    let firstError: HttpErrorResponse | undefined;
+    let secondResponse: SystemValueApiDto[] | undefined;
+
+    service.listAquariumTypes().subscribe({
+      error: (error) => {
+        firstError = error;
+      },
+    });
+
+    httpMock
+      .expectOne((request) => request.params.get('rootSystemValue') === 'AQUARIUM_TYPE')
+      .flush('boom', { status: 500, statusText: 'Server Error' });
+
+    service.listAquariumTypes().subscribe((response) => {
+      secondResponse = response;
+    });
+
+    httpMock
+      .expectOne((request) => request.params.get('rootSystemValue') === 'AQUARIUM_TYPE')
+      .flush(mockResponse);
+
+    expect(firstError?.status).toBe(500);
+    expect(secondResponse).toEqual(mockResponse);
+  });
+
+  it('should bypass the cache when forceRefresh is requested', () => {
+    service.listAquariumTypes().subscribe();
+
+    httpMock
+      .expectOne((request) => request.params.get('rootSystemValue') === 'AQUARIUM_TYPE')
+      .flush(mockResponse);
+
+    service.listAquariumTypes({ forceRefresh: true }).subscribe();
+
+    httpMock
+      .expectOne((request) => request.params.get('rootSystemValue') === 'AQUARIUM_TYPE')
+      .flush(mockResponse);
   });
 });

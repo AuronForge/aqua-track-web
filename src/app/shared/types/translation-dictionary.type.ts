@@ -2,6 +2,9 @@ export interface TranslationDictionary {
   // Shared
   readonly languageSelectorLabel: string;
   readonly footer: string;
+  readonly searchFormfieldAriaLabel: string;
+  readonly searchFormfieldClearLabel: string;
+  readonly searchFormfieldLoadingLabel: string;
 
   // Auth — login
   readonly title: string;
@@ -130,6 +133,16 @@ export interface TranslationDictionary {
   readonly homeMyAquariums: string;
   readonly homeMyAquariumsSubtitle: string;
   readonly homeAddAquarium: string;
+  readonly homeAquariumFiltersSearchLabel: string;
+  readonly homeAquariumFiltersSearchPlaceholder: string;
+  readonly homeAquariumFiltersTypeLabel: string;
+  readonly homeAquariumFiltersTypePlaceholder: string;
+  readonly homeAquariumFiltersDateFromLabel: string;
+  readonly homeAquariumFiltersDateToLabel: string;
+  readonly homeAquariumFiltersDatePlaceholder: string;
+  readonly homeAquariumFiltersDateHint: string;
+  readonly homeAquariumFiltersEmptyTitle: string;
+  readonly homeAquariumFiltersEmptyDesc: string;
   readonly homeWaterParameters: string;
   readonly homeVariation: string;
   readonly homeCurrentValue: string;
@@ -255,6 +268,33 @@ export interface TranslationDictionary {
   readonly aquariumCreateSuccessMessage: string;
   readonly aquariumCreateErrorMessage: string;
   readonly aquariumCreateApiDisabledMessage: string;
+  readonly aquariumListPageSubtitle: string;
+  readonly aquariumListAddAction: string;
+  readonly aquariumListVolumeLabel: string;
+  readonly aquariumListInstalledLabel: string;
+  readonly aquariumListInstalledMonthSingular: string;
+  readonly aquariumListInstalledMonthPlural: string;
+  readonly aquariumListInstalledYearSingular: string;
+  readonly aquariumListInstalledYearPlural: string;
+  readonly aquariumListRecentParametersTitle: string;
+  readonly aquariumListParameterPh: string;
+  readonly aquariumListParameterTemperature: string;
+  readonly aquariumListParameterNitrate: string;
+  readonly aquariumStatusActive: string;
+  readonly aquariumStatusInactive: string;
+  readonly aquariumStatusArchived: string;
+  readonly aquariumListDetailsAction: string;
+  readonly aquariumListDetailsActionAria: string;
+  readonly aquariumListTypeLoadingHint: string;
+  readonly aquariumListTypeLoadErrorHint: string;
+  readonly aquariumListLoadErrorTitle: string;
+  readonly aquariumListLoadErrorDescription: string;
+  readonly aquariumListTotalLabel: string;
+  readonly aquariumListCombinedVolumeLabel: string;
+  readonly aquariumListAquariumSingular: string;
+  readonly aquariumListAquariumPlural: string;
+  readonly aquariumListEmptyTitle: string;
+  readonly aquariumListEmptyDescription: string;
 
   // Measurement — create page (placeholder)
   readonly measurementFormTitle: string;

@@ -16,10 +16,10 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/for
 import { FormfieldErrorMessages } from '../formfield-error-messages.model';
 
 const FALLBACK_ERROR_MESSAGES: FormfieldErrorMessages = {
-  required: 'Campo obrigatÃ³rio.',
-  minlength: 'O valor informado Ã© muito curto.',
-  maxlength: 'O valor informado Ã© muito longo.',
-  pattern: 'Formato invÃ¡lido.',
+  required: 'Campo obrigatório.',
+  minlength: 'O valor informado é muito curto.',
+  maxlength: 'O valor informado é muito longo.',
+  pattern: 'Formato inválido.',
 };
 
 let nextUniqueId = 0;
@@ -148,9 +148,7 @@ export class TextareaFormfieldComponent implements ControlValueAccessor, OnInit 
 
     const firstKey = Object.keys(errors)[0];
 
-    return (
-      this.errorMessages()[firstKey] ?? FALLBACK_ERROR_MESSAGES[firstKey] ?? 'Campo invÃ¡lido.'
-    );
+    return this.errorMessages()[firstKey] ?? FALLBACK_ERROR_MESSAGES[firstKey] ?? 'Campo inválido.';
   }
 
   protected onInput(event: Event): void {
