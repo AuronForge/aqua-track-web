@@ -60,7 +60,13 @@ If you want to be explicit, you can also run:
 npm run start:dev
 ```
 
-Before running locally, export `DEVELOPMENT_API_BASE_URL` with the API endpoint for the `development` environment.
+Before running locally, create your local environment file from the versioned example:
+
+```bash
+cp .env.example .env.local
+```
+
+Then set `DEVELOPMENT_API_BASE_URL` in `.env.local` to the API endpoint for the `development` environment. Local environment files are ignored by Git.
 
 ---
 
@@ -154,13 +160,14 @@ Environment endpoints currently expected by this repository:
 - `homologation` (`release`): `HOMOLOGATION_API_BASE_URL`
 - `production`: `API_BASE_URL`
 
-Current values used outside the repository:
+Configuration is resolved in this order:
 
-- `DEVELOPMENT_API_BASE_URL=https://emily-consent-pharmaceutical-cleaners.trycloudflare.com`
-- `HOMOLOGATION_API_BASE_URL=https://patients-tires-treatment-justin.trycloudflare.com`
-- `API_BASE_URL=https://scholarship-soccer-lyric-trailer.trycloudflare.com`
+1. Environment variable exported by the terminal, CI, or deploy platform.
+2. `.env.local`.
+3. `.env`.
+4. The matching `.vercel/.env.*.local` file during `vercel build`.
 
-Important: each build reads the API URL from its environment variable before `ng serve` or `ng build`. Every value must include the protocol, for example `https://...`.
+Important: every API URL must include the protocol, for example `https://...`. The generated Angular environment contains a public API endpoint, so do not place credentials or private tokens in these variables.
 
 ---
 
