@@ -52,12 +52,47 @@ if (!environmentTarget || !targetConfigs[environmentTarget]) {
 
 const targetConfig = targetConfigs[environmentTarget];
 const targetFile = path.join(__dirname, '..', 'src', 'environments', targetConfig.fileName);
-const rawApiBaseUrl = process.env[targetConfig.envVarName];
+
+function readVercelEnvFile(filePath, envVarName) {
+  if (!fs.existsSync(filePath)) {
+    return undefined;
+  }
+
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+  const envLine = fileContent
+    .split(/\r?\n/)
+    .find((line) => line.trim().startsWith(`${envVarName}=`));
+
+  if (!envLine) {
+    return undefined;
+  }
+
+  return envLine.slice(envLine.indexOf('=') + 1);
+}
+
+function resolveApiBaseUrl(config) {
+  const directValue = process.env[config.envVarName];
+
+  if (directValue) {
+    return directValue;
+  }
+
+  const vercelEnvFileByTarget = {
+    development: path.join(__dirname, '..', '.vercel', '.env.preview.local'),
+    homologation: path.join(__dirname, '..', '.vercel', '.env.preview.local'),
+    production: path.join(__dirname, '..', '.vercel', '.env.production.local'),
+  };
+
+  return readVercelEnvFile(vercelEnvFileByTarget[environmentTarget], config.envVarName);
+}
+
+const rawApiBaseUrl = resolveApiBaseUrl(targetConfig);
 
 if (!rawApiBaseUrl) {
   console.error(
-    `[set-env] Missing ${targetConfig.envVarName} environment variable for ${environmentTarget}. ` +
-      'Set it in your deploy platform environment settings or export it locally before running the command.',
+    `[set-env] Missing ${targetConfig.envVarName} for ${environmentTarget}. ` +
+      'Set it in your deploy platform environment settings, export it locally before running the command, ' +
+      'or ensure the matching .vercel/.env.*.local file contains it when using `vercel build`.',
   );
   process.exit(1);
 }

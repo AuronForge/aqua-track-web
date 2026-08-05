@@ -199,6 +199,7 @@ jobs:
         run: |
           set -euo pipefail
           cat <<EOF > .vercel/.env.preview.local
+          API_BASE_URL=${DEVELOPMENT_API_BASE_URL}
           DEVELOPMENT_API_BASE_URL=${DEVELOPMENT_API_BASE_URL}
           EOF
 

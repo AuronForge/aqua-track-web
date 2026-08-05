@@ -148,6 +148,7 @@ jobs:
         run: |
           set -euo pipefail
           cat <<EOF > .vercel/.env.preview.local
+          API_BASE_URL=${HOMOLOGATION_API_BASE_URL}
           HOMOLOGATION_API_BASE_URL=${HOMOLOGATION_API_BASE_URL}
           EOF
 
