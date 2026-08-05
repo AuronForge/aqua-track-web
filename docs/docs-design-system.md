@@ -1,6 +1,6 @@
 # Design System AquaTrack Web — Documento Único de Contexto para IA
 
-> Este arquivo consolida toda a documentação do design system (`docs/design-system/`) em um único documento, pensado para ser fornecido como contexto a uma IA geradora de código/telas. Ele cobre: tema (tokens visuais), padrões de acessibilidade (WCAG), regra de showcase, e a especificação completa de cada um dos 26 componentes de `src/app/shared/components/`.
+> Este arquivo consolida toda a documentação do design system (`docs/design-system/`) em um único documento, pensado para ser fornecido como contexto a uma IA geradora de código/telas. Ele cobre: tema (tokens visuais), padrões de acessibilidade (WCAG), regra de showcase, e a especificação completa de cada um dos 27 componentes de `src/app/shared/components/`.
 
 > Fonte: gerado a partir dos arquivos individuais em `docs/design-system/`. Qualquer atualização de componente, tema ou regra de acessibilidade deve ser refletida tanto nos arquivos individuais quanto neste documento consolidado.
 
@@ -10,7 +10,7 @@
 2. Tema (Design Tokens)
 3. Acessibilidade (WCAG)
 4. Regra de Showcase
-5. Especificação dos Componentes (26 componentes)
+5. Especificação dos Componentes (27 componentes)
 
 ---
 
@@ -55,6 +55,7 @@ Documentação de referência do design system do AquaTrack (`aqua-track-web`), 
 | Segmented Control              | Formulário        | [`components/segmented-control.md`](./components/segmented-control.md)       | ⚠️ pendente                           |
 | Settings Card                  | Layout/Container  | [`components/settings-card.md`](./components/settings-card.md)               | ⚠️ pendente                           |
 | Switch                         | Formulário        | [`components/switch.md`](./components/switch.md)                             | ⚠️ pendente                           |
+| Tabs                           | Navegação         | [`components/tabs.md`](./components/tabs.md)                                 | ✅ `/components/tabs`                 |
 | Toolbar                        | Navegação/Layout  | [`components/toolbar.md`](./components/toolbar.md)                           | ✅ `/components/toolbar`              |
 
 ✅ = possui showcase publicado e registrado em rota. ⚠️ = componente existe e está em uso (ou disponível), mas ainda não tem página de showcase — ver `showcase-guidelines.md` para o checklist de criação.
@@ -2192,7 +2193,99 @@ Alternador binário (toggle) estilo iOS/Material, para configurações on/off. C
 
 ---
 
-## 5.25. Toolbar
+## 5.25. Tabs
+
+### Visão geral
+
+Navegação local entre seções relacionadas de uma mesma página. Usa `aq-tabs` como container e
+`aq-tab` para cada item/painel projetado, com visual alinhado aos protótipos de detalhe de aquário:
+fundo transparente, tabs à esquerda, indicador inferior na ativa e divisor horizontal no conjunto.
+
+### Localização
+
+`src/app/shared/components/tabs/` — componentes `TabsComponent`, `TabComponent` e barrel local.
+
+### Seletores
+
+- `aq-tabs`
+- `aq-tab`
+
+### Decisão arquitetural
+
+Implementação própria sobre HTML nativo, sem Angular Material. O projeto não possui Angular Material
+como dependência direta; a implementação própria mantém a API pública enxuta, evita expor tipos
+internos de terceiros e cobre explicitamente WAI-ARIA, teclado e overflow horizontal.
+
+### API
+
+#### Inputs de `aq-tabs`
+
+| Nome          | Tipo     | Padrão   | Descrição                        |
+| ------------- | -------- | -------- | -------------------------------- |
+| `activeTabId` | `string` | `''`     | Identificador da tab ativa.      |
+| `ariaLabel`   | `string` | `Seções` | Nome acessível do grupo de tabs. |
+
+#### Outputs de `aq-tabs`
+
+| Nome              | Tipo     | Quando dispara                                      |
+| ----------------- | -------- | --------------------------------------------------- |
+| `activeTabChange` | `string` | Quando o usuário seleciona uma tab habilitada nova. |
+
+#### Inputs de `aq-tab`
+
+| Nome       | Tipo      | Padrão  | Descrição                            |
+| ---------- | --------- | ------- | ------------------------------------ |
+| `id`       | `string`  | —       | Identificador estável e obrigatório. |
+| `label`    | `string`  | —       | Texto exibido no cabeçalho.          |
+| `disabled` | `boolean` | `false` | Impede seleção e navegação por seta. |
+
+### Content projection
+
+O conteúdo padrão de cada `aq-tab` é renderizado como painel associado. Somente o painel selecionado
+é apresentado ao usuário.
+
+### Regras visuais
+
+- Tabs horizontais à esquerda, sem aparência de botão/pill.
+- Texto ativo com maior destaque e indicador inferior.
+- Texto inativo com contraste secundário.
+- Linha divisória sob todo o conjunto.
+- Estados: padrão, hover, selected, focus-visible, disabled e pressed via `:active`.
+- Overflow horizontal em telas menores, sem quebrar tabs em múltiplas linhas.
+
+### Regras de acionamento
+
+- `activeTabId` válido seleciona a tab correspondente.
+- Valor vazio, inexistente, removido ou desabilitado cai para a primeira tab habilitada.
+- Tabs desabilitadas não emitem evento e são ignoradas pela navegação por teclado.
+- A ativação por setas é automática: mover o foco também seleciona a tab.
+
+### Acessibilidade
+
+- `role="tablist"` no cabeçalho.
+- `role="tab"`, `aria-selected`, `aria-controls`, `aria-disabled` e roving `tabindex` nas tabs.
+- `role="tabpanel"` com `aria-labelledby` no painel ativo.
+- Teclado: `ArrowRight`, `ArrowLeft`, `Home`, `End`, `Enter` e `Space`.
+
+### Cenários de uso
+
+- Seções locais como visão geral, medições e aplicações.
+- Áreas de configuração, histórico, anexos ou qualquer conteúdo relacionado em uma página.
+
+### Quando não usar
+
+- Para filtros compactos de formulário, use `aq-segmented-control`.
+- Para navegação global/lateral, use `app-nav-menu`.
+- Para navegação por rota, componha a integração no consumidor; o componente base não depende do
+  Router.
+
+### Showcase
+
+`/components/tabs` → `src/app/features/components-showcase/pages/tabs/tabs-showcase.component.ts`
+
+---
+
+## 5.26. Toolbar
 
 ### Visão geral
 
@@ -2267,7 +2360,7 @@ Componente de composição puro — toda a lógica de interação (abrir menu, t
 
 ---
 
-## 5.26. Search Formfield
+## 5.27. Search Formfield
 
 ### Visão geral
 

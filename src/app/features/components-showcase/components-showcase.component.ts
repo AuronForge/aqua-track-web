@@ -94,6 +94,7 @@ export class ComponentsShowcaseComponent {
       icon: 'upload_file',
       route: '/components/photo-upload',
     },
+    { id: 'tabs', label: 'Tabs', icon: 'tab', route: '/components/tabs' },
     { id: 'toolbar', label: 'Toolbar', icon: 'web_asset', route: '/components/toolbar' },
   ];
 }

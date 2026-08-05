@@ -174,6 +174,13 @@ export const routes: Routes = [
             (m) => m.TextareaFormfieldShowcaseComponent,
           ),
       },
+      {
+        path: 'tabs',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/tabs/tabs-showcase.component').then(
+            (m) => m.TabsShowcaseComponent,
+          ),
+      },
     ],
   },
   {
