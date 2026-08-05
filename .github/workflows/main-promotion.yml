@@ -140,6 +140,14 @@ jobs:
       - name: Pull Vercel production environment
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
+      - name: Sync production build environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat <<EOF > .vercel/.env.production.local
+          API_BASE_URL=${API_BASE_URL}
+          EOF
+
       - name: Build Vercel production project
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 

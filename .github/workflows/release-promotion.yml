@@ -143,6 +143,14 @@ jobs:
       - name: Pull Vercel preview environment
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
 
+      - name: Sync preview build environment for release
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat <<EOF > .vercel/.env.preview.local
+          HOMOLOGATION_API_BASE_URL=${HOMOLOGATION_API_BASE_URL}
+          EOF
+
       - name: Build Vercel project
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
