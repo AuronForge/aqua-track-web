@@ -68,7 +68,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      HOMOLOGATION_API_BASE_URL: ${{ secrets.HOMOLOGATION_API_BASE_URL }}
+      DEPLOY_API_BASE_URL: ${{ secrets.HOMOLOGATION_API_BASE_URL }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
@@ -112,7 +112,7 @@ jobs:
             missing=1
           fi
 
-          if [ -z "${HOMOLOGATION_API_BASE_URL}" ]; then
+          if [ -z "${DEPLOY_API_BASE_URL}" ]; then
             echo "::error title=Missing secret::HOMOLOGATION_API_BASE_URL is not configured in GitHub Actions secrets."
             missing=1
           fi
@@ -147,10 +147,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat <<EOF > .vercel/.env.preview.local
-          API_BASE_URL=${HOMOLOGATION_API_BASE_URL}
-          HOMOLOGATION_API_BASE_URL=${HOMOLOGATION_API_BASE_URL}
-          EOF
+          printf '%s\n' \
+            "API_BASE_URL=${DEPLOY_API_BASE_URL}" \
+            "HOMOLOGATION_API_BASE_URL=${DEPLOY_API_BASE_URL}" \
+            > .vercel/.env.preview.local
 
       - name: Build Vercel project
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}

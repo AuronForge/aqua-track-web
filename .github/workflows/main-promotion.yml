@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      API_BASE_URL: ${{ secrets.API_BASE_URL }}
+      DEPLOY_API_BASE_URL: ${{ secrets.API_BASE_URL }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
@@ -109,7 +109,7 @@ jobs:
             missing=1
           fi
 
-          if [ -z "${API_BASE_URL}" ]; then
+          if [ -z "${DEPLOY_API_BASE_URL}" ]; then
             echo "::error title=Missing secret::API_BASE_URL is not configured in GitHub Actions secrets."
             missing=1
           fi
@@ -144,9 +144,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat <<EOF > .vercel/.env.production.local
-          API_BASE_URL=${API_BASE_URL}
-          EOF
+          printf '%s\n' \
+            "API_BASE_URL=${DEPLOY_API_BASE_URL}" \
+            > .vercel/.env.production.local
 
       - name: Build Vercel production project
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
