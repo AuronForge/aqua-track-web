@@ -1,0 +1,278 @@
+<section class="showcase__section">
+  <h2 class="showcase__section-title">Search Formfield</h2>
+  <p class="showcase__section-desc">
+    Campo de busca especializado do AquaTrack para filtros textuais, buscas explicitas por
+    formulario e fluxos reativos baseados em `valueChanges`, mantendo CVA, acessibilidade e estados
+    visuais consistentes com os demais formfields.
+  </p>
+
+  <h3 class="showcase__group-title">Como usar</h3>
+  <div class="showcase__usage">
+    <aq-code-block language="typescript" [code]="codeTs" />
+    <aq-code-block language="html" [code]="codeHtml" />
+    <aq-code-block language="typescript" [code]="reactiveCodeTs" />
+    <aq-code-block language="html" [code]="reactiveCodeHtml" />
+  </div>
+
+  <h3 class="showcase__group-title">Propriedades</h3>
+  <div class="showcase__props">
+    <table class="showcase__props-table">
+      <thead>
+        <tr>
+          <th>Input / Output</th>
+          <th>Tipo</th>
+          <th>Padrão</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="showcase__props-name">label</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">''</span></td>
+          <td>Label visual opcional do campo.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">ariaLabel</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">tradução interna</span></td>
+          <td>Nome acessível quando não houver label visível.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">placeholder</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">''</span></td>
+          <td>Placeholder contextualizado definido pelo consumidor.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">hint</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">''</span></td>
+          <td>Texto auxiliar exibido enquanto não houver erro visível.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">showClearButton</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">true</span></td>
+          <td>Controla a ação de limpar quando houver valor.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">loading</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">false</span></td>
+          <td>Exibe estado de carregamento sem apagar o termo atual.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">clearAriaLabel / loadingLabel</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">tradução interna</span></td>
+          <td>Rótulos acessíveis customizáveis para limpar e carregar.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">required / disabled / readonly</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">false</span></td>
+          <td>Estados nativos refletidos também na acessibilidade.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">errorMessages</span></td>
+          <td><span class="showcase__props-type">Record&lt;string, string&gt;</span></td>
+          <td><span class="showcase__props-default">&#123;&#125;</span></td>
+          <td>Mensagens personalizadas por chave de validação.</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">cleared</span>
+            <span class="showcase__props-output">output</span>
+          </td>
+          <td><span class="showcase__props-type">void</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Emitido quando o usuário limpa explicitamente o campo.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">focus()</span></td>
+          <td><span class="showcase__props-type">() =&gt; void</span></td>
+          <td><span class="showcase__props-default">—</span></td>
+          <td>Foca programaticamente o input interno.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="showcase__group-title">Exemplos</h3>
+
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Uso básico</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-search-formfield">
+          <aq-search-formfield
+            [formControl]="basicControl"
+            label="Buscar aquarios"
+            placeholder="Buscar aquarios por nome"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Sem label visual</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-search-formfield">
+          <aq-search-formfield
+            [formControl]="ariaOnlyControl"
+            ariaLabel="Buscar especies"
+            placeholder="Buscar especies"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Preenchido com limpar</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-search-formfield">
+          <aq-search-formfield
+            [formControl]="contextualControl"
+            label="Buscar peixes"
+            placeholder="Buscar peixes por nome"
+            hint="A limpeza preserva o foco no input."
+            (cleared)="onCleared('preenchido com limpar')"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Inválido</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-search-formfield">
+          <aq-search-formfield
+            [formControl]="invalidControl"
+            label="Buscar solicitações"
+            placeholder="Digite pelo menos 1 caractere"
+            [required]="true"
+            [errorMessages]="{ required: 'Informe um termo para continuar.' }"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Readonly</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-search-formfield">
+          <aq-search-formfield
+            [formControl]="readonlyControl"
+            label="Filtro aplicado"
+            [readonly]="true"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Disabled</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-search-formfield">
+          <aq-search-formfield [formControl]="disabledControl" label="Busca bloqueada" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Loading com valor</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-search-formfield">
+          <aq-search-formfield
+            [formControl]="loadingControl"
+            label="Buscar peixes grandes"
+            [loading]="loading()"
+            (cleared)="onCleared('loading com valor')"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Loading vazio</p>
+      <div class="showcase__card-stage showcase__card-stage--padded">
+        <div class="demo-search-formfield">
+          <aq-search-formfield
+            [formControl]="emptyLoadingControl"
+            label="Buscar manutenção"
+            placeholder="Buscar atividades"
+            [loading]="loading()"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__actions">
+    <button type="button" aqButton (click)="toggleLoading()">
+      {{ loading() ? 'Desativar loading' : 'Ativar loading' }}
+    </button>
+    <button type="button" aqButton color="tertiary" (click)="focusSearchField()">
+      Focar exemplo programaticamente
+    </button>
+  </div>
+
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">Busca explícita com formulário</p>
+      <div class="showcase__card-stage showcase__card-stage--padded showcase__card-stage--block">
+        <form class="demo-search-form" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
+          <aq-search-formfield
+            #focusDemo
+            formControlName="query"
+            label="Buscar aquarios"
+            placeholder="Digite pelo menos 3 caracteres"
+            hint="Pressione Enter para usar o ngSubmit nativo."
+            [required]="true"
+            [errorMessages]="{
+              required: 'Campo obrigatorio.',
+              minlength: 'Informe pelo menos 3 caracteres.',
+            }"
+            (cleared)="onCleared('formulario explicito')"
+          />
+
+          <div class="demo-search-form__action">
+            <button type="submit" aqButton>Buscar</button>
+          </div>
+        </form>
+
+        <p class="showcase__event-log">{{ submitSummary() }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">Busca reativa com valueChanges</p>
+      <div class="showcase__card-stage showcase__card-stage--padded showcase__card-stage--block">
+        <div class="demo-search-formfield">
+          <aq-search-formfield
+            [formControl]="reactiveControl"
+            label="Buscar espécies"
+            placeholder="Digite para observar valueChanges"
+            hint="Debounce, cancelamento e chamadas externas continuam no consumidor."
+          />
+        </div>
+
+        <p class="showcase__event-log">{{ reactiveStatus() }}</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="showcase__event-log">
+    Último exemplo limpo explicitamente:
+    <strong>{{ lastClearedExample() || 'nenhum ainda' }}</strong>
+  </p>
+</section>

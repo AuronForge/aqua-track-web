@@ -1,10 +1,14 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  OnDestroy,
   OnInit,
+  TemplateRef,
   computed,
   effect,
   inject,
+  viewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
@@ -24,12 +28,13 @@ import { HomeDashboardFacade } from '../../facades/home-dashboard.facade';
   styleUrl: './home-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomePageComponent implements OnInit {
+export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
   protected readonly facade = inject(HomeDashboardFacade);
   private readonly pageTitleService = inject(PageTitleService);
   protected readonly languageService = inject(LanguageService);
 
   protected readonly t = this.languageService.translation;
+  private readonly toolbarContentTemplate = viewChild<TemplateRef<unknown>>('toolbarContent');
 
   protected readonly measurementsEmptyState = computed<InfoListEmptyState>(() => ({
     title: this.t().homeMeasurementsEmptyTitle,
@@ -49,6 +54,14 @@ export class HomePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.facade.loadDashboard();
+  }
+
+  ngAfterViewInit(): void {
+    this.pageTitleService.setToolbarContent(this.toolbarContentTemplate() ?? null);
+  }
+
+  ngOnDestroy(): void {
+    this.pageTitleService.setToolbarContent(null);
   }
 
   protected onAquariumSelect(id: string): void {

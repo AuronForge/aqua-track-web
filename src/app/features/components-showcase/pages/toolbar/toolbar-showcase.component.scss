@@ -1,1 +1,36 @@
-﻿@use '../../showcase-page';
+@use '../../showcase-page';
+
+.toolbar-showcase__center-demo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.toolbar-showcase__chip {
+  border: 1px solid #dfe7ef;
+  border-radius: 999px;
+  background: #fff;
+  color: #243041;
+  font:
+    600 0.8125rem/1 Aptos,
+    'Segoe UI',
+    'Trebuchet MS',
+    sans-serif;
+  padding: 0.55rem 0.95rem;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+
+  &:hover {
+    border-color: #23c0e8;
+    background: rgb(35 192 232 / 10%);
+    color: #123f61;
+    transform: translateY(-1px);
+  }
+}

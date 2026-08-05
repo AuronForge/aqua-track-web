@@ -1,5 +1,4 @@
 <header class="toolbar" role="banner">
-  <!-- ── Brand ──────────────────────────────────────────────────────────── -->
   @if (showBrand()) {
     <div class="toolbar__brand">
       <div class="toolbar__logo" aria-hidden="true">
@@ -9,7 +8,6 @@
     </div>
   }
 
-  <!-- ── Page info ──────────────────────────────────────────────────────── -->
   <div class="toolbar__page-info">
     <h1 class="toolbar__page-title">{{ pageTitle() }}</h1>
     @if (pageSubtitle()) {
@@ -17,7 +15,14 @@
     }
   </div>
 
-  <!-- ── Actions ───────────────────────────────────────────────────────── -->
+  <div class="toolbar__center-content">
+    @if (centerContentTemplate()) {
+      <ng-container *ngTemplateOutlet="centerContentTemplate()" />
+    } @else {
+      <ng-content select="[slot='center']"></ng-content>
+    }
+  </div>
+
   <div class="toolbar__actions">
     <app-language-switcher
       [label]="languageSelectorLabel()"

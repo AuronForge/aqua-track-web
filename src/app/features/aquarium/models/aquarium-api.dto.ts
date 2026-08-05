@@ -11,6 +11,8 @@ export type AquariumWaterType = 'FRESHWATER' | 'SALTWATER' | 'BRACKISH';
 
 export type AquariumVolumeUnit = 'LITER' | 'GALLON';
 
+export type AquariumRecordStatus = 'ACTIVE' | 'INACTIVE' | 'ARCHIVED';
+
 export interface AquariumDisplayPreferencesValues {
   readonly displayPH: boolean;
   readonly displayGH: boolean;
@@ -53,4 +55,15 @@ export interface CreateAquariumPayload {
   readonly setupDate: string;
   readonly displayPreferences: AquariumDisplayPreferencesValues;
   readonly alertParameters: Record<string, AquariumAlertParameterPreference>;
+}
+
+export interface AquariumListResponseDto extends CreateAquariumPayload {
+  readonly id: string;
+  readonly ownerId: string;
+  readonly primaryPhotoUrl: string | null;
+  readonly photosCount: number;
+  readonly status: AquariumRecordStatus;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+  readonly deletedAt: string | null;
 }

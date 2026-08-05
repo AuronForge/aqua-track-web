@@ -1,0 +1,231 @@
+@use '../../shared/theme' as theme;
+
+.login-page--registration {
+  min-height: 100dvh;
+  padding: 1.1rem 1.25rem 0.5rem;
+}
+
+.login-page--registration .login-page__content {
+  padding-inline: 0.75rem;
+}
+
+.login-page--registration .login-page__footer {
+  margin-top: 0.45rem;
+  font-size: 0.84rem;
+  line-height: 1.25;
+}
+
+.login-card--registration {
+  width: min(100%, 35rem);
+  padding: 1.2rem 2rem 1.05rem;
+}
+
+.login-card--registration .login-card__brand {
+  width: 3.25rem;
+  height: 3.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.login-card--registration .login-card__title {
+  font-size: clamp(1.75rem, 2vw, 2rem);
+}
+
+.login-card--registration .login-card__subtitle {
+  margin-top: 0.35rem;
+  font-size: 0.94rem;
+  line-height: 1.4;
+}
+
+.login-card__form--registration {
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.login-card__form--registration .login-card__field {
+  gap: 0.3rem;
+}
+
+.login-card--registration .login-card__divider {
+  margin: 0.75rem 0 0.45rem;
+}
+
+.login-card--registration .login-card__registration-link {
+  font-size: 1rem;
+}
+
+.login-card--registration .login-card__submit-button {
+  padding-block: 0.9rem;
+}
+
+.registration-password-requirements {
+  display: flex;
+  flex-direction: column;
+  gap: theme.$aq-space-xs;
+  padding: 0.7rem 0.85rem;
+  background: rgb(248 251 253 / 92%);
+  border: 1px solid rgb(201 215 229 / 55%);
+  border-radius: theme.$aq-radius-lg;
+}
+
+.registration-password-requirements__title {
+  display: flex;
+  align-items: center;
+  gap: theme.$aq-space-xs;
+}
+
+.registration-password-requirements__title h3 {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: theme.$aq-font-weight-bold;
+  color: theme.$aq-color-text-primary;
+}
+
+.registration-password-requirements__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem 0.85rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.registration-password-requirements__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  color: theme.$aq-color-text-secondary;
+  font-size: 0.84rem;
+  line-height: 1.25;
+}
+
+.registration-password-requirements__item .material-icons-outlined {
+  flex-shrink: 0;
+  margin-top: 0.05rem;
+  font-size: 1rem;
+}
+
+.registration-password-requirements__item--met {
+  color: theme.$aq-color-success;
+}
+
+@media (height <= 980px) {
+  .login-page--registration {
+    padding: 0.8rem 1rem 0.25rem;
+  }
+
+  .login-page--registration .login-page__header {
+    margin-bottom: 0.15rem;
+  }
+
+  .login-page--registration .login-page__footer {
+    display: none;
+  }
+
+  .login-card--registration {
+    padding: 0.95rem 1.6rem 0.9rem;
+  }
+
+  .login-card--registration .login-card__brand {
+    width: 2.8rem;
+    height: 2.8rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .login-card--registration .login-card__title {
+    font-size: clamp(1.55rem, 1.85vw, 1.8rem);
+  }
+
+  .login-card--registration .login-card__subtitle {
+    margin-top: 0.2rem;
+    font-size: 0.88rem;
+    line-height: 1.25;
+  }
+
+  .login-card__form--registration {
+    gap: 0.45rem;
+    margin-top: 0.75rem;
+  }
+
+  .login-card__form--registration .login-card__field {
+    gap: 0.2rem;
+  }
+
+  .login-card--registration .login-card__label {
+    font-size: 0.92rem;
+  }
+
+  .login-card--registration .login-card__error {
+    font-size: 0.8rem;
+    line-height: 1.15;
+  }
+
+  .login-card--registration .login-card__submit-button {
+    padding-block: 0.82rem;
+    font-size: 1rem;
+  }
+
+  .login-card--registration .login-card__divider {
+    margin: 0.55rem 0 0.35rem;
+  }
+
+  .login-card--registration .login-card__divider-text,
+  .login-card--registration .login-card__registration-link {
+    font-size: 0.94rem;
+  }
+
+  .registration-password-requirements {
+    gap: 0.35rem;
+    padding: 0.55rem 0.7rem;
+  }
+
+  .registration-password-requirements__title h3 {
+    font-size: 0.84rem;
+  }
+
+  .registration-password-requirements__list {
+    gap: 0.3rem 0.7rem;
+  }
+
+  .registration-password-requirements__item {
+    font-size: 0.78rem;
+    line-height: 1.15;
+  }
+}
+
+@media (height <= 900px) {
+  .login-page--registration {
+    padding-block: 0.9rem 0.35rem;
+  }
+
+  .login-page--registration .login-page__footer {
+    margin-top: 0.35rem;
+  }
+
+  .login-card--registration {
+    padding: 0.85rem 1.45rem 0.8rem;
+  }
+
+  .login-card__form--registration {
+    gap: 0.4rem;
+    margin-top: 0.65rem;
+  }
+
+  .registration-password-requirements {
+    padding: 0.5rem 0.65rem;
+  }
+}
+
+@media (width <= 640px) {
+  .login-page--registration {
+    padding: 0.85rem 0.8rem 0.35rem;
+  }
+
+  .login-card--registration {
+    width: min(100%, 33rem);
+    padding: 1.25rem 1.1rem 1.35rem;
+  }
+
+  .registration-password-requirements__list {
+    grid-template-columns: 1fr;
+  }
+}
