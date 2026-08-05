@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, TemplateRef, input, output } from '@angular/core';
 
 import { AvatarColor } from '../avatar/avatar-color.type';
 import { AvatarComponent } from '../avatar/avatar.component';
@@ -11,7 +12,7 @@ import { LanguageSwitcherComponent } from '../language-switcher/language-switche
 @Component({
   selector: 'app-toolbar',
   standalone: true,
-  imports: [AvatarComponent, DropdownMenuComponent, LanguageSwitcherComponent],
+  imports: [AvatarComponent, DropdownMenuComponent, LanguageSwitcherComponent, NgTemplateOutlet],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,6 +30,7 @@ export class ToolbarComponent {
   readonly selectedLanguage = input.required<LanguageCode>();
   readonly languageSelectorLabel = input<string>('Select language');
   readonly userMenuItems = input.required<DropdownMenuItem[]>();
+  readonly centerContentTemplate = input<TemplateRef<unknown> | null>(null);
 
   readonly languageChange = output<LanguageCode>();
   readonly userMenuItemClick = output<DropdownMenuItem>();

@@ -196,7 +196,7 @@ describe('TextareaFormfieldComponent', () => {
       resolvedErrorMessage: () => string;
     };
 
-    expect(component.resolvedErrorMessage()).toBe('Campo invÃ¡lido.');
+    expect(component.resolvedErrorMessage()).toBe('Campo inválido.');
   });
 
   it('should add the focused class while the textarea has focus', () => {

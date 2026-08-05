@@ -2,7 +2,8 @@
   <h2 class="showcase__section-title">Toolbar</h2>
   <p class="showcase__section-desc">
     Barra de navegação superior da aplicação. Exibe a marca AquaTrack, o título e subtítulo da
-    página atual, o seletor de idioma e o menu do usuário com avatar e informações da conta.
+    página atual, uma área central opcional para filtros ou ações contextuais, o seletor de idioma e
+    o menu do usuário com avatar e informações da conta.
   </p>
 
   <h3 class="showcase__group-title">Como usar</h3>
@@ -23,6 +24,12 @@
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <td><span class="showcase__props-name">showBrand</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">true</span></td>
+          <td>Exibe ou oculta o bloco de marca da toolbar</td>
+        </tr>
         <tr>
           <td>
             <span class="showcase__props-name">pageTitle</span>
@@ -90,6 +97,12 @@
           <td>Itens exibidos no menu dropdown do usuário</td>
         </tr>
         <tr>
+          <td><span class="showcase__props-name">center slot</span></td>
+          <td><span class="showcase__props-type">content projection</span></td>
+          <td><span class="showcase__props-default">vazio</span></td>
+          <td>Área opcional entre o título e as ações para filtros, tabs ou CTAs contextuais</td>
+        </tr>
+        <tr>
           <td>
             <span class="showcase__props-name">languageChange</span>
             <span class="showcase__props-output">output</span>
@@ -111,13 +124,13 @@
     </table>
   </div>
 
-  <h3 class="showcase__group-title">Com subtítulo</h3>
+  <h3 class="showcase__group-title">Com área central</h3>
   <div class="showcase__card showcase__card--full">
-    <p class="showcase__card-label">Estado completo (título + subtítulo)</p>
+    <p class="showcase__card-label">Título, subtítulo e filtros projetados na faixa central</p>
     <div class="showcase__card-stage showcase__card-stage--flush">
       <app-toolbar
-        pageTitle="Dashboard"
-        pageSubtitle="Welcome back! Here's your aquarium overview"
+        pageTitle="Meus Aquários"
+        pageSubtitle="Monitore e gerencie todos os seus aquários em um só lugar"
         userName="Admin AquaTrack"
         userEmail="admin@aquatrack.com"
         userInitials="AA"
@@ -125,7 +138,15 @@
         [userMenuItems]="toolbarMenuItems"
         (languageChange)="onToolbarLanguageChange($event)"
         (userMenuItemClick)="onToolbarMenuItemClick($event)"
-      />
+      >
+        <div slot="center" class="toolbar-showcase__center-demo">
+          @for (filter of toolbarCenterFilters; track filter) {
+            <button type="button" class="toolbar-showcase__chip">
+              {{ filter }}
+            </button>
+          }
+        </div>
+      </app-toolbar>
     </div>
   </div>
 

@@ -24,6 +24,7 @@ readonly items: NavMenuItem[] = [
     icon: 'text_fields',
     children: [
       { id: 'text', label: 'Text Formfield', icon: 'text_fields', route: '/components/text-formfield' },
+      { id: 'search', label: 'Search Formfield', icon: 'search', route: '/components/search-formfield' },
       { id: 'select', label: 'Select Formfield', icon: 'arrow_drop_down_circle', route: '/components/select-formfield' },
     ],
   },
@@ -46,6 +47,12 @@ readonly items: NavMenuItem[] = [
           label: 'Text Formfield',
           icon: 'text_fields',
           route: '/components/text-formfield',
+        },
+        {
+          id: 'search-formfield',
+          label: 'Search Formfield',
+          icon: 'search',
+          route: '/components/search-formfield',
         },
         {
           id: 'textarea-formfield',

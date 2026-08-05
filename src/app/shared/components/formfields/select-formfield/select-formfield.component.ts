@@ -99,7 +99,9 @@ export class SelectFormfieldComponent implements ControlValueAccessor, OnInit, O
 
     if (this.multiple()) {
       const selectedIds = Array.isArray(value) ? value : [];
-      return this.options().filter((option) => selectedIds.includes(option.id));
+      return this.options().filter(
+        (option) => option.id !== null && selectedIds.includes(option.id),
+      );
     }
 
     return this.options().filter((option) => option.id === value);
@@ -278,8 +280,10 @@ export class SelectFormfieldComponent implements ControlValueAccessor, OnInit, O
 
   protected onSelectionChange(event: SelectFormfieldChangeEvent): void {
     const nextValue = this.multiple()
-      ? event.selectedOptions.map((option) => option.id)
-      : event.option.id;
+      ? event.selectedOptions.map((option) => option.id).filter((id): id is string => id !== null)
+      : event.option.id === ''
+        ? null
+        : event.option.id;
 
     this.value.set(nextValue);
     this.onChange(nextValue);
@@ -359,8 +363,8 @@ export class SelectFormfieldComponent implements ControlValueAccessor, OnInit, O
       hasBackdrop: true,
       backdropClass: 'cdk-overlay-transparent-backdrop',
       scrollStrategy: this.overlay.scrollStrategies.reposition(),
-      width: this.elementRef.nativeElement.offsetWidth,
-      minWidth: 200,
+      width: this.triggerRef().nativeElement.offsetWidth,
+      minWidth: this.triggerRef().nativeElement.offsetWidth,
     });
 
     const portal = new TemplatePortal(this.dropdownTemplate(), this.viewContainerRef);

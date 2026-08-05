@@ -1,0 +1,75 @@
+<div [class]="wrapperClass()">
+  @if (label()) {
+    <label class="search-formfield__label" [for]="inputId()">{{ label() }}</label>
+  }
+
+  <div class="search-formfield__control">
+    <div class="search-formfield__prefix" aria-hidden="true">
+      <span class="search-formfield__icon material-icons-outlined">search</span>
+    </div>
+
+    <input
+      #inputElement
+      class="search-formfield__input"
+      [id]="inputId()"
+      type="search"
+      [value]="value()"
+      [attr.name]="name() || null"
+      [attr.placeholder]="placeholder() || null"
+      [attr.autocomplete]="autocomplete() || null"
+      [readOnly]="readonlyState()"
+      [disabled]="isDisabled() || null"
+      [required]="requiredState() || null"
+      [attr.aria-label]="label() ? null : resolvedAriaLabel()"
+      [attr.aria-invalid]="showError() ? true : null"
+      [attr.aria-required]="requiredState() ? true : null"
+      [attr.aria-describedby]="describedBy()"
+      [attr.aria-busy]="loading() ? true : null"
+      (input)="onInput($event)"
+      (keydown)="onInputKeydown($event)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+    />
+
+    @if (hasSuffix()) {
+      <div class="search-formfield__suffix">
+        @if (loading()) {
+          <span class="search-formfield__spinner" aria-hidden="true"></span>
+        }
+
+        @if (canClear()) {
+          <button
+            type="button"
+            class="search-formfield__action"
+            [disabled]="isDisabled() || null"
+            [attr.aria-label]="resolvedClearAriaLabel()"
+            (click)="onClearClick()"
+          >
+            <span class="search-formfield__action-icon material-icons-outlined" aria-hidden="true">
+              close
+            </span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+
+  @if (showError() && !hideErrorMessage()) {
+    <p [id]="errorId()" class="search-formfield__error" role="alert">
+      {{ resolvedErrorMessage() }}
+    </p>
+  } @else if (hint()) {
+    <p [id]="hintId()" class="search-formfield__hint">{{ hint() }}</p>
+  }
+
+  @if (loading()) {
+    <p
+      [id]="loadingStatusId()"
+      class="search-formfield__sr-only"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      {{ resolvedLoadingLabel() }}
+    </p>
+  }
+</div>
