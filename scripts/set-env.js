@@ -64,8 +64,9 @@ if (!rawApiBaseUrl) {
 
 function normalizeApiBaseUrl(value) {
   const trimmedValue = value.trim();
+  const sanitizedValue = trimmedValue.replace(/^(['"])(.*)\1$/, '$2').trim();
 
-  if (!trimmedValue) {
+  if (!sanitizedValue) {
     console.error('[set-env] API base URL is empty after trimming.');
     process.exit(1);
   }
@@ -73,10 +74,11 @@ function normalizeApiBaseUrl(value) {
   let parsedUrl;
 
   try {
-    parsedUrl = new URL(trimmedValue);
+    parsedUrl = new URL(sanitizedValue);
   } catch {
     console.error(
-      `[set-env] API base URL must be an absolute URL including protocol (for example, https://api.aquatrack.io). Received: ${trimmedValue}`,
+      '[set-env] API base URL must be an absolute URL including protocol (for example, https://api.aquatrack.io). ' +
+        'Check whether the configured secret includes quotes, a secret name/alias, or a value without https://.',
     );
     process.exit(1);
   }
@@ -88,7 +90,7 @@ function normalizeApiBaseUrl(value) {
     process.exit(1);
   }
 
-  return trimmedValue.replace(/\/+$/, '');
+  return sanitizedValue.replace(/\/+$/, '');
 }
 
 const apiBaseUrl = normalizeApiBaseUrl(rawApiBaseUrl);
