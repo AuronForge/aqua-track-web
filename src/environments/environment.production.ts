@@ -1,5 +1,5 @@
 // This file is generated at build time by scripts/set-env.js.
-// Do not edit by hand — values come from environment variables (API_BASE_URL, APP_VERSION).
+// Do not edit by hand - values come from environment variables.
 export const environment = {
   production: true,
   apiBaseUrl: 'https://example-api.trycloudflare.com',
