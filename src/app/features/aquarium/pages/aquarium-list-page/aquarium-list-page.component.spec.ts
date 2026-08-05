@@ -236,6 +236,23 @@ describe('AquariumListPageComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Reef Tank');
   });
 
+  it('should render skeleton cards while loading aquariums', async () => {
+    const pendingResponse = new Subject<AquariumListResponseDto[]>();
+    const fixture = await createFixture({
+      aquariumApiServiceMock: buildAquariumApiServiceMock(pendingResponse.asObservable()),
+    });
+    const loadingGrid = fixture.nativeElement.querySelector(
+      '.aquarium-list-page__grid[aria-busy="true"]',
+    ) as HTMLElement;
+    const skeletons = fixture.nativeElement.querySelectorAll('.aquarium-list-page__skeleton-card');
+
+    expect(loadingGrid).toBeTruthy();
+    expect(loadingGrid.getAttribute('aria-label')).toBe(TRANSLATIONS.pt.homeLoadingAquariums);
+    expect(skeletons).toHaveLength(3);
+    expect(fixture.nativeElement.querySelector('app-aquarium-summary-card')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.aquarium-list-page__empty-state')).toBeNull();
+  });
+
   it('should render the total aquarium count and combined volume', async () => {
     const fixture = await createFixture();
     const text = fixture.nativeElement.textContent;

@@ -1,4 +1,5 @@
 import { computed, signal } from '@angular/core';
+import { Location } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { Router, provideRouter } from '@angular/router';
@@ -937,6 +938,20 @@ describe('AquariumCreatePageComponent', () => {
     componentApi(fixture).onCancel();
 
     expect(navigateSpy).toHaveBeenCalledWith(['/aquariums']);
+  });
+
+  it('returns to the previous history entry from the back link', async () => {
+    const fixture = await createFixture();
+    const location = TestBed.inject(Location);
+    const backSpy = jest.spyOn(location, 'back').mockImplementation();
+    const backLink = fixture.nativeElement.querySelector(
+      '.aquarium-create-page__back-link',
+    ) as HTMLAnchorElement;
+
+    backLink.click();
+
+    expect(backSpy).toHaveBeenCalled();
+    expect(backLink.getAttribute('href')).toBe('/aquariums');
   });
 
   it('tracks selected and rejected photo state locally', async () => {

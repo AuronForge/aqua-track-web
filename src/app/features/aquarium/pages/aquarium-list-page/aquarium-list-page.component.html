@@ -47,11 +47,14 @@
   </form>
 
   @if (aquariumsLoading()) {
-    <div class="aquarium-list-page__empty-state" role="status" aria-live="polite">
-      <span class="material-icons-outlined aquarium-list-page__empty-icon" aria-hidden="true">
-        aquarium
-      </span>
-      <h3 class="aquarium-list-page__empty-title">{{ t().homeLoadingAquariums }}</h3>
+    <div
+      class="aquarium-list-page__grid"
+      aria-busy="true"
+      [attr.aria-label]="t().homeLoadingAquariums"
+    >
+      @for (i of [1, 2, 3]; track i) {
+        <div class="aquarium-list-page__skeleton-card" aria-hidden="true"></div>
+      }
     </div>
   } @else if (aquariumsError()) {
     <div class="aquarium-list-page__empty-state" role="alert">

@@ -42,6 +42,29 @@
   align-items: stretch;
 }
 
+.aquarium-list-page__skeleton-card {
+  height: 160px;
+  background: linear-gradient(
+    90deg,
+    theme.$aq-color-border 25%,
+    theme.$aq-color-surface-muted 50%,
+    theme.$aq-color-border 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: theme.$aq-radius-md;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 .aquarium-list-page__footer {
   padding-top: theme.$aq-space-lg;
   border-top: 1px solid theme.$aq-color-border;

@@ -9,9 +9,10 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { Location } from '@angular/common';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { concatMap, of, startWith } from 'rxjs';
 
 import { PageTitleService } from '../../../../core/page-title/page-title.service';
@@ -69,7 +70,6 @@ type AlertParametersControls = Record<AquariumDisplayParameterKey, AlertParamete
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    RouterLink,
     ButtonComponent,
     CardSelectionComponent,
     CardSelectionContentDirective,
@@ -87,6 +87,7 @@ export class AquariumCreatePageComponent implements OnInit {
   private readonly pageTitleService = inject(PageTitleService);
   private readonly feedbackMessageService = inject(FeedbackMessageService);
   private readonly router = inject(Router);
+  private readonly location = inject(Location);
   private readonly destroyRef = inject(DestroyRef);
   private readonly elementRef: ElementRef<HTMLElement> = inject(ElementRef);
   private readonly systemValuesApiService = inject(SystemValuesApiService);
@@ -340,6 +341,11 @@ export class AquariumCreatePageComponent implements OnInit {
 
   protected onCancel(): void {
     this.router.navigate(['/aquariums']);
+  }
+
+  protected onBack(event: MouseEvent): void {
+    event.preventDefault();
+    this.location.back();
   }
 
   protected onPhotoSelected(file: File): void {
