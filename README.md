@@ -50,7 +50,23 @@ npm install
 npm start
 ```
 
+This command starts the app with the Angular `development` configuration.
+
 The application will be available at `http://localhost:4200`.
+
+If you want to be explicit, you can also run:
+
+```bash
+npm run start:dev
+```
+
+Before running locally, create your local environment file from the versioned example:
+
+```bash
+cp .env.example .env.local
+```
+
+Then set `DEVELOPMENT_API_BASE_URL` in `.env.local` to the API endpoint for the `development` environment. Local environment files are ignored by Git.
 
 ---
 
@@ -137,6 +153,21 @@ Production build:
 ```bash
 npm run build:prod
 ```
+
+Environment endpoints currently expected by this repository:
+
+- `development` (`npm start`, `develop`, local): `DEVELOPMENT_API_BASE_URL`
+- `homologation` (`release`): `HOMOLOGATION_API_BASE_URL`
+- `production`: `API_BASE_URL`
+
+Configuration is resolved in this order:
+
+1. Environment variable exported by the terminal, CI, or deploy platform.
+2. `.env.local`.
+3. `.env`.
+4. The matching `.vercel/.env.*.local` file during `vercel build`.
+
+Important: every API URL must include the protocol, for example `https://...`. The generated Angular environment contains a public API endpoint, so do not place credentials or private tokens in these variables.
 
 ---
 
