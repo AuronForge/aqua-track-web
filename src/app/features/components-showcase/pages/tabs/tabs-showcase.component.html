@@ -1,0 +1,191 @@
+<section class="showcase__section">
+  <h2 class="showcase__section-title">Tabs</h2>
+  <p class="showcase__section-desc">
+    Navegação local entre seções relacionadas de uma mesma página. O componente é genérico,
+    acessível, controlável externamente e renderiza apenas o painel selecionado.
+  </p>
+
+  <h3 class="showcase__group-title">Como usar</h3>
+  <div class="showcase__usage">
+    <aq-code-block language="typescript" [code]="codeTs" />
+    <aq-code-block language="html" [code]="codeHtml" />
+  </div>
+
+  <h3 class="showcase__group-title">Propriedades</h3>
+  <div class="showcase__props">
+    <table class="showcase__props-table">
+      <thead>
+        <tr>
+          <th>Input / Output</th>
+          <th>Tipo</th>
+          <th>Padrão</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="showcase__props-name">activeTabId</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">''</span></td>
+          <td>Identificador da tab ativa controlado pelo consumidor</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">ariaLabel</span></td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">'Seções'</span></td>
+          <td>Nome acessível do <code>tablist</code></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">activeTabChange</span>
+            <span class="showcase__props-output">output</span>
+          </td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">-</span></td>
+          <td>Emitido quando o usuário seleciona uma tab diferente</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">aq-tab id</span>
+            <span class="showcase__props-required">required</span>
+          </td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">-</span></td>
+          <td>Identificador estável da tab</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">aq-tab label</span>
+            <span class="showcase__props-required">required</span>
+          </td>
+          <td><span class="showcase__props-type">string</span></td>
+          <td><span class="showcase__props-default">-</span></td>
+          <td>Texto exibido no cabeçalho</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">aq-tab disabled</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">false</span></td>
+          <td>Remove a tab da navegação e impede seleção</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="showcase__group-title">Básico</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">Conteúdo local alternado por tabs</p>
+      <div class="showcase__card-stage showcase__card-stage--block showcase__card-stage--padded">
+        <aq-tabs
+          ariaLabel="Exemplo básico de tabs"
+          [activeTabId]="basicActiveTabId()"
+          (activeTabChange)="basicActiveTabId.set($event)"
+        >
+          <aq-tab id="overview" label="Visão Geral">
+            <div class="tabs-showcase__panel">Resumo, indicadores e contexto principal.</div>
+          </aq-tab>
+          <aq-tab id="history" label="Histórico">
+            <div class="tabs-showcase__panel">Eventos recentes organizados por data.</div>
+          </aq-tab>
+          <aq-tab id="settings" label="Configurações" [disabled]="true">
+            <div class="tabs-showcase__panel">Preferências bloqueadas neste exemplo.</div>
+          </aq-tab>
+        </aq-tabs>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Semelhante ao protótipo</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">Tab inicial, alteração programática e conteúdos distintos</p>
+      <div class="showcase__card-stage showcase__card-stage--block showcase__card-stage--padded">
+        <div class="tabs-showcase__toolbar">
+          <button aqButton variant="basic" size="small" (click)="selectAquariumTab('overview')">
+            Visão Geral
+          </button>
+          <button aqButton variant="basic" size="small" (click)="selectAquariumTab('measurements')">
+            Medições
+          </button>
+          <button aqButton variant="basic" size="small" (click)="selectAquariumTab('applications')">
+            Aplicações
+          </button>
+        </div>
+
+        <aq-tabs
+          ariaLabel="Seções do aquário"
+          [activeTabId]="aquariumActiveTabId()"
+          (activeTabChange)="aquariumActiveTabId.set($event)"
+        >
+          <aq-tab id="overview" label="Visão Geral">
+            <div class="tabs-showcase__metrics">
+              <span>75L</span>
+              <span>Jan 15, 2024</span>
+              <span>92%</span>
+            </div>
+          </aq-tab>
+          <aq-tab id="measurements" label="Medições">
+            <table class="tabs-showcase__table">
+              <tbody>
+                <tr>
+                  <td>Feb 27, 2026</td>
+                  <td>pH</td>
+                  <td>7.2</td>
+                  <td>Normal</td>
+                </tr>
+                <tr>
+                  <td>Feb 26, 2026</td>
+                  <td>NO3</td>
+                  <td>16 mg/L</td>
+                  <td>Normal</td>
+                </tr>
+              </tbody>
+            </table>
+          </aq-tab>
+          <aq-tab id="applications" label="Aplicações">
+            <table class="tabs-showcase__table">
+              <tbody>
+                <tr>
+                  <td>Feb 26, 2026</td>
+                  <td>Prime</td>
+                  <td>Water Conditioner</td>
+                  <td>5 ml</td>
+                </tr>
+                <tr>
+                  <td>Feb 24, 2026</td>
+                  <td>Flourish</td>
+                  <td>Fertilizer</td>
+                  <td>3 ml</td>
+                </tr>
+              </tbody>
+            </table>
+          </aq-tab>
+        </aq-tabs>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Overflow responsivo</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">Muitas tabs em uma largura estreita</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--block showcase__card-stage--padded tabs-showcase__narrow"
+      >
+        <aq-tabs
+          ariaLabel="Seções com overflow"
+          [activeTabId]="overflowActiveTabId()"
+          (activeTabChange)="overflowActiveTabId.set($event)"
+        >
+          <aq-tab id="summary" label="Resumo">Resumo diário.</aq-tab>
+          <aq-tab id="parameters" label="Parâmetros">Parâmetros monitorados.</aq-tab>
+          <aq-tab id="maintenance" label="Manutenção">Rotina de manutenção.</aq-tab>
+          <aq-tab id="feeding" label="Alimentação">Agenda de alimentação.</aq-tab>
+          <aq-tab id="inventory" label="Inventário">Produtos disponíveis.</aq-tab>
+          <aq-tab id="notes" label="Observações">Anotações importantes.</aq-tab>
+        </aq-tabs>
+      </div>
+    </div>
+  </div>
+</section>

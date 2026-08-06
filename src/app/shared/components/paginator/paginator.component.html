@@ -1,38 +1,77 @@
-<div class="paginator__size">
-  <aq-select-formfield
-    class="paginator__size-field"
-    [formControl]="pageSizeControl"
-    label="Itens por pagina"
-    placeholder="Selecionar"
-    [options]="pageSizeSelectOptions()"
-    (selectionChange)="onSizeChange($event)"
-  />
-</div>
+<nav
+  class="paginator__surface"
+  [attr.aria-label]="ariaLabel()"
+  [attr.aria-busy]="loading() || null"
+>
+  @if (showPageSizeSelector()) {
+    <div class="paginator__size">
+      <aq-select-formfield
+        class="paginator__size-field"
+        [formControl]="pageSizeControl"
+        [label]="resolvedLabels().pageSize"
+        placeholder="Selecionar"
+        [options]="pageSizeSelectOptions()"
+        (selectionChange)="onSizeChange($event)"
+      />
+    </div>
+  }
 
-<div class="paginator__nav">
-  <span class="paginator__info" aria-live="polite">
-    {{ pageStart() }}-{{ pageEnd() }} de {{ totalItems() }}
-  </span>
+  <div class="paginator__nav">
+    <div class="paginator__status" aria-live="polite">
+      <span class="paginator__range">{{ rangeSummary() }}</span>
+    </div>
 
-  <div class="paginator__controls">
-    <button
-      class="paginator__button"
-      type="button"
-      aria-label="Pagina anterior"
-      [disabled]="!hasPreviousPage()"
-      (click)="onPrevious()"
-    >
-      <span class="material-icons-outlined">chevron_left</span>
-    </button>
+    <div class="paginator__controls">
+      @if (showFirstLastButtons()) {
+        <button
+          class="paginator__button"
+          type="button"
+          [attr.aria-label]="resolvedLabels().firstPage"
+          [disabled]="interactionsDisabled() || !hasPreviousPage()"
+          (click)="onFirst()"
+        >
+          <span class="material-icons-outlined" aria-hidden="true">first_page</span>
+        </button>
+      }
 
-    <button
-      class="paginator__button"
-      type="button"
-      aria-label="Proxima pagina"
-      [disabled]="!hasNextPage()"
-      (click)="onNext()"
-    >
-      <span class="material-icons-outlined">chevron_right</span>
-    </button>
+      <button
+        class="paginator__button"
+        type="button"
+        [attr.aria-label]="resolvedLabels().previousPage"
+        [disabled]="interactionsDisabled() || !hasPreviousPage()"
+        (click)="onPrevious()"
+      >
+        <span class="material-icons-outlined" aria-hidden="true">chevron_left</span>
+      </button>
+
+      <button
+        class="paginator__button"
+        type="button"
+        [attr.aria-label]="resolvedLabels().nextPage"
+        [disabled]="interactionsDisabled() || !hasNextPage()"
+        (click)="onNext()"
+      >
+        <span class="material-icons-outlined" aria-hidden="true">chevron_right</span>
+      </button>
+
+      @if (showFirstLastButtons()) {
+        <button
+          class="paginator__button"
+          type="button"
+          [attr.aria-label]="resolvedLabels().lastPage"
+          [disabled]="interactionsDisabled() || !hasNextPage()"
+          (click)="onLast()"
+        >
+          <span class="material-icons-outlined" aria-hidden="true">last_page</span>
+        </button>
+      }
+    </div>
   </div>
-</div>
+
+  @if (loading()) {
+    <span class="paginator__loading" aria-live="polite">
+      <span class="material-icons-outlined paginator__loading-icon" aria-hidden="true">sync</span>
+      {{ resolvedLabels().loading }}
+    </span>
+  }
+</nav>

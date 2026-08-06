@@ -1,0 +1,40 @@
+@use '../../showcase-page';
+@use '../../../../shared/theme' as theme;
+
+.paginator-showcase__state-box {
+  min-width: 24rem;
+  padding: theme.$aq-space-md;
+  background: theme.$aq-color-background;
+}
+
+.paginator-showcase__pager {
+  display: block;
+  margin-top: theme.$aq-space-lg;
+}
+
+.paginator-showcase__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: theme.$aq-space-sm;
+}
+
+.paginator-showcase__aquarium {
+  display: grid;
+  gap: theme.$aq-space-2xs;
+  padding: theme.$aq-space-md;
+  background: theme.$aq-color-surface;
+  border: 1px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-sm;
+  font-family: theme.$aq-font-family-base;
+  color: theme.$aq-color-text-primary;
+}
+
+.paginator-showcase__aquarium span {
+  color: theme.$aq-color-text-secondary;
+}
+
+.paginator-showcase__list {
+  display: grid;
+  gap: theme.$aq-space-xs;
+  color: theme.$aq-color-text-primary;
+}

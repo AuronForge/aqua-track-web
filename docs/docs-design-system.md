@@ -1,6 +1,6 @@
 # Design System AquaTrack Web — Documento Único de Contexto para IA
 
-> Este arquivo consolida toda a documentação do design system (`docs/design-system/`) em um único documento, pensado para ser fornecido como contexto a uma IA geradora de código/telas. Ele cobre: tema (tokens visuais), padrões de acessibilidade (WCAG), regra de showcase, e a especificação completa de cada um dos 26 componentes de `src/app/shared/components/`.
+> Este arquivo consolida toda a documentação do design system (`docs/design-system/`) em um único documento, pensado para ser fornecido como contexto a uma IA geradora de código/telas. Ele cobre: tema (tokens visuais), padrões de acessibilidade (WCAG), regra de showcase, e a especificação completa de cada um dos 29 componentes de `src/app/shared/components/`.
 
 > Fonte: gerado a partir dos arquivos individuais em `docs/design-system/`. Qualquer atualização de componente, tema ou regra de acessibilidade deve ser refletida tanto nos arquivos individuais quanto neste documento consolidado.
 
@@ -10,7 +10,7 @@
 2. Tema (Design Tokens)
 3. Acessibilidade (WCAG)
 4. Regra de Showcase
-5. Especificação dos Componentes (26 componentes)
+5. Especificação dos Componentes (29 componentes)
 
 ---
 
@@ -30,6 +30,7 @@ Documentação de referência do design system do AquaTrack (`aqua-track-web`), 
 
 | Componente                     | Categoria         | Doc                                                                          | Showcase                              |
 | ------------------------------ | ----------------- | ---------------------------------------------------------------------------- | ------------------------------------- |
+| Alert                          | Feedback/Inline   | [`components/alert.md`](./components/alert.md)                               | ✅ `/components/alert`                |
 | Avatar                         | Identidade/Mídia  | [`components/avatar.md`](./components/avatar.md)                             | ✅ `/components/avatar`               |
 | Badge                          | Feedback/Rótulo   | [`components/badge.md`](./components/badge.md)                               | ✅ `/components/badge`                |
 | Button                         | Ação              | [`components/button.md`](./components/button.md)                             | ✅ `/components/button`               |
@@ -50,11 +51,13 @@ Documentação de referência do design system do AquaTrack (`aqua-track-web`), 
 | Language Switcher              | Navegação         | [`components/language-switcher.md`](./components/language-switcher.md)       | ⚠️ pendente                           |
 | Modal                          | Overlay           | [`components/modal.md`](./components/modal.md)                               | ✅ `/components/modal`                |
 | Nav Menu                       | Navegação         | [`components/nav-menu.md`](./components/nav-menu.md)                         | ✅ `/components/menu`                 |
-| Paginator                      | Exibição de dados | [`components/paginator.md`](./components/paginator.md)                       | ⚠️ pendente                           |
+| Paginator                      | Exibição de dados | [`components/paginator.md`](./components/paginator.md)                       | ✅ `/components/paginator`            |
 | Photo Upload                   | Formulário        | [`components/photo-upload.md`](./components/photo-upload.md)                 | ✅ `/components/photo-upload`         |
 | Segmented Control              | Formulário        | [`components/segmented-control.md`](./components/segmented-control.md)       | ⚠️ pendente                           |
 | Settings Card                  | Layout/Container  | [`components/settings-card.md`](./components/settings-card.md)               | ⚠️ pendente                           |
 | Switch                         | Formulário        | [`components/switch.md`](./components/switch.md)                             | ⚠️ pendente                           |
+| Tabs                           | Navegação         | [`components/tabs.md`](./components/tabs.md)                                 | ✅ `/components/tabs`                 |
+| Table                          | Exibição de dados | [`components/table.md`](./components/table.md)                               | ✅ `/components/table`                |
 | Toolbar                        | Navegação/Layout  | [`components/toolbar.md`](./components/toolbar.md)                           | ✅ `/components/toolbar`              |
 
 ✅ = possui showcase publicado e registrado em rota. ⚠️ = componente existe e está em uso (ou disponível), mas ainda não tem página de showcase — ver `showcase-guidelines.md` para o checklist de criação.
@@ -453,7 +456,57 @@ As subseções a seguir correspondem, uma a uma, aos arquivos de `docs/design-sy
 
 ---
 
-## 5.1. Avatar
+## 5.1. Alert
+
+### Visão geral
+
+`aq-alert` é o componente de alerta inline do design system. Ele apresenta mensagens contextuais
+persistentes dentro de páginas, formulários, modais, cards e demais regiões do layout. Use para
+orientações, dicas, avisos, confirmações, erros de seção e estados que precisam continuar visíveis.
+
+O componente não substitui `aq-feedback-message`: feedback message é temporário, flutuante e ligado
+a eventos ou ações; `aq-alert` permanece no fluxo do layout e só é removido quando o consumidor
+altera o estado.
+
+### Localização
+
+- `src/app/shared/components/alert/`
+- Showcase: `/components/alert`
+- Documentação detalhada: `docs/design-system/components/alert.md`
+
+### API
+
+| Campo         | Tipo                                                       | Padrão            | Descrição                                   |
+| ------------- | ---------------------------------------------------------- | ----------------- | ------------------------------------------- |
+| `variant`     | `'info' \| 'success' \| 'warning' \| 'error' \| 'neutral'` | `'info'`          | Define cor, ícone padrão e semântica.       |
+| `title`       | `string \| undefined`                                      | `undefined`       | Título opcional.                            |
+| `icon`        | `string \| undefined`                                      | ícone da variante | Nome de Material Icon customizado.          |
+| `showIcon`    | `boolean`                                                  | `true`            | Controla exibição do ícone decorativo.      |
+| `dismissible` | `boolean`                                                  | `false`           | Exibe botão de fechar.                      |
+| `ariaLabel`   | `string \| undefined`                                      | `undefined`       | Nome acessível opcional no host.            |
+| `dismissed`   | `output<void>`                                             | -                 | Emitido quando o usuário aciona fechamento. |
+
+### Exemplo
+
+```html
+<aq-alert variant="warning" title="Parâmetros fora da faixa recomendada">
+  Revise as últimas medições antes de adicionar novos habitantes.
+
+  <button aqButton aqAlertAction type="button" variant="stroked" color="warning">
+    Ver medições
+  </button>
+</aq-alert>
+```
+
+### Acessibilidade
+
+`warning` e `error` usam `role="alert"` com `aria-live="assertive"`. As demais variantes usam
+`role="status"` com `aria-live="polite"`. Ícones são decorativos e recebem `aria-hidden="true"`.
+O botão de fechamento tem nome acessível `Fechar alerta` e emite `dismissed`.
+
+---
+
+## 5.2. Avatar
 
 ### Visão geral
 
@@ -517,7 +570,7 @@ Componente puramente apresentacional — não possui interação própria (cliqu
 
 ---
 
-## 5.2. Badge
+## 5.3. Badge
 
 ### Visão geral
 
@@ -581,7 +634,7 @@ Não interativo por padrão (`cursor: default`). Não emite eventos. Se usado co
 
 ---
 
-## 5.3. Button
+## 5.4. Button
 
 ### Visão geral
 
@@ -650,7 +703,7 @@ Amplamente usado em toda a aplicação — presente em `application-create-page`
 
 ---
 
-## 5.4. Card Selection
+## 5.5. Card Selection
 
 ### Visão geral
 
@@ -739,7 +792,7 @@ Usa `FormfieldErrorMessages` (compartilhado com os demais formfields).
 
 ---
 
-## 5.5. Chip
+## 5.6. Chip
 
 ### Visão geral
 
@@ -799,7 +852,7 @@ Nenhum uso direto encontrado em `features/` no momento — componente disponíve
 
 ---
 
-## 5.6. Code Block
+## 5.7. Code Block
 
 ### Visão geral
 
@@ -855,7 +908,7 @@ Usado internamente por praticamente todas as páginas de `features/components-sh
 
 ---
 
-## 5.7. Confirmation Dialog
+## 5.8. Confirmation Dialog
 
 ### Visão geral
 
@@ -926,7 +979,7 @@ Nenhum uso encontrado em `features/` no momento (nem via `ConfirmationDialogServ
 
 ---
 
-## 5.8. Dropdown Menu
+## 5.9. Dropdown Menu
 
 ### Visão geral
 
@@ -1005,7 +1058,7 @@ Menu suspenso com trigger customizável (via slot) e lista de itens de ação. U
 
 ---
 
-## 5.9. Feedback Message (+ Container)
+## 5.10. Feedback Message (+ Container)
 
 ### Visão geral
 
@@ -1090,7 +1143,7 @@ Disparo de mensagens é feito exclusivamente via `FeedbackMessageService` (nunca
 
 ---
 
-## 5.10. Text Formfield
+## 5.11. Text Formfield
 
 ### Visão geral
 
@@ -1180,7 +1233,7 @@ Campo de texto de propósito geral (texto, senha, e-mail, busca, telefone, URL),
 
 ---
 
-## 5.11. Textarea Formfield
+## 5.12. Textarea Formfield
 
 ### Visão geral
 
@@ -1245,7 +1298,7 @@ Sem outputs próprios além do contrato `ControlValueAccessor`.
 
 ---
 
-## 5.12. Select Formfield
+## 5.13. Select Formfield
 
 ### Visão geral
 
@@ -1326,7 +1379,7 @@ Campo de seleção customizado (single ou multiple) com painel dropdown renderiz
 
 ---
 
-## 5.13. Datepicker Formfield
+## 5.14. Datepicker Formfield
 
 ### Visão geral
 
@@ -1402,7 +1455,7 @@ Sem outputs próprios além do contrato `ControlValueAccessor`.
 
 ---
 
-## 5.14. Info Card
+## 5.15. Info Card
 
 ### Visão geral
 
@@ -1483,7 +1536,7 @@ Card de resumo/status para exibir uma entidade (ex.: um aquário) com ícone, ba
 
 ---
 
-## 5.15. Info List
+## 5.16. Info List
 
 ### Visão geral
 
@@ -1558,7 +1611,7 @@ Lista paginada de `info-list-item`, com estados de carregamento e vazio embutido
 
 ---
 
-## 5.16. Info List Item
+## 5.17. Info List Item
 
 ### Visão geral
 
@@ -1630,7 +1683,7 @@ Linha de lista com título/subtítulo à esquerda e valor/metadado à direita, o
 
 ---
 
-## 5.17. Language Switcher
+## 5.18. Language Switcher
 
 ### Visão geral
 
@@ -1692,7 +1745,7 @@ Seletor de idioma da aplicação (dropdown customizado), usado nas telas de aute
 
 ---
 
-## 5.18. Modal
+## 5.19. Modal
 
 ### Visão geral
 
@@ -1781,7 +1834,7 @@ Retornado por `ModalService.open()`. Expõe métodos/observables para fechar o m
 
 ---
 
-## 5.19. Nav Menu
+## 5.20. Nav Menu
 
 ### Visão geral
 
@@ -1852,15 +1905,20 @@ Sem outputs — navegação é feita via `routerLink` nativo, não por eventos e
 
 ---
 
-## 5.20. Paginator
+## 5.21. Paginator
 
 ### Visão geral
 
-Controle de paginação com seletor de itens por página (via `aq-select-formfield`), indicador "X-Y de Z" e botões anterior/próximo. Usado internamente pelo `info-list`, mas reutilizável por qualquer lista paginada.
+Controle generico de paginacao com seletor de itens por pagina (via `aq-select-formfield`),
+intervalo atual/total de itens e botoes de primeira, anterior, proxima e ultima pagina. Pode ser
+usado abaixo de tabelas, listas, cards, grids e resultados de busca.
+
+O componente e independente da fonte de dados: nao busca dados, nao recorta arrays, nao conhece
+endpoints e nao depende de `aq-table`.
 
 ### Localização
 
-`src/app/shared/components/paginator/` — componente + `paginator-change.model.ts`.
+`src/app/shared/components/paginator/` — componente, estilos, testes e modelos publicos.
 
 ### Seletor
 
@@ -1870,49 +1928,87 @@ Controle de paginação com seletor de itens por página (via `aq-select-formfie
 
 #### Inputs
 
-| Nome              | Tipo                   | Padrão        | Descrição                                        |
-| ----------------- | ---------------------- | ------------- | ------------------------------------------------ |
-| `pageIndex`       | `number`               | `0`           | Página atual (0-based, controlada externamente). |
-| `pageSize`        | `number`               | `10`          | Itens por página.                                |
-| `pageSizeOptions` | `number[]`             | `[5, 10, 20]` | Opções do seletor de tamanho.                    |
-| `totalItems`      | `number` (obrigatório) | —             | Total de itens da coleção completa.              |
-| `disabled`        | `boolean`              | `false`       | Desabilita todos os controles.                   |
+| Nome                   | Tipo                         | Padrão                       | Descrição                                                   |
+| ---------------------- | ---------------------------- | ---------------------------- | ----------------------------------------------------------- |
+| `page`                 | `number \| null`             | `null`                       | Página pública atual, iniciada em 1.                        |
+| `pageIndex`            | `number`                     | `0`                          | API legada 0-based. Preferir `page`.                        |
+| `pageSize`             | `number`                     | `10`                         | Itens por página. Valores inválidos caem para `10`.         |
+| `pageSizeOptions`      | `readonly number[]`          | `[5, 10, 20]`                | Opções do seletor; inválidas/duplicadas são normalizadas.   |
+| `totalItems`           | `number` (obrigatório)       | —                            | Total da coleção completa. Valores negativos viram `0`.     |
+| `disabled`             | `boolean`                    | `false`                      | Desabilita todos os controles.                              |
+| `loading`              | `boolean`                    | `false`                      | Desabilita controles, aplica `aria-busy` e preserva estado. |
+| `showFirstLastButtons` | `boolean`                    | `true`                       | Exibe/oculta primeira e última página.                      |
+| `showPageSizeSelector` | `boolean`                    | `true`                       | Exibe/oculta seletor de itens por página.                   |
+| `pageSizeLabel`        | `string`                     | `'Itens por pagina:'`        | Label do seletor.                                           |
+| `ariaLabel`            | `string`                     | `'Paginacao dos resultados'` | Nome acessível da região `nav`.                             |
+| `labels`               | `Partial<AqPaginatorLabels>` | `{}`                         | Textos concentrados para customização futura/i18n.          |
 
 #### Outputs
 
-| Nome         | Tipo                                          | Quando dispara                                            |
-| ------------ | --------------------------------------------- | --------------------------------------------------------- |
-| `pageChange` | `PaginatorChange` (`{ pageIndex, pageSize }`) | Ao clicar anterior/próximo ou trocar o tamanho de página. |
+| Nome               | Tipo                                          | Quando dispara                                   |
+| ------------------ | --------------------------------------------- | ------------------------------------------------ |
+| `paginationChange` | `AqPaginationChange` (`{ page, pageSize }`)   | Navegação ou alteração de tamanho.               |
+| `pageChange`       | `PaginatorChange` (`{ pageIndex, pageSize }`) | Compatibilidade legada 0-based. Preferir o novo. |
+
+#### Modelos
+
+```ts
+export interface AqPaginationState {
+  page: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+export interface AqPaginationChange {
+  page: number;
+  pageSize: number;
+}
+```
 
 ### Regras visuais
 
-- Layout: seletor de tamanho à esquerda/topo (`paginator__size`), navegação à direita/baixo (`paginator__nav`) com contador + botões.
-- Botões anterior/próximo usam ícones `chevron_left`/`chevron_right` e ficam `disabled` nativamente quando não há página anterior/próxima.
+- Layout: seletor de tamanho à esquerda/topo (`paginator__size`), status ao centro/direita e
+  navegação (`paginator__controls`) com ícones Material.
+- Mobile reorganiza seletor, status e controles em coluna sem remover primeira/última página.
+- Estados `disabled` e `loading` preservam legibilidade e desabilitam controles nativamente.
 
 ### Regras de acionamento
 
-- `hasPreviousPage` = `pageIndex > 0`; `hasNextPage` = `(pageIndex + 1) * pageSize < totalItems` — os botões usam o atributo `disabled` nativo do `<button>`, não apenas estilo, então não são focáveis/acionáveis via teclado quando desabilitados (comportamento nativo do HTML).
-- Trocar o tamanho de página **sempre reseta para a página 0** (`pageChange.emit({ pageIndex: 0, pageSize: ... })`) — evita ficar em uma página inexistente após aumentar o tamanho.
-- Sincronização reativa via `effect()`: o `FormControl` interno do seletor de tamanho é atualizado automaticamente sempre que `pageSize` (input) muda externamente, sem emitir evento de volta (`emitEvent: false`), evitando loop; o mesmo padrão habilita/desabilita o `FormControl` conforme o input `disabled`.
-- Não gerencia estado de página internamente — é 100% controlado pelo componente pai via inputs (`pageIndex`, `pageSize`) + output (`pageChange`).
+- `totalPages = totalItems === 0 ? 0 : Math.ceil(totalItems / pageSize)`.
+- Entradas inconsistentes são normalizadas: `totalItems < 0` vira `0`, `pageSize <= 0` vira `10`,
+  página menor que 1 vira 1 e página maior que o total vira `totalPages`.
+- Primeira página emite `{ page: 1, pageSize }`; última emite `{ page: totalPages, pageSize }`.
+- Anterior/próxima nunca emitem páginas fora do intervalo válido.
+- Trocar `pageSize` sempre emite `{ page: 1, pageSize }`.
+- `pageSizeOptions` descarta duplicados/valores inválidos e inclui automaticamente o `pageSize`
+  atual quando necessário.
+- Não gerencia dados nem estado de página internamente: o consumidor controla `page`, `pageSize` e
+  `totalItems` e reage ao `paginationChange`.
 
 ### Acessibilidade
 
-- Contador de itens (`paginator__info`) tem `aria-live="polite"`, anunciando a mudança de intervalo sem interromper o usuário.
-- Botões de navegação têm `aria-label` explícito ("Pagina anterior"/"Proxima pagina").
-- O seletor de tamanho herda toda a acessibilidade do `aq-select-formfield` (label "Itens por pagina").
+- Usa `nav` com `aria-label` configurável.
+- Página atual e intervalo usam `aria-live="polite"`.
+- `loading` aplica `aria-busy`.
+- Botões nativos têm nomes acessíveis: primeira, anterior, próxima e última página.
+- Ícones decorativos usam `aria-hidden="true"`.
+- O seletor herda teclado, label e foco do `aq-select-formfield`.
 
 ### Cenários de uso
 
-- Paginação de qualquer lista/tabela de itens (usado hoje dentro do `info-list`).
+- Tabelas: componha `aq-table` e `aq-paginator` no consumidor.
+- Cards/grids/listas: aplique paginação local ou remota no container e renderize o paginador abaixo.
+- Backends 0-based: converta no consumidor (`page: event.page - 1`, `size: event.pageSize`).
 
 ### Onde é usado
 
-- Uso interno em `src/app/shared/components/info-list/info-list.component.html`. Nenhum uso direto isolado em `features/` no momento.
+- `src/app/shared/components/info-list/info-list.component.html` via API legada.
+- `src/app/features/components-showcase/pages/paginator/paginator-showcase.component.html`.
 
 ### Showcase
 
-**Não possui showcase próprio** (ver `showcase-guidelines.md`, pendência conhecida) — hoje só é exercitado indiretamente através do showcase de `info-list`.
+`/components/paginator` → `src/app/features/components-showcase/pages/paginator/paginator-showcase.component.ts`
 
 ### Dependências internas
 
@@ -1920,7 +2016,7 @@ Controle de paginação com seletor de itens por página (via `aq-select-formfie
 
 ---
 
-## 5.21. Photo Upload
+## 5.22. Photo Upload
 
 ### Visão geral
 
@@ -2001,7 +2097,7 @@ Dropzone de upload de imagem única, com suporte a clique (seletor de arquivo na
 
 ---
 
-## 5.22. Segmented Control
+## 5.23. Segmented Control
 
 ### Visão geral
 
@@ -2065,7 +2161,7 @@ Controle de seleção única entre um pequeno conjunto de opções mutuamente ex
 
 ---
 
-## 5.23. Settings Card
+## 5.24. Settings Card
 
 ### Visão geral
 
@@ -2128,7 +2224,7 @@ Componente puramente estrutural/apresentacional — não emite eventos nem geren
 
 ---
 
-## 5.24. Switch
+## 5.25. Switch
 
 ### Visão geral
 
@@ -2192,7 +2288,99 @@ Alternador binário (toggle) estilo iOS/Material, para configurações on/off. C
 
 ---
 
-## 5.25. Toolbar
+## 5.26. Tabs
+
+### Visão geral
+
+Navegação local entre seções relacionadas de uma mesma página. Usa `aq-tabs` como container e
+`aq-tab` para cada item/painel projetado, com visual alinhado aos protótipos de detalhe de aquário:
+fundo transparente, tabs à esquerda, indicador inferior na ativa e divisor horizontal no conjunto.
+
+### Localização
+
+`src/app/shared/components/tabs/` — componentes `TabsComponent`, `TabComponent` e barrel local.
+
+### Seletores
+
+- `aq-tabs`
+- `aq-tab`
+
+### Decisão arquitetural
+
+Implementação própria sobre HTML nativo, sem Angular Material. O projeto não possui Angular Material
+como dependência direta; a implementação própria mantém a API pública enxuta, evita expor tipos
+internos de terceiros e cobre explicitamente WAI-ARIA, teclado e overflow horizontal.
+
+### API
+
+#### Inputs de `aq-tabs`
+
+| Nome          | Tipo     | Padrão   | Descrição                        |
+| ------------- | -------- | -------- | -------------------------------- |
+| `activeTabId` | `string` | `''`     | Identificador da tab ativa.      |
+| `ariaLabel`   | `string` | `Seções` | Nome acessível do grupo de tabs. |
+
+#### Outputs de `aq-tabs`
+
+| Nome              | Tipo     | Quando dispara                                      |
+| ----------------- | -------- | --------------------------------------------------- |
+| `activeTabChange` | `string` | Quando o usuário seleciona uma tab habilitada nova. |
+
+#### Inputs de `aq-tab`
+
+| Nome       | Tipo      | Padrão  | Descrição                            |
+| ---------- | --------- | ------- | ------------------------------------ |
+| `id`       | `string`  | —       | Identificador estável e obrigatório. |
+| `label`    | `string`  | —       | Texto exibido no cabeçalho.          |
+| `disabled` | `boolean` | `false` | Impede seleção e navegação por seta. |
+
+### Content projection
+
+O conteúdo padrão de cada `aq-tab` é renderizado como painel associado. Somente o painel selecionado
+é apresentado ao usuário.
+
+### Regras visuais
+
+- Tabs horizontais à esquerda, sem aparência de botão/pill.
+- Texto ativo com maior destaque e indicador inferior.
+- Texto inativo com contraste secundário.
+- Linha divisória sob todo o conjunto.
+- Estados: padrão, hover, selected, focus-visible, disabled e pressed via `:active`.
+- Overflow horizontal em telas menores, sem quebrar tabs em múltiplas linhas.
+
+### Regras de acionamento
+
+- `activeTabId` válido seleciona a tab correspondente.
+- Valor vazio, inexistente, removido ou desabilitado cai para a primeira tab habilitada.
+- Tabs desabilitadas não emitem evento e são ignoradas pela navegação por teclado.
+- A ativação por setas é automática: mover o foco também seleciona a tab.
+
+### Acessibilidade
+
+- `role="tablist"` no cabeçalho.
+- `role="tab"`, `aria-selected`, `aria-controls`, `aria-disabled` e roving `tabindex` nas tabs.
+- `role="tabpanel"` com `aria-labelledby` no painel ativo.
+- Teclado: `ArrowRight`, `ArrowLeft`, `Home`, `End`, `Enter` e `Space`.
+
+### Cenários de uso
+
+- Seções locais como visão geral, medições e aplicações.
+- Áreas de configuração, histórico, anexos ou qualquer conteúdo relacionado em uma página.
+
+### Quando não usar
+
+- Para filtros compactos de formulário, use `aq-segmented-control`.
+- Para navegação global/lateral, use `app-nav-menu`.
+- Para navegação por rota, componha a integração no consumidor; o componente base não depende do
+  Router.
+
+### Showcase
+
+`/components/tabs` → `src/app/features/components-showcase/pages/tabs/tabs-showcase.component.ts`
+
+---
+
+## 5.27. Toolbar
 
 ### Visão geral
 
@@ -2267,7 +2455,7 @@ Componente de composição puro — toda a lógica de interação (abrir menu, t
 
 ---
 
-## 5.26. Search Formfield
+## 5.28. Search Formfield
 
 ### Visão geral
 
@@ -2377,3 +2565,102 @@ em `writeValue`.
 ### Dependências internas
 
 `LanguageService`, `FormfieldErrorMessages` e tokens do tema em `src/app/shared/theme/`.
+
+---
+
+## 5.29. Table
+
+### Visão geral
+
+Tabela genérica do Design System para exibir dados estruturados em históricos, listagens
+administrativas e telas operacionais. O componente é agnóstico ao domínio: não busca dados, não
+formata unidades, não calcula status e não conhece endpoints. O consumidor fornece registros,
+colunas e templates quando precisar de conteúdo especializado.
+
+### Localização
+
+`src/app/shared/components/table/` — componente, diretiva de célula e modelos auxiliares.
+
+### Seletores
+
+- `aq-table`
+- `ng-template[aqTableCell]`
+
+### Decisão arquitetural
+
+Usa HTML semântico nativo (`table`, `thead`, `tbody`, `tr`, `th`, `td`) em vez de Angular Material,
+porque o projeto não adota Material como biblioteca de componentes. Ordenação, seleção, filtros e
+paginação são controlados pelo consumidor, permitindo uso local ou remoto sem acoplamento com API.
+
+### API
+
+#### Inputs
+
+| Nome            | Tipo                                                  | Padrão                         | Descrição                                                         |
+| --------------- | ----------------------------------------------------- | ------------------------------ | ----------------------------------------------------------------- |
+| `rows`          | `readonly T[]`                                        | obrigatório                    | Registros renderizados.                                           |
+| `columns`       | `readonly AqTableColumn<T>[]`                         | obrigatório                    | Colunas, alinhamento, largura, ordenação e prioridade responsiva. |
+| `rowId`         | `keyof T \| (row, index) => string \| number \| null` | `null`                         | Identificador estável para trackBy e seleção.                     |
+| `caption`       | `string`                                              | `''`                           | Caption semântico da tabela.                                      |
+| `captionHidden` | `boolean`                                             | `true`                         | Mantém o caption apenas para leitores de tela.                    |
+| `ariaLabel`     | `string`                                              | `''`                           | Nome acessível alternativo quando não houver caption.             |
+| `loading`       | `boolean`                                             | `false`                        | Exibe skeleton preservando a estrutura da tabela.                 |
+| `loadingLabel`  | `string`                                              | `'Carregando dados da tabela'` | Texto anunciado em loading.                                       |
+| `skeletonRows`  | `number`                                              | `5`                            | Quantidade de linhas skeleton.                                    |
+| `emptyState`    | `AqTableState`                                        | título padrão                  | Estado vazio customizável.                                        |
+| `errorState`    | `AqTableState \| null`                                | `null`                         | Estado de erro customizável.                                      |
+| `sort`          | `AqTableSort \| null`                                 | `null`                         | Ordenação atual, controlada externamente.                         |
+| `selectable`    | `boolean`                                             | `false`                        | Exibe coluna de seleção.                                          |
+| `selectionMode` | `'single' \| 'multiple'`                              | `'multiple'`                   | Define seleção única ou múltipla.                                 |
+| `selectedRows`  | `readonly T[]`                                        | `[]`                           | Seleção atual, controlada externamente.                           |
+| `rowClickable`  | `boolean`                                             | `false`                        | Torna linhas acionáveis por mouse, Enter e Space.                 |
+| `rowAriaLabel`  | `(row, index) => string \| null`                      | `null`                         | Nome acessível de linhas clicáveis.                               |
+| `density`       | `'comfortable' \| 'compact'`                          | `'comfortable'`                | Densidade visual das linhas.                                      |
+| `stickyHeader`  | `boolean`                                             | `false`                        | Mantém cabeçalho fixo dentro da área rolável.                     |
+| `showHeader`    | `boolean`                                             | `true`                         | Exibe ou oculta `thead`.                                          |
+
+#### Outputs
+
+| Nome              | Tipo                  | Quando dispara                                       |
+| ----------------- | --------------------- | ---------------------------------------------------- |
+| `sortChange`      | `AqTableSort \| null` | Ao acionar uma coluna ordenável.                     |
+| `rowClick`        | `T`                   | Ao acionar uma linha clicável.                       |
+| `selectionChange` | `readonly T[]`        | Ao selecionar uma linha ou todas as linhas visíveis. |
+| `retry`           | `void`                | Ao acionar a ação do estado de erro.                 |
+
+### Templates de células
+
+Use `ng-template aqTableCell="key"` para badges, ícones, menus, data em duas linhas, valores com
+unidade ou componentes do Design System. O contexto do template contém `$implicit`, `row`, `column`,
+`value` e `index`.
+
+### Ordenação
+
+Colunas com `sortable: true` renderizam botão no cabeçalho, atualizam `aria-sort` e emitem
+`sortChange`. O ciclo é ascendente, descendente e sem ordenação. A tabela não reordena os dados
+internamente.
+
+### Seleção
+
+A seleção é opcional. Em `multiple`, o cabeçalho exibe checkbox para selecionar todas as linhas
+visíveis e estado indeterminado. Em `single`, cada checkbox emite no máximo uma linha selecionada.
+
+### Estados
+
+Loading usa skeleton e `aria-busy`; vazio e erro recebem título, descrição e ícone opcional; erro
+pode emitir `retry`.
+
+### Responsividade
+
+A estratégia padrão é rolagem horizontal com largura mínima. Colunas `optional` são ocultadas antes
+das `secondary` em telas menores; colunas `primary` permanecem visíveis.
+
+### Acessibilidade
+
+Estrutura nativa de tabela, `scope="col"`, caption visível ou oculto, `aria-sort`, botões nativos no
+cabeçalho ordenável, foco visível e linhas clicáveis com `role="button"`, `tabindex="0"` e
+Enter/Space. Status e tendências devem ter texto ou `aria-label` no template consumidor.
+
+### Showcase
+
+`/components/table` → `src/app/features/components-showcase/pages/table/table-showcase.component.ts`

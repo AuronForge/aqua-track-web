@@ -46,6 +46,7 @@ Documentação de referência do design system do AquaTrack (`aqua-track-web`), 
 | Segmented Control              | Formulário        | [`components/segmented-control.md`](./components/segmented-control.md)       | ⚠️ pendente                           |
 | Settings Card                  | Layout/Container  | [`components/settings-card.md`](./components/settings-card.md)               | ⚠️ pendente                           |
 | Switch                         | Formulário        | [`components/switch.md`](./components/switch.md)                             | ⚠️ pendente                           |
+| Table                          | Exibição de dados | [`components/table.md`](./components/table.md)                               | ✅ `/components/table`                |
 | Toolbar                        | Navegação/Layout  | [`components/toolbar.md`](./components/toolbar.md)                           | ✅ `/components/toolbar`              |
 
 ✅ = possui showcase publicado e registrado em rota. ⚠️ = componente existe e está em uso (ou disponível), mas ainda não tem página de showcase — ver `showcase-guidelines.md` para o checklist de criação.

@@ -1,0 +1,37 @@
+<div class="alert__surface">
+  @if (showIcon()) {
+    <span class="material-icons alert__icon" aria-hidden="true">
+      {{ resolvedIcon() }}
+    </span>
+  }
+
+  <div class="alert__content">
+    @if (title()) {
+      <p class="alert__title">{{ title() }}</p>
+    }
+
+    <div class="alert__message">
+      <ng-content></ng-content>
+    </div>
+
+    <div class="alert__actions">
+      <ng-content select="[aqAlertAction]"></ng-content>
+    </div>
+  </div>
+
+  @if (dismissible()) {
+    <button
+      aqButton
+      type="button"
+      class="alert__dismiss"
+      variant="icon"
+      color="tertiary"
+      size="small"
+      aria-label="Fechar alerta"
+      title="Fechar alerta"
+      (click)="dismiss()"
+    >
+      <span class="material-icons" aria-hidden="true">close</span>
+    </button>
+  }
+</div>

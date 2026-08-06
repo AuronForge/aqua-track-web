@@ -1,0 +1,35 @@
+<ng-content select="aq-tab" />
+
+<div class="tabs__header" role="tablist" [attr.aria-label]="ariaLabel()">
+  @for (tab of tabs(); track tab.id()) {
+    <button
+      #tabButton
+      type="button"
+      class="tabs__tab"
+      [class.tabs__tab--selected]="isSelected(tab)"
+      role="tab"
+      [id]="tabElementId(tab)"
+      [disabled]="tab.disabled() || null"
+      [attr.aria-selected]="isSelected(tab)"
+      [attr.aria-controls]="panelElementId(tab)"
+      [attr.aria-disabled]="tab.disabled() ? true : null"
+      [attr.tabindex]="isSelected(tab) && !tab.disabled() ? 0 : -1"
+      (click)="selectTab(tab)"
+      (keydown)="onTabKeydown($event, tab)"
+    >
+      {{ tab.label() }}
+    </button>
+  }
+</div>
+
+@if (selectedTab(); as tab) {
+  <section
+    class="tabs__panel"
+    role="tabpanel"
+    [id]="panelElementId(tab)"
+    [attr.aria-labelledby]="tabElementId(tab)"
+    tabindex="0"
+  >
+    <ng-container [ngTemplateOutlet]="tab.contentTemplate()" />
+  </section>
+}
