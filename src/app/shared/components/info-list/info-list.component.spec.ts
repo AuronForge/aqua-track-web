@@ -100,11 +100,11 @@ describe('InfoListComponent', () => {
   }
 
   function getNextButton(): HTMLButtonElement | null {
-    return element.querySelector('[aria-label="Proxima pagina"]');
+    return element.querySelector('[aria-label="Ir para a proxima pagina"]');
   }
 
   function getPrevButton(): HTMLButtonElement | null {
-    return element.querySelector('[aria-label="Pagina anterior"]');
+    return element.querySelector('[aria-label="Ir para a pagina anterior"]');
   }
 
   beforeEach(async () => {

@@ -126,6 +126,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'paginator',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/paginator/paginator-showcase.component').then(
+            (m) => m.PaginatorShowcaseComponent,
+          ),
+      },
+      {
         path: 'badge',
         loadComponent: () =>
           import('./features/components-showcase/pages/badge/badge-showcase.component').then(

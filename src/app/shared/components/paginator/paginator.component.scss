@@ -1,6 +1,10 @@
 @use '../../theme' as theme;
 
 :host {
+  display: block;
+}
+
+.paginator__surface {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -10,26 +14,60 @@
 
 :host(.paginator--disabled) {
   opacity: 0.5;
-  pointer-events: none;
 }
 
 .paginator__size {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  min-width: 12rem;
 }
 
 .paginator__size-field {
-  width: min(100%, 10rem);
+  width: auto;
+}
+
+.paginator .paginator__size-field.select-formfield {
+  flex-direction: row;
+  align-items: center;
+  gap: theme.$aq-space-xs;
+  width: auto;
+}
+
+.paginator .paginator__size-field .select-formfield__label {
+  flex: 0 0 auto;
+  font-size: theme.$aq-font-size-md;
+  font-weight: theme.$aq-font-weight-regular;
+  color: theme.$aq-color-text-primary;
+  white-space: nowrap;
+}
+
+.paginator .paginator__size-field .select-formfield__control {
+  width: 5.25rem;
+}
+
+.paginator .paginator__size-field .select-formfield__trigger {
+  min-height: 2.5rem;
+  padding-inline: theme.$aq-space-sm;
+  border-radius: theme.$aq-radius-xs;
+  font-size: theme.$aq-font-size-md;
 }
 
 .paginator__nav {
   display: flex;
   align-items: center;
   gap: theme.$aq-space-md;
+  margin-left: auto;
 }
 
-.paginator__info {
+.paginator__status {
+  display: grid;
+  gap: theme.$aq-space-2xs;
   font-family: theme.$aq-font-family-base;
+  text-align: right;
+}
+
+.paginator__range,
+.paginator__loading {
   font-size: theme.$aq-font-size-sm;
   font-weight: theme.$aq-font-weight-regular;
   color: theme.$aq-color-text-secondary;
@@ -78,5 +116,81 @@
   .material-icons-outlined {
     font-size: 1.125rem;
     line-height: 1;
+  }
+}
+
+.paginator__loading {
+  display: inline-flex;
+  align-items: center;
+  gap: theme.$aq-space-2xs;
+  flex-basis: 100%;
+  justify-content: flex-end;
+}
+
+.paginator__loading-icon {
+  font-size: theme.$aq-size-icon-sm;
+  animation: paginator-spin 900ms linear infinite;
+}
+
+@keyframes paginator-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paginator__loading-icon {
+    animation: none;
+  }
+}
+
+@media (width <= 48rem) {
+  .paginator__surface,
+  .paginator__nav {
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .paginator__nav {
+    justify-content: space-between;
+    margin-left: 0;
+  }
+
+  .paginator__status {
+    text-align: left;
+  }
+}
+
+@media (width <= 32rem) {
+  .paginator__surface,
+  .paginator__nav {
+    flex-direction: column;
+  }
+
+  .paginator__size,
+  .paginator__controls {
+    width: 100%;
+  }
+
+  .paginator__size-field {
+    width: auto;
+  }
+
+  .paginator__controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(2.25rem, 1fr));
+  }
+
+  .paginator__button {
+    width: 100%;
+    min-height: 2.25rem;
+  }
+
+  .paginator__loading {
+    justify-content: flex-start;
   }
 }

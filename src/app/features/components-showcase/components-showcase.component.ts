@@ -89,6 +89,12 @@ export class ComponentsShowcaseComponent {
     { id: 'menu', label: 'Nav Menu', icon: 'menu', route: '/components/menu' },
     { id: 'modal', label: 'Modal', icon: 'open_in_new', route: '/components/modal' },
     {
+      id: 'paginator',
+      label: 'Paginator',
+      icon: 'keyboard_double_arrow_right',
+      route: '/components/paginator',
+    },
+    {
       id: 'photo-upload',
       label: 'Photo Upload',
       icon: 'upload_file',

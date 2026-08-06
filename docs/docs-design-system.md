@@ -50,7 +50,7 @@ Documentação de referência do design system do AquaTrack (`aqua-track-web`), 
 | Language Switcher              | Navegação         | [`components/language-switcher.md`](./components/language-switcher.md)       | ⚠️ pendente                           |
 | Modal                          | Overlay           | [`components/modal.md`](./components/modal.md)                               | ✅ `/components/modal`                |
 | Nav Menu                       | Navegação         | [`components/nav-menu.md`](./components/nav-menu.md)                         | ✅ `/components/menu`                 |
-| Paginator                      | Exibição de dados | [`components/paginator.md`](./components/paginator.md)                       | ⚠️ pendente                           |
+| Paginator                      | Exibição de dados | [`components/paginator.md`](./components/paginator.md)                       | ✅ `/components/paginator`            |
 | Photo Upload                   | Formulário        | [`components/photo-upload.md`](./components/photo-upload.md)                 | ✅ `/components/photo-upload`         |
 | Segmented Control              | Formulário        | [`components/segmented-control.md`](./components/segmented-control.md)       | ⚠️ pendente                           |
 | Settings Card                  | Layout/Container  | [`components/settings-card.md`](./components/settings-card.md)               | ⚠️ pendente                           |
@@ -1858,11 +1858,16 @@ Sem outputs — navegação é feita via `routerLink` nativo, não por eventos e
 
 ### Visão geral
 
-Controle de paginação com seletor de itens por página (via `aq-select-formfield`), indicador "X-Y de Z" e botões anterior/próximo. Usado internamente pelo `info-list`, mas reutilizável por qualquer lista paginada.
+Controle generico de paginacao com seletor de itens por pagina (via `aq-select-formfield`),
+intervalo atual/total de itens e botoes de primeira, anterior, proxima e ultima pagina. Pode ser
+usado abaixo de tabelas, listas, cards, grids e resultados de busca.
+
+O componente e independente da fonte de dados: nao busca dados, nao recorta arrays, nao conhece
+endpoints e nao depende de `aq-table`.
 
 ### Localização
 
-`src/app/shared/components/paginator/` — componente + `paginator-change.model.ts`.
+`src/app/shared/components/paginator/` — componente, estilos, testes e modelos publicos.
 
 ### Seletor
 
@@ -1872,49 +1877,87 @@ Controle de paginação com seletor de itens por página (via `aq-select-formfie
 
 #### Inputs
 
-| Nome              | Tipo                   | Padrão        | Descrição                                        |
-| ----------------- | ---------------------- | ------------- | ------------------------------------------------ |
-| `pageIndex`       | `number`               | `0`           | Página atual (0-based, controlada externamente). |
-| `pageSize`        | `number`               | `10`          | Itens por página.                                |
-| `pageSizeOptions` | `number[]`             | `[5, 10, 20]` | Opções do seletor de tamanho.                    |
-| `totalItems`      | `number` (obrigatório) | —             | Total de itens da coleção completa.              |
-| `disabled`        | `boolean`              | `false`       | Desabilita todos os controles.                   |
+| Nome                   | Tipo                         | Padrão                       | Descrição                                                   |
+| ---------------------- | ---------------------------- | ---------------------------- | ----------------------------------------------------------- |
+| `page`                 | `number \| null`             | `null`                       | Página pública atual, iniciada em 1.                        |
+| `pageIndex`            | `number`                     | `0`                          | API legada 0-based. Preferir `page`.                        |
+| `pageSize`             | `number`                     | `10`                         | Itens por página. Valores inválidos caem para `10`.         |
+| `pageSizeOptions`      | `readonly number[]`          | `[5, 10, 20]`                | Opções do seletor; inválidas/duplicadas são normalizadas.   |
+| `totalItems`           | `number` (obrigatório)       | —                            | Total da coleção completa. Valores negativos viram `0`.     |
+| `disabled`             | `boolean`                    | `false`                      | Desabilita todos os controles.                              |
+| `loading`              | `boolean`                    | `false`                      | Desabilita controles, aplica `aria-busy` e preserva estado. |
+| `showFirstLastButtons` | `boolean`                    | `true`                       | Exibe/oculta primeira e última página.                      |
+| `showPageSizeSelector` | `boolean`                    | `true`                       | Exibe/oculta seletor de itens por página.                   |
+| `pageSizeLabel`        | `string`                     | `'Itens por pagina:'`        | Label do seletor.                                           |
+| `ariaLabel`            | `string`                     | `'Paginacao dos resultados'` | Nome acessível da região `nav`.                             |
+| `labels`               | `Partial<AqPaginatorLabels>` | `{}`                         | Textos concentrados para customização futura/i18n.          |
 
 #### Outputs
 
-| Nome         | Tipo                                          | Quando dispara                                            |
-| ------------ | --------------------------------------------- | --------------------------------------------------------- |
-| `pageChange` | `PaginatorChange` (`{ pageIndex, pageSize }`) | Ao clicar anterior/próximo ou trocar o tamanho de página. |
+| Nome               | Tipo                                          | Quando dispara                                   |
+| ------------------ | --------------------------------------------- | ------------------------------------------------ |
+| `paginationChange` | `AqPaginationChange` (`{ page, pageSize }`)   | Navegação ou alteração de tamanho.               |
+| `pageChange`       | `PaginatorChange` (`{ pageIndex, pageSize }`) | Compatibilidade legada 0-based. Preferir o novo. |
+
+#### Modelos
+
+```ts
+export interface AqPaginationState {
+  page: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+export interface AqPaginationChange {
+  page: number;
+  pageSize: number;
+}
+```
 
 ### Regras visuais
 
-- Layout: seletor de tamanho à esquerda/topo (`paginator__size`), navegação à direita/baixo (`paginator__nav`) com contador + botões.
-- Botões anterior/próximo usam ícones `chevron_left`/`chevron_right` e ficam `disabled` nativamente quando não há página anterior/próxima.
+- Layout: seletor de tamanho à esquerda/topo (`paginator__size`), status ao centro/direita e
+  navegação (`paginator__controls`) com ícones Material.
+- Mobile reorganiza seletor, status e controles em coluna sem remover primeira/última página.
+- Estados `disabled` e `loading` preservam legibilidade e desabilitam controles nativamente.
 
 ### Regras de acionamento
 
-- `hasPreviousPage` = `pageIndex > 0`; `hasNextPage` = `(pageIndex + 1) * pageSize < totalItems` — os botões usam o atributo `disabled` nativo do `<button>`, não apenas estilo, então não são focáveis/acionáveis via teclado quando desabilitados (comportamento nativo do HTML).
-- Trocar o tamanho de página **sempre reseta para a página 0** (`pageChange.emit({ pageIndex: 0, pageSize: ... })`) — evita ficar em uma página inexistente após aumentar o tamanho.
-- Sincronização reativa via `effect()`: o `FormControl` interno do seletor de tamanho é atualizado automaticamente sempre que `pageSize` (input) muda externamente, sem emitir evento de volta (`emitEvent: false`), evitando loop; o mesmo padrão habilita/desabilita o `FormControl` conforme o input `disabled`.
-- Não gerencia estado de página internamente — é 100% controlado pelo componente pai via inputs (`pageIndex`, `pageSize`) + output (`pageChange`).
+- `totalPages = totalItems === 0 ? 0 : Math.ceil(totalItems / pageSize)`.
+- Entradas inconsistentes são normalizadas: `totalItems < 0` vira `0`, `pageSize <= 0` vira `10`,
+  página menor que 1 vira 1 e página maior que o total vira `totalPages`.
+- Primeira página emite `{ page: 1, pageSize }`; última emite `{ page: totalPages, pageSize }`.
+- Anterior/próxima nunca emitem páginas fora do intervalo válido.
+- Trocar `pageSize` sempre emite `{ page: 1, pageSize }`.
+- `pageSizeOptions` descarta duplicados/valores inválidos e inclui automaticamente o `pageSize`
+  atual quando necessário.
+- Não gerencia dados nem estado de página internamente: o consumidor controla `page`, `pageSize` e
+  `totalItems` e reage ao `paginationChange`.
 
 ### Acessibilidade
 
-- Contador de itens (`paginator__info`) tem `aria-live="polite"`, anunciando a mudança de intervalo sem interromper o usuário.
-- Botões de navegação têm `aria-label` explícito ("Pagina anterior"/"Proxima pagina").
-- O seletor de tamanho herda toda a acessibilidade do `aq-select-formfield` (label "Itens por pagina").
+- Usa `nav` com `aria-label` configurável.
+- Página atual e intervalo usam `aria-live="polite"`.
+- `loading` aplica `aria-busy`.
+- Botões nativos têm nomes acessíveis: primeira, anterior, próxima e última página.
+- Ícones decorativos usam `aria-hidden="true"`.
+- O seletor herda teclado, label e foco do `aq-select-formfield`.
 
 ### Cenários de uso
 
-- Paginação de qualquer lista/tabela de itens (usado hoje dentro do `info-list`).
+- Tabelas: componha `aq-table` e `aq-paginator` no consumidor.
+- Cards/grids/listas: aplique paginação local ou remota no container e renderize o paginador abaixo.
+- Backends 0-based: converta no consumidor (`page: event.page - 1`, `size: event.pageSize`).
 
 ### Onde é usado
 
-- Uso interno em `src/app/shared/components/info-list/info-list.component.html`. Nenhum uso direto isolado em `features/` no momento.
+- `src/app/shared/components/info-list/info-list.component.html` via API legada.
+- `src/app/features/components-showcase/pages/paginator/paginator-showcase.component.html`.
 
 ### Showcase
 
-**Não possui showcase próprio** (ver `showcase-guidelines.md`, pendência conhecida) — hoje só é exercitado indiretamente através do showcase de `info-list`.
+`/components/paginator` → `src/app/features/components-showcase/pages/paginator/paginator-showcase.component.ts`
 
 ### Dependências internas
 
