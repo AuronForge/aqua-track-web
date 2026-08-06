@@ -42,6 +42,13 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'menu', pathMatch: 'full' },
       {
+        path: 'alert',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/alert/alert-showcase.component').then(
+            (m) => m.AlertShowcaseComponent,
+          ),
+      },
+      {
         path: 'menu',
         loadComponent: () =>
           import('./features/components-showcase/pages/nav-menu/nav-menu-showcase.component').then(

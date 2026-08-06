@@ -1,6 +1,6 @@
 # Design System AquaTrack Web — Documento Único de Contexto para IA
 
-> Este arquivo consolida toda a documentação do design system (`docs/design-system/`) em um único documento, pensado para ser fornecido como contexto a uma IA geradora de código/telas. Ele cobre: tema (tokens visuais), padrões de acessibilidade (WCAG), regra de showcase, e a especificação completa de cada um dos 28 componentes de `src/app/shared/components/`.
+> Este arquivo consolida toda a documentação do design system (`docs/design-system/`) em um único documento, pensado para ser fornecido como contexto a uma IA geradora de código/telas. Ele cobre: tema (tokens visuais), padrões de acessibilidade (WCAG), regra de showcase, e a especificação completa de cada um dos 29 componentes de `src/app/shared/components/`.
 
 > Fonte: gerado a partir dos arquivos individuais em `docs/design-system/`. Qualquer atualização de componente, tema ou regra de acessibilidade deve ser refletida tanto nos arquivos individuais quanto neste documento consolidado.
 
@@ -10,7 +10,7 @@
 2. Tema (Design Tokens)
 3. Acessibilidade (WCAG)
 4. Regra de Showcase
-5. Especificação dos Componentes (28 componentes)
+5. Especificação dos Componentes (29 componentes)
 
 ---
 
@@ -30,6 +30,7 @@ Documentação de referência do design system do AquaTrack (`aqua-track-web`), 
 
 | Componente                     | Categoria         | Doc                                                                          | Showcase                              |
 | ------------------------------ | ----------------- | ---------------------------------------------------------------------------- | ------------------------------------- |
+| Alert                          | Feedback/Inline   | [`components/alert.md`](./components/alert.md)                               | ✅ `/components/alert`                |
 | Avatar                         | Identidade/Mídia  | [`components/avatar.md`](./components/avatar.md)                             | ✅ `/components/avatar`               |
 | Badge                          | Feedback/Rótulo   | [`components/badge.md`](./components/badge.md)                               | ✅ `/components/badge`                |
 | Button                         | Ação              | [`components/button.md`](./components/button.md)                             | ✅ `/components/button`               |
@@ -455,7 +456,57 @@ As subseções a seguir correspondem, uma a uma, aos arquivos de `docs/design-sy
 
 ---
 
-## 5.1. Avatar
+## 5.1. Alert
+
+### Visão geral
+
+`aq-alert` é o componente de alerta inline do design system. Ele apresenta mensagens contextuais
+persistentes dentro de páginas, formulários, modais, cards e demais regiões do layout. Use para
+orientações, dicas, avisos, confirmações, erros de seção e estados que precisam continuar visíveis.
+
+O componente não substitui `aq-feedback-message`: feedback message é temporário, flutuante e ligado
+a eventos ou ações; `aq-alert` permanece no fluxo do layout e só é removido quando o consumidor
+altera o estado.
+
+### Localização
+
+- `src/app/shared/components/alert/`
+- Showcase: `/components/alert`
+- Documentação detalhada: `docs/design-system/components/alert.md`
+
+### API
+
+| Campo         | Tipo                                                       | Padrão            | Descrição                                   |
+| ------------- | ---------------------------------------------------------- | ----------------- | ------------------------------------------- |
+| `variant`     | `'info' \| 'success' \| 'warning' \| 'error' \| 'neutral'` | `'info'`          | Define cor, ícone padrão e semântica.       |
+| `title`       | `string \| undefined`                                      | `undefined`       | Título opcional.                            |
+| `icon`        | `string \| undefined`                                      | ícone da variante | Nome de Material Icon customizado.          |
+| `showIcon`    | `boolean`                                                  | `true`            | Controla exibição do ícone decorativo.      |
+| `dismissible` | `boolean`                                                  | `false`           | Exibe botão de fechar.                      |
+| `ariaLabel`   | `string \| undefined`                                      | `undefined`       | Nome acessível opcional no host.            |
+| `dismissed`   | `output<void>`                                             | -                 | Emitido quando o usuário aciona fechamento. |
+
+### Exemplo
+
+```html
+<aq-alert variant="warning" title="Parâmetros fora da faixa recomendada">
+  Revise as últimas medições antes de adicionar novos habitantes.
+
+  <button aqButton aqAlertAction type="button" variant="stroked" color="warning">
+    Ver medições
+  </button>
+</aq-alert>
+```
+
+### Acessibilidade
+
+`warning` e `error` usam `role="alert"` com `aria-live="assertive"`. As demais variantes usam
+`role="status"` com `aria-live="polite"`. Ícones são decorativos e recebem `aria-hidden="true"`.
+O botão de fechamento tem nome acessível `Fechar alerta` e emite `dismissed`.
+
+---
+
+## 5.2. Avatar
 
 ### Visão geral
 
@@ -519,7 +570,7 @@ Componente puramente apresentacional — não possui interação própria (cliqu
 
 ---
 
-## 5.2. Badge
+## 5.3. Badge
 
 ### Visão geral
 
@@ -583,7 +634,7 @@ Não interativo por padrão (`cursor: default`). Não emite eventos. Se usado co
 
 ---
 
-## 5.3. Button
+## 5.4. Button
 
 ### Visão geral
 
@@ -652,7 +703,7 @@ Amplamente usado em toda a aplicação — presente em `application-create-page`
 
 ---
 
-## 5.4. Card Selection
+## 5.5. Card Selection
 
 ### Visão geral
 
@@ -741,7 +792,7 @@ Usa `FormfieldErrorMessages` (compartilhado com os demais formfields).
 
 ---
 
-## 5.5. Chip
+## 5.6. Chip
 
 ### Visão geral
 
@@ -801,7 +852,7 @@ Nenhum uso direto encontrado em `features/` no momento — componente disponíve
 
 ---
 
-## 5.6. Code Block
+## 5.7. Code Block
 
 ### Visão geral
 
@@ -857,7 +908,7 @@ Usado internamente por praticamente todas as páginas de `features/components-sh
 
 ---
 
-## 5.7. Confirmation Dialog
+## 5.8. Confirmation Dialog
 
 ### Visão geral
 
@@ -928,7 +979,7 @@ Nenhum uso encontrado em `features/` no momento (nem via `ConfirmationDialogServ
 
 ---
 
-## 5.8. Dropdown Menu
+## 5.9. Dropdown Menu
 
 ### Visão geral
 
@@ -1007,7 +1058,7 @@ Menu suspenso com trigger customizável (via slot) e lista de itens de ação. U
 
 ---
 
-## 5.9. Feedback Message (+ Container)
+## 5.10. Feedback Message (+ Container)
 
 ### Visão geral
 
@@ -1092,7 +1143,7 @@ Disparo de mensagens é feito exclusivamente via `FeedbackMessageService` (nunca
 
 ---
 
-## 5.10. Text Formfield
+## 5.11. Text Formfield
 
 ### Visão geral
 
@@ -1182,7 +1233,7 @@ Campo de texto de propósito geral (texto, senha, e-mail, busca, telefone, URL),
 
 ---
 
-## 5.11. Textarea Formfield
+## 5.12. Textarea Formfield
 
 ### Visão geral
 
@@ -1247,7 +1298,7 @@ Sem outputs próprios além do contrato `ControlValueAccessor`.
 
 ---
 
-## 5.12. Select Formfield
+## 5.13. Select Formfield
 
 ### Visão geral
 
@@ -1328,7 +1379,7 @@ Campo de seleção customizado (single ou multiple) com painel dropdown renderiz
 
 ---
 
-## 5.13. Datepicker Formfield
+## 5.14. Datepicker Formfield
 
 ### Visão geral
 
@@ -1404,7 +1455,7 @@ Sem outputs próprios além do contrato `ControlValueAccessor`.
 
 ---
 
-## 5.14. Info Card
+## 5.15. Info Card
 
 ### Visão geral
 
@@ -1485,7 +1536,7 @@ Card de resumo/status para exibir uma entidade (ex.: um aquário) com ícone, ba
 
 ---
 
-## 5.15. Info List
+## 5.16. Info List
 
 ### Visão geral
 
@@ -1560,7 +1611,7 @@ Lista paginada de `info-list-item`, com estados de carregamento e vazio embutido
 
 ---
 
-## 5.16. Info List Item
+## 5.17. Info List Item
 
 ### Visão geral
 
@@ -1632,7 +1683,7 @@ Linha de lista com título/subtítulo à esquerda e valor/metadado à direita, o
 
 ---
 
-## 5.17. Language Switcher
+## 5.18. Language Switcher
 
 ### Visão geral
 
@@ -1694,7 +1745,7 @@ Seletor de idioma da aplicação (dropdown customizado), usado nas telas de aute
 
 ---
 
-## 5.18. Modal
+## 5.19. Modal
 
 ### Visão geral
 
@@ -1783,7 +1834,7 @@ Retornado por `ModalService.open()`. Expõe métodos/observables para fechar o m
 
 ---
 
-## 5.19. Nav Menu
+## 5.20. Nav Menu
 
 ### Visão geral
 
@@ -1854,7 +1905,7 @@ Sem outputs — navegação é feita via `routerLink` nativo, não por eventos e
 
 ---
 
-## 5.20. Paginator
+## 5.21. Paginator
 
 ### Visão geral
 
@@ -1965,7 +2016,7 @@ export interface AqPaginationChange {
 
 ---
 
-## 5.21. Photo Upload
+## 5.22. Photo Upload
 
 ### Visão geral
 
@@ -2046,7 +2097,7 @@ Dropzone de upload de imagem única, com suporte a clique (seletor de arquivo na
 
 ---
 
-## 5.22. Segmented Control
+## 5.23. Segmented Control
 
 ### Visão geral
 
@@ -2110,7 +2161,7 @@ Controle de seleção única entre um pequeno conjunto de opções mutuamente ex
 
 ---
 
-## 5.23. Settings Card
+## 5.24. Settings Card
 
 ### Visão geral
 
@@ -2173,7 +2224,7 @@ Componente puramente estrutural/apresentacional — não emite eventos nem geren
 
 ---
 
-## 5.24. Switch
+## 5.25. Switch
 
 ### Visão geral
 
@@ -2237,7 +2288,7 @@ Alternador binário (toggle) estilo iOS/Material, para configurações on/off. C
 
 ---
 
-## 5.25. Tabs
+## 5.26. Tabs
 
 ### Visão geral
 
@@ -2329,7 +2380,7 @@ O conteúdo padrão de cada `aq-tab` é renderizado como painel associado. Somen
 
 ---
 
-## 5.26. Toolbar
+## 5.27. Toolbar
 
 ### Visão geral
 
@@ -2404,7 +2455,7 @@ Componente de composição puro — toda a lógica de interação (abrir menu, t
 
 ---
 
-## 5.27. Search Formfield
+## 5.28. Search Formfield
 
 ### Visão geral
 
@@ -2517,7 +2568,7 @@ em `writeValue`.
 
 ---
 
-## 5.28. Table
+## 5.29. Table
 
 ### Visão geral
 

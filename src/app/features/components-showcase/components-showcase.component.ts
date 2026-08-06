@@ -14,6 +14,7 @@ import { NavMenuComponent } from '../../shared/components/nav-menu/nav-menu.comp
 })
 export class ComponentsShowcaseComponent {
   readonly sidebarItems: NavMenuItem[] = [
+    { id: 'alert', label: 'Alert', icon: 'campaign', route: '/components/alert' },
     { id: 'avatar', label: 'Avatar', icon: 'account_circle', route: '/components/avatar' },
     { id: 'badge', label: 'Badge', icon: 'local_offer', route: '/components/badge' },
     { id: 'button', label: 'Button', icon: 'smart_button', route: '/components/button' },
