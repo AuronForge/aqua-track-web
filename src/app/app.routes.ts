@@ -181,6 +181,13 @@ export const routes: Routes = [
             (m) => m.TabsShowcaseComponent,
           ),
       },
+      {
+        path: 'table',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/table/table-showcase.component').then(
+            (m) => m.TableShowcaseComponent,
+          ),
+      },
     ],
   },
   {

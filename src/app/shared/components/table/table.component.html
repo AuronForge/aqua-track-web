@@ -1,0 +1,184 @@
+@if (loading()) {
+  <div class="table__surface table__surface--loading" role="status" aria-live="polite">
+    <span class="table__visually-hidden">{{ loadingLabel() }}</span>
+    <div class="table__scroll">
+      <table class="table__table" [attr.aria-label]="ariaLabel() || null">
+        @if (caption()) {
+          <caption [class.table__visually-hidden]="captionHidden()">
+            {{
+              caption()
+            }}
+          </caption>
+        }
+
+        @if (showHeader()) {
+          <thead>
+            <tr>
+              @if (selectable()) {
+                <th class="table__cell table__cell--selection" scope="col"></th>
+              }
+
+              @for (column of visibleColumns(); track trackColumn($index, column)) {
+                <th [class]="getColumnClass(column)" [ngStyle]="getColumnStyle(column)" scope="col">
+                  <span class="table__header-content">{{ column.header }}</span>
+                </th>
+              }
+            </tr>
+          </thead>
+        }
+
+        <tbody>
+          @for (index of skeletonIndexes(); track index) {
+            <tr>
+              @for (columnKey of renderedColumns(); track columnKey) {
+                <td class="table__cell">
+                  <span class="table__skeleton"></span>
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+} @else if (errorState()) {
+  <div class="table__surface table__state" role="alert">
+    @if (errorState()!.icon) {
+      <span class="material-icons-outlined table__state-icon" aria-hidden="true">
+        {{ errorState()!.icon }}
+      </span>
+    }
+
+    <p class="table__state-title">{{ errorState()!.title }}</p>
+
+    @if (errorState()!.description) {
+      <p class="table__state-description">{{ errorState()!.description }}</p>
+    }
+
+    @if (errorState()!.actionLabel) {
+      <button type="button" class="table__state-action" (click)="onRetry()">
+        {{ errorState()!.actionLabel }}
+      </button>
+    }
+  </div>
+} @else if (isEmpty()) {
+  <div class="table__surface table__state" role="status" aria-live="polite">
+    @if (emptyState().icon) {
+      <span class="material-icons-outlined table__state-icon" aria-hidden="true">
+        {{ emptyState().icon }}
+      </span>
+    }
+
+    <p class="table__state-title">{{ emptyState().title }}</p>
+
+    @if (emptyState().description) {
+      <p class="table__state-description">{{ emptyState().description }}</p>
+    }
+
+    @if (emptyState().actionLabel) {
+      <span class="table__state-action-label">{{ emptyState().actionLabel }}</span>
+    }
+  </div>
+} @else {
+  <div class="table__surface">
+    <div class="table__scroll">
+      <table class="table__table" [attr.aria-label]="ariaLabel() || null">
+        @if (caption()) {
+          <caption [class.table__visually-hidden]="captionHidden()">
+            {{
+              caption()
+            }}
+          </caption>
+        }
+
+        @if (showHeader()) {
+          <thead>
+            <tr>
+              @if (selectable()) {
+                <th class="table__cell table__cell--selection" scope="col">
+                  @if (selectionMode() === 'multiple') {
+                    <input
+                      type="checkbox"
+                      class="table__checkbox"
+                      aria-label="Selecionar todas as linhas visíveis"
+                      [checked]="allVisibleSelected()"
+                      [indeterminate]="partiallySelected()"
+                      (change)="onToggleAll($any($event.target).checked)"
+                    />
+                  } @else {
+                    <span class="table__visually-hidden">Seleção</span>
+                  }
+                </th>
+              }
+
+              @for (column of visibleColumns(); track trackColumn($index, column)) {
+                <th
+                  [class]="getColumnClass(column)"
+                  [ngStyle]="getColumnStyle(column)"
+                  scope="col"
+                  [attr.aria-sort]="getAriaSort(column)"
+                >
+                  @if (column.sortable) {
+                    <button
+                      type="button"
+                      class="table__sort-button"
+                      [attr.aria-label]="column.ariaLabel || getSortLabel(column)"
+                      (click)="onSort(column)"
+                    >
+                      <span>{{ column.header }}</span>
+                      <span class="material-icons-outlined table__sort-icon" aria-hidden="true">
+                        {{ getSortIcon(column) }}
+                      </span>
+                    </button>
+                  } @else {
+                    <span class="table__header-content">{{ column.header }}</span>
+                  }
+                </th>
+              }
+            </tr>
+          </thead>
+        }
+
+        <tbody>
+          @for (row of rows(); track trackRow($index, row); let rowIndex = $index) {
+            <tr
+              class="table__row"
+              [class.table__row--selected]="isSelected(row, rowIndex)"
+              [attr.role]="getRowRole()"
+              [attr.tabindex]="getRowTabIndex()"
+              [attr.aria-label]="getRowAriaLabel(row, rowIndex)"
+              (click)="onRowClick(row, $event)"
+              (keydown)="onRowKeydown(row, $event)"
+            >
+              @if (selectable()) {
+                <td class="table__cell table__cell--selection">
+                  <input
+                    type="checkbox"
+                    class="table__checkbox"
+                    [attr.aria-label]="'Selecionar linha ' + (rowIndex + 1)"
+                    [checked]="isSelected(row, rowIndex)"
+                    (click)="$event.stopPropagation()"
+                    (change)="onSelectionToggle(row, rowIndex, $any($event.target).checked)"
+                  />
+                </td>
+              }
+
+              @for (column of visibleColumns(); track trackColumn($index, column)) {
+                <td [class]="getColumnClass(column)" [ngStyle]="getColumnStyle(column)">
+                  @if (getCellTemplate(column); as cellTemplate) {
+                    <ng-container
+                      [ngTemplateOutlet]="cellTemplate"
+                      [ngTemplateOutletContext]="getCellContext(row, column, rowIndex)"
+                    />
+                  } @else {
+                    {{ getDisplayValue(row, column) }}
+                  }
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}

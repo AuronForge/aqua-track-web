@@ -62,6 +62,7 @@ Seções recomendadas, na ordem: descrição → como usar (import + snippet) �
 | `aq-info-card`                      | `info-card/`                                       | `/components/info-card`            | `pages/info-card/info-card-showcase.component.ts`               |
 | `aq-info-list`                      | `info-list/`                                       | `/components/info-list`            | `pages/info-list/info-list-showcase.component.ts`               |
 | `aq-info-list-item`                 | `info-list-item/`                                  | `/components/info-list-item`       | `pages/info-list-item/info-list-item-showcase.component.ts`     |
+| `aq-table`                          | `table/`                                           | `/components/table`                | `pages/table/table-showcase.component.ts`                       |
 | `app-nav-menu`                      | `nav-menu/`                                        | `/components/menu`                 | `pages/nav-menu/nav-menu-showcase.component.ts`                 |
 | `aq-modal`                          | `modal/`                                           | `/components/modal`                | `pages/modal/modal-showcase.component.ts`                       |
 | `aq-photo-upload`                   | `photo-upload/`                                    | `/components/photo-upload`         | `pages/photo-upload/photo-upload-showcase.component.ts`         |

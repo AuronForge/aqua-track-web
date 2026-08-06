@@ -1,0 +1,218 @@
+<section class="showcase__section">
+  <h2 class="showcase__section-title">Table</h2>
+  <p class="showcase__section-desc">
+    Tabela generica para dados estruturados, historicos e listagens administrativas. O componente
+    cuida de estrutura, estados, ordenacao, selecao, responsividade e acessibilidade; conteudos
+    especificos ficam com o consumidor via templates.
+  </p>
+
+  <h3 class="showcase__group-title">Como usar</h3>
+  <div class="showcase__usage">
+    <aq-code-block language="typescript" [code]="codeTs" />
+    <aq-code-block language="html" [code]="codeHtml" />
+  </div>
+
+  <h3 class="showcase__group-title">Propriedades</h3>
+  <div class="showcase__props">
+    <table class="showcase__props-table">
+      <thead>
+        <tr>
+          <th>Input / Output</th>
+          <th>Tipo</th>
+          <th>Padrao</th>
+          <th>Descricao</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="showcase__props-name">rows</span></td>
+          <td><span class="showcase__props-type">readonly T[]</span></td>
+          <td><span class="showcase__props-default">required</span></td>
+          <td>Registros renderizados pela tabela.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">columns</span></td>
+          <td><span class="showcase__props-type">AqTableColumn&lt;T&gt;[]</span></td>
+          <td><span class="showcase__props-default">required</span></td>
+          <td>Configuracao de colunas, alinhamento, largura, ordenacao e prioridade responsiva.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">sort</span></td>
+          <td><span class="showcase__props-type">AqTableSort | null</span></td>
+          <td><span class="showcase__props-default">null</span></td>
+          <td>Estado de ordenacao controlado externamente.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">selectable</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">false</span></td>
+          <td>Habilita coluna de checkbox com selecao unica ou multipla.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">rowClickable</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">false</span></td>
+          <td>Torna linhas acionaveis por mouse, Enter e Space.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">density</span></td>
+          <td><span class="showcase__props-type">'comfortable' | 'compact'</span></td>
+          <td><span class="showcase__props-default">'comfortable'</span></td>
+          <td>Controla a altura das linhas sem remover foco ou area minima de interacao.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">sortChange</span></td>
+          <td><span class="showcase__props-type">AqTableSort | null</span></td>
+          <td><span class="showcase__props-default">output</span></td>
+          <td>Emitido quando uma coluna ordenavel e acionada.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="showcase__group-title">Historico de medicoes com celulas personalizadas</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded showcase__card-stage--block"
+      >
+        <aq-table
+          [rows]="measurements"
+          [columns]="columns"
+          rowId="id"
+          caption="Historico de medicoes do Community Tank"
+          [sort]="sort()"
+          [rowClickable]="true"
+          [rowAriaLabel]="rowLabel"
+          (sortChange)="onSortChange($event)"
+          (rowClick)="onRowClick($event)"
+        >
+          <ng-template aqTableCell="date" let-row>
+            <span class="table-showcase__date">
+              <strong>{{ row.date }}</strong>
+              <span>{{ row.time }}</span>
+            </span>
+          </ng-template>
+
+          <ng-template aqTableCell="value" let-row>
+            <strong>{{ row.value }}</strong>
+            @if (row.unit) {
+              <span class="table-showcase__unit">{{ row.unit }}</span>
+            }
+          </ng-template>
+
+          <ng-template aqTableCell="status" let-row>
+            <aq-badge size="small" variant="tinted" [color]="getStatusColor(row.status)">{{
+              getStatusLabel(row.status)
+            }}</aq-badge>
+          </ng-template>
+
+          <ng-template aqTableCell="trend" let-row>
+            <span class="table-showcase__trend" [attr.aria-label]="getTrendLabel(row.trend)">
+              <span class="material-icons-outlined" aria-hidden="true">
+                {{ getTrendIcon(row.trend) }}
+              </span>
+            </span>
+          </ng-template>
+        </aq-table>
+
+        @if (clickedRow()) {
+          <p class="showcase__event-log">
+            Linha clicada: <strong>{{ clickedRow()!.parameter }}</strong>
+          </p>
+        }
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Selecao, acoes e densidade compacta</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded showcase__card-stage--block"
+      >
+        <aq-table
+          [rows]="measurements.slice(0, 4)"
+          [columns]="actionColumns"
+          rowId="id"
+          density="compact"
+          [selectable]="true"
+          [selectedRows]="selectedRows()"
+          (selectionChange)="onSelectionChange($event)"
+        >
+          <ng-template aqTableCell="status" let-row>
+            <aq-badge size="small" variant="tinted" [color]="getStatusColor(row.status)">
+              {{ getStatusLabel(row.status) }}
+            </aq-badge>
+          </ng-template>
+
+          <ng-template aqTableCell="actions" let-row>
+            <app-dropdown-menu
+              [items]="actionItems"
+              [showChevron]="false"
+              (itemClick)="onAction(row, $event)"
+            >
+              <span slot="trigger" class="material-icons" aria-hidden="true">more_horiz</span>
+              <span slot="trigger" class="table-showcase__sr">Acoes</span>
+            </app-dropdown-menu>
+          </ng-template>
+        </aq-table>
+
+        <p class="showcase__event-log">
+          Selecionadas: <strong>{{ selectedRows().length }}</strong>
+          @if (lastAction()) {
+            <span>
+              | Ultima acao: <strong>{{ lastAction() }}</strong></span
+            >
+          }
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Estados</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <div class="table-showcase__states">
+        <aq-table [rows]="measurements" [columns]="columns" [loading]="true" [skeletonRows]="3" />
+        <aq-table
+          [rows]="[]"
+          [columns]="columns"
+          [emptyState]="{
+            title: 'Nenhuma medicao registrada',
+            description: 'Quando houver dados, eles aparecerao aqui.',
+            icon: 'science',
+          }"
+        />
+        <aq-table
+          [rows]="measurements"
+          [columns]="columns"
+          [errorState]="{
+            title: 'Nao foi possivel carregar a tabela',
+            description: 'Tente novamente em alguns instantes.',
+            actionLabel: 'Tentar novamente',
+            icon: 'error',
+          }"
+          (retry)="lastAction.set('Retry solicitado')"
+        />
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Responsiva com muitas colunas</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded showcase__card-stage--block"
+      >
+        <aq-table
+          [rows]="measurements"
+          [columns]="wideColumns"
+          rowId="id"
+          caption="Tabela responsiva com prioridades de coluna"
+          [stickyHeader]="true"
+        />
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,6 +1,6 @@
 # Design System AquaTrack Web — Documento Único de Contexto para IA
 
-> Este arquivo consolida toda a documentação do design system (`docs/design-system/`) em um único documento, pensado para ser fornecido como contexto a uma IA geradora de código/telas. Ele cobre: tema (tokens visuais), padrões de acessibilidade (WCAG), regra de showcase, e a especificação completa de cada um dos 27 componentes de `src/app/shared/components/`.
+> Este arquivo consolida toda a documentação do design system (`docs/design-system/`) em um único documento, pensado para ser fornecido como contexto a uma IA geradora de código/telas. Ele cobre: tema (tokens visuais), padrões de acessibilidade (WCAG), regra de showcase, e a especificação completa de cada um dos 28 componentes de `src/app/shared/components/`.
 
 > Fonte: gerado a partir dos arquivos individuais em `docs/design-system/`. Qualquer atualização de componente, tema ou regra de acessibilidade deve ser refletida tanto nos arquivos individuais quanto neste documento consolidado.
 
@@ -10,7 +10,7 @@
 2. Tema (Design Tokens)
 3. Acessibilidade (WCAG)
 4. Regra de Showcase
-5. Especificação dos Componentes (27 componentes)
+5. Especificação dos Componentes (28 componentes)
 
 ---
 
@@ -56,6 +56,7 @@ Documentação de referência do design system do AquaTrack (`aqua-track-web`), 
 | Settings Card                  | Layout/Container  | [`components/settings-card.md`](./components/settings-card.md)               | ⚠️ pendente                           |
 | Switch                         | Formulário        | [`components/switch.md`](./components/switch.md)                             | ⚠️ pendente                           |
 | Tabs                           | Navegação         | [`components/tabs.md`](./components/tabs.md)                                 | ✅ `/components/tabs`                 |
+| Table                          | Exibição de dados | [`components/table.md`](./components/table.md)                               | ✅ `/components/table`                |
 | Toolbar                        | Navegação/Layout  | [`components/toolbar.md`](./components/toolbar.md)                           | ✅ `/components/toolbar`              |
 
 ✅ = possui showcase publicado e registrado em rota. ⚠️ = componente existe e está em uso (ou disponível), mas ainda não tem página de showcase — ver `showcase-guidelines.md` para o checklist de criação.
@@ -2470,3 +2471,102 @@ em `writeValue`.
 ### Dependências internas
 
 `LanguageService`, `FormfieldErrorMessages` e tokens do tema em `src/app/shared/theme/`.
+
+---
+
+## 5.28. Table
+
+### Visão geral
+
+Tabela genérica do Design System para exibir dados estruturados em históricos, listagens
+administrativas e telas operacionais. O componente é agnóstico ao domínio: não busca dados, não
+formata unidades, não calcula status e não conhece endpoints. O consumidor fornece registros,
+colunas e templates quando precisar de conteúdo especializado.
+
+### Localização
+
+`src/app/shared/components/table/` — componente, diretiva de célula e modelos auxiliares.
+
+### Seletores
+
+- `aq-table`
+- `ng-template[aqTableCell]`
+
+### Decisão arquitetural
+
+Usa HTML semântico nativo (`table`, `thead`, `tbody`, `tr`, `th`, `td`) em vez de Angular Material,
+porque o projeto não adota Material como biblioteca de componentes. Ordenação, seleção, filtros e
+paginação são controlados pelo consumidor, permitindo uso local ou remoto sem acoplamento com API.
+
+### API
+
+#### Inputs
+
+| Nome            | Tipo                                                  | Padrão                         | Descrição                                                         |
+| --------------- | ----------------------------------------------------- | ------------------------------ | ----------------------------------------------------------------- |
+| `rows`          | `readonly T[]`                                        | obrigatório                    | Registros renderizados.                                           |
+| `columns`       | `readonly AqTableColumn<T>[]`                         | obrigatório                    | Colunas, alinhamento, largura, ordenação e prioridade responsiva. |
+| `rowId`         | `keyof T \| (row, index) => string \| number \| null` | `null`                         | Identificador estável para trackBy e seleção.                     |
+| `caption`       | `string`                                              | `''`                           | Caption semântico da tabela.                                      |
+| `captionHidden` | `boolean`                                             | `true`                         | Mantém o caption apenas para leitores de tela.                    |
+| `ariaLabel`     | `string`                                              | `''`                           | Nome acessível alternativo quando não houver caption.             |
+| `loading`       | `boolean`                                             | `false`                        | Exibe skeleton preservando a estrutura da tabela.                 |
+| `loadingLabel`  | `string`                                              | `'Carregando dados da tabela'` | Texto anunciado em loading.                                       |
+| `skeletonRows`  | `number`                                              | `5`                            | Quantidade de linhas skeleton.                                    |
+| `emptyState`    | `AqTableState`                                        | título padrão                  | Estado vazio customizável.                                        |
+| `errorState`    | `AqTableState \| null`                                | `null`                         | Estado de erro customizável.                                      |
+| `sort`          | `AqTableSort \| null`                                 | `null`                         | Ordenação atual, controlada externamente.                         |
+| `selectable`    | `boolean`                                             | `false`                        | Exibe coluna de seleção.                                          |
+| `selectionMode` | `'single' \| 'multiple'`                              | `'multiple'`                   | Define seleção única ou múltipla.                                 |
+| `selectedRows`  | `readonly T[]`                                        | `[]`                           | Seleção atual, controlada externamente.                           |
+| `rowClickable`  | `boolean`                                             | `false`                        | Torna linhas acionáveis por mouse, Enter e Space.                 |
+| `rowAriaLabel`  | `(row, index) => string \| null`                      | `null`                         | Nome acessível de linhas clicáveis.                               |
+| `density`       | `'comfortable' \| 'compact'`                          | `'comfortable'`                | Densidade visual das linhas.                                      |
+| `stickyHeader`  | `boolean`                                             | `false`                        | Mantém cabeçalho fixo dentro da área rolável.                     |
+| `showHeader`    | `boolean`                                             | `true`                         | Exibe ou oculta `thead`.                                          |
+
+#### Outputs
+
+| Nome              | Tipo                  | Quando dispara                                       |
+| ----------------- | --------------------- | ---------------------------------------------------- |
+| `sortChange`      | `AqTableSort \| null` | Ao acionar uma coluna ordenável.                     |
+| `rowClick`        | `T`                   | Ao acionar uma linha clicável.                       |
+| `selectionChange` | `readonly T[]`        | Ao selecionar uma linha ou todas as linhas visíveis. |
+| `retry`           | `void`                | Ao acionar a ação do estado de erro.                 |
+
+### Templates de células
+
+Use `ng-template aqTableCell="key"` para badges, ícones, menus, data em duas linhas, valores com
+unidade ou componentes do Design System. O contexto do template contém `$implicit`, `row`, `column`,
+`value` e `index`.
+
+### Ordenação
+
+Colunas com `sortable: true` renderizam botão no cabeçalho, atualizam `aria-sort` e emitem
+`sortChange`. O ciclo é ascendente, descendente e sem ordenação. A tabela não reordena os dados
+internamente.
+
+### Seleção
+
+A seleção é opcional. Em `multiple`, o cabeçalho exibe checkbox para selecionar todas as linhas
+visíveis e estado indeterminado. Em `single`, cada checkbox emite no máximo uma linha selecionada.
+
+### Estados
+
+Loading usa skeleton e `aria-busy`; vazio e erro recebem título, descrição e ícone opcional; erro
+pode emitir `retry`.
+
+### Responsividade
+
+A estratégia padrão é rolagem horizontal com largura mínima. Colunas `optional` são ocultadas antes
+das `secondary` em telas menores; colunas `primary` permanecem visíveis.
+
+### Acessibilidade
+
+Estrutura nativa de tabela, `scope="col"`, caption visível ou oculto, `aria-sort`, botões nativos no
+cabeçalho ordenável, foco visível e linhas clicáveis com `role="button"`, `tabindex="0"` e
+Enter/Space. Status e tendências devem ter texto ou `aria-label` no template consumidor.
+
+### Showcase
+
+`/components/table` → `src/app/features/components-showcase/pages/table/table-showcase.component.ts`
