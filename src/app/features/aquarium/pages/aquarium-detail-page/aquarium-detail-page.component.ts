@@ -15,7 +15,7 @@ import { Location } from '@angular/common';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Observable, of, startWith } from 'rxjs';
+import { EMPTY, Observable, debounceTime, distinctUntilChanged, map, startWith, tap } from 'rxjs';
 
 import { PageTitleService } from '../../../../core/page-title/page-title.service';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
@@ -27,6 +27,8 @@ import {
 } from '../../../../shared/components/formfields/datepicker-formfield/datepicker-range.directive';
 import { DatepickerFormfieldComponent } from '../../../../shared/components/formfields/datepicker-formfield/datepicker-formfield.component';
 import { SearchFormfieldComponent } from '../../../../shared/components/formfields/search-formfield/search-formfield.component';
+import { PaginatorChange } from '../../../../shared/components/paginator/paginator-change.model';
+import { PaginatorComponent } from '../../../../shared/components/paginator/paginator.component';
 import { SelectFormfieldOption } from '../../../../shared/components/formfields/select-formfield/select-formfield-option.model';
 import { SelectFormfieldComponent } from '../../../../shared/components/formfields/select-formfield/select-formfield.component';
 import {
@@ -39,12 +41,13 @@ import { TabComponent, TabsComponent } from '../../../../shared/components/tabs'
 import { FeedbackMessageService } from '../../../../shared/services/feedback-message.service';
 import { ModalService } from '../../../../shared/services/modal.service';
 import { AddMeasurementModalComponent } from '../../components/add-measurement-modal/add-measurement-modal.component';
+import { ApplicationQuery, MeasurementQuery } from '../../models/aquarium-operational-api.dto';
 import {
   AquariumDetailAquaticLife,
   AquariumDetailApplication,
   AquariumDetailLoadStatus,
   AquariumDetailMeasurement,
-  AquariumDetailParameter,
+  AquariumResourceStatus,
   AquariumDetailTabId,
   AquariumDetailViewModel,
   NewAquariumMeasurementPayload,
@@ -57,15 +60,6 @@ const TAB_IDS: readonly AquariumDetailTabId[] = [
   'applications',
   'aquatic-life',
 ];
-
-const todayInputDate = (): string => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
-
-  return `${year}-${month}-${day}`;
-};
 
 type DateFilterValue = string | DatepickerRangeValue;
 
@@ -80,6 +74,7 @@ type DateFilterValue = string | DatepickerRangeValue;
     DatepickerRangeDirective,
     DatepickerFormfieldComponent,
     FilterBarComponent,
+    PaginatorComponent,
     ReactiveFormsModule,
     RouterLink,
     SearchFormfieldComponent,
@@ -97,20 +92,29 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
   private readonly location = inject(Location);
   private readonly destroyRef = inject(DestroyRef);
   private readonly pageTitleService = inject(PageTitleService);
-  private readonly modalService = inject(ModalService);
   private readonly feedbackMessageService = inject(FeedbackMessageService);
+  private readonly modalService = inject(ModalService);
   private readonly aquariumDetailDataService = inject(AquariumDetailDataService);
 
   protected readonly status = signal<AquariumDetailLoadStatus>('loading');
+  protected readonly overviewStatus = signal<AquariumResourceStatus>('idle');
+  protected readonly measurementsStatus = signal<AquariumResourceStatus>('idle');
+  protected readonly applicationsStatus = signal<AquariumResourceStatus>('idle');
   protected readonly detail = signal<AquariumDetailViewModel | null>(null);
   protected readonly activeTabId = signal<AquariumDetailTabId>('overview');
   protected readonly measurementSort = signal<AqTableSort | null>(null);
+  protected readonly applicationSort = signal<AqTableSort | null>(null);
+  protected readonly measurementsPageIndex = signal(0);
+  protected readonly measurementsPageSize = signal(10);
+  protected readonly applicationsPageIndex = signal(0);
+  protected readonly applicationsPageSize = signal(10);
+  private readonly loadedMeasurements = signal(false);
+  private readonly loadedApplications = signal(false);
   private readonly toolbarContentTemplate = viewChild<TemplateRef<unknown>>('toolbarContent');
 
   protected readonly filtersForm = new FormGroup({
     date: new FormControl<DateFilterValue>('', { nonNullable: true }),
     parameter: new FormControl<string[]>([], { nonNullable: true }),
-    status: new FormControl<string[]>([], { nonNullable: true }),
   });
   private readonly filtersValue = toSignal(
     this.filtersForm.valueChanges.pipe(startWith(this.filtersForm.getRawValue())),
@@ -119,7 +123,7 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
   protected readonly hasMeasurementFilters = computed(() => {
     const filters = this.filtersValue();
 
-    return Boolean(filters.date || filters.parameter?.length || filters.status?.length);
+    return Boolean(filters.date || filters.parameter?.length);
   });
   protected readonly aquaticLifeFiltersForm = new FormGroup({
     name: new FormControl('', { nonNullable: true }),
@@ -138,7 +142,7 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
     return Boolean(filters.name || filters.scientificName || filters.type);
   });
   protected readonly applicationFiltersForm = new FormGroup({
-    date: new FormControl<DateFilterValue>(todayInputDate(), { nonNullable: true }),
+    date: new FormControl<DateFilterValue>('', { nonNullable: true }),
     productName: new FormControl('', { nonNullable: true }),
     type: new FormControl<string | null>(null),
   });
@@ -164,14 +168,31 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
       priority: 'primary',
     },
     { key: 'value', header: 'Valor', sortable: true, minWidth: '8rem', priority: 'primary' },
-    { key: 'status', header: 'Status', sortable: true, minWidth: '8rem', priority: 'secondary' },
     { key: 'trend', header: 'Tendência', minWidth: '8rem', priority: 'secondary' },
   ];
   protected readonly applicationColumns: readonly AqTableColumn<AquariumDetailApplication>[] = [
-    { key: 'date', header: 'Data', minWidth: '11rem', priority: 'primary' },
-    { key: 'productName', header: 'Produto', property: 'productName', minWidth: '11rem' },
-    { key: 'productType', header: 'Tipo', property: 'productType', minWidth: '12rem' },
-    { key: 'doseLabel', header: 'Dose', property: 'doseLabel', minWidth: '8rem' },
+    { key: 'date', header: 'Data', sortable: true, minWidth: '11rem', priority: 'primary' },
+    {
+      key: 'productName',
+      header: 'Produto',
+      property: 'productName',
+      sortable: true,
+      minWidth: '11rem',
+    },
+    {
+      key: 'productType',
+      header: 'Tipo',
+      property: 'productType',
+      sortable: true,
+      minWidth: '12rem',
+    },
+    {
+      key: 'doseLabel',
+      header: 'Dose',
+      property: 'doseLabel',
+      sortable: true,
+      minWidth: '8rem',
+    },
     {
       key: 'notes',
       header: 'Observações',
@@ -206,23 +227,13 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
   ];
 
   protected readonly parameterOptions = computed<SelectFormfieldOption[]>(() =>
-    (this.detail()?.parameters ?? []).map((parameter) => ({
+    (this.detail()?.waterParameters ?? []).map((parameter) => ({
       id: parameter.key,
-      title: parameter.shortLabel,
-      subtitle: parameter.label,
-      icon: parameter.icon,
+      title: parameter.name,
+      subtitle: parameter.defaultUnit ? `Unidade: ${parameter.defaultUnit}` : undefined,
+      icon: 'science',
     })),
   );
-  protected readonly statusOptions = computed<SelectFormfieldOption[]>(() => {
-    const measurements = this.detail()?.measurements ?? [];
-    const labels = Array.from(new Set(measurements.map((measurement) => measurement.statusLabel)));
-
-    return labels.map((label) => ({
-      id: label,
-      title: label,
-      icon: 'verified',
-    }));
-  });
   protected readonly aquaticLifeTypeOptions = computed<SelectFormfieldOption[]>(() => {
     const types = Array.from(
       new Set((this.detail()?.aquaticLife ?? []).map((life) => life.typeLabel)),
@@ -247,30 +258,11 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
   });
 
   protected readonly filteredMeasurements = computed(() => {
-    const detail = this.detail();
-    const filters = this.filtersValue();
-
-    if (!detail) {
-      return [];
-    }
-
-    const filtered = detail.measurements.filter((measurement) => {
-      const matchesDate = this.matchesDateFilter(measurement.measuredAt, filters.date);
-      const matchesParameter = filters.parameter?.length
-        ? filters.parameter.includes(measurement.parameterKey)
-        : true;
-      const matchesStatus = filters.status?.length
-        ? filters.status.includes(measurement.statusLabel)
-        : true;
-
-      return matchesDate && matchesParameter && matchesStatus;
-    });
-
-    return this.sortMeasurements(filtered, this.measurementSort());
+    return this.detail()?.measurements ?? [];
   });
 
   protected readonly applicationsCaption = computed(() => {
-    const count = this.filteredApplications().length;
+    const count = this.detail()?.applicationsPagination.totalItems ?? 0;
     return count === 1 ? '1 aplicação registrada' : `${count} aplicações registradas`;
   });
   protected readonly aquaticLifeCaption = computed(() => {
@@ -299,50 +291,12 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
     });
   });
   protected readonly filteredApplications = computed(() => {
-    const detail = this.detail();
-    const filters = this.applicationFiltersValue();
-
-    if (!detail) {
-      return [];
-    }
-
-    const productName = this.normalizeFilterText(filters.productName);
-
-    return detail.applications.filter((application) => {
-      const matchesDate = this.matchesDateFilter(application.appliedAt, filters.date);
-      const matchesProductName = productName
-        ? this.normalizeFilterText(application.productName).includes(productName)
-        : true;
-      const matchesType = filters.type ? application.productType === filters.type : true;
-
-      return matchesDate && matchesProductName && matchesType;
-    });
+    return this.detail()?.applications ?? [];
   });
   protected readonly recentApplications = computed(
     () => this.detail()?.applications.slice(0, 5) ?? [],
   );
-  protected readonly recentParameters = computed(() => {
-    const detail = this.detail();
-
-    if (!detail) {
-      return [];
-    }
-
-    const parametersByKey = new Map(
-      detail.parameters.map((parameter) => [parameter.key, parameter] as const),
-    );
-    const recentKeys = Array.from(
-      new Set(
-        [...detail.measurements]
-          .sort((left, right) => right.measuredAt.localeCompare(left.measuredAt))
-          .map((measurement) => measurement.parameterKey.toLocaleLowerCase('en-US')),
-      ),
-    ).slice(0, 6);
-
-    return recentKeys
-      .map((key) => parametersByKey.get(key))
-      .filter((parameter): parameter is AquariumDetailParameter => Boolean(parameter));
-  });
+  protected readonly recentParameters = computed(() => this.detail()?.parameters ?? []);
   protected readonly parameterAlerts = computed(() => {
     const detail = this.detail();
 
@@ -350,24 +304,12 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
       return [];
     }
 
-    const latestMeasurementsByParameter = new Map<string, AquariumDetailMeasurement>();
-
-    [...detail.measurements]
-      .sort((left, right) => right.measuredAt.localeCompare(left.measuredAt))
-      .forEach((measurement) => {
-        const key = measurement.parameterKey.toLocaleLowerCase('en-US');
-
-        if (!latestMeasurementsByParameter.has(key)) {
-          latestMeasurementsByParameter.set(key, measurement);
-        }
-      });
-
-    return Array.from(latestMeasurementsByParameter.values()).filter(
-      (measurement) => measurement.statusColor !== 'success',
+    return detail.parameters.filter(
+      (parameter) => parameter.statusColor === 'warning' || parameter.statusColor === 'error',
     );
   });
   protected readonly filteredMeasurementsCaption = computed(() => {
-    const count = this.filteredMeasurements().length;
+    const count = this.detail()?.measurementsPagination.totalItems ?? 0;
     return count === 1 ? '1 medição exibida' : `${count} medições exibidas`;
   });
 
@@ -384,9 +326,37 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
       }
     });
 
-    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-      this.loadAquarium(params.get('uuid'));
-    });
+    this.route.paramMap
+      .pipe(
+        map((params) => params.get('uuid')),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((aquariumId) => {
+        this.loadAquarium(aquariumId);
+      });
+
+    this.filtersForm.valueChanges
+      .pipe(debounceTime(250), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        if (!this.loadedMeasurements()) {
+          return;
+        }
+
+        this.measurementsPageIndex.set(0);
+        this.loadMeasurements();
+      });
+
+    this.applicationFiltersForm.valueChanges
+      .pipe(debounceTime(250), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        if (!this.loadedApplications()) {
+          return;
+        }
+
+        this.applicationsPageIndex.set(0);
+        this.loadApplications();
+      });
   }
 
   ngAfterViewInit(): void {
@@ -403,6 +373,7 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
     }
 
     this.activeTabId.set(tabId);
+    this.ensureTabData(tabId);
     void this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { tab: tabId },
@@ -424,7 +395,6 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
     this.filtersForm.reset({
       date: '',
       parameter: [],
-      status: [],
     });
   }
 
@@ -457,7 +427,7 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
       closeOnEscape: true,
       contentComponent: AddMeasurementModalComponent,
       contentComponentInputs: {
-        parameters: detail.parameters,
+        parameters: detail.waterParameters,
         submitMeasurement: this.addMeasurement,
       },
     });
@@ -487,45 +457,56 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
 
   protected onMeasurementSortChange(sort: AqTableSort | null): void {
     this.measurementSort.set(sort);
+    this.measurementsPageIndex.set(0);
+    this.loadMeasurements();
+  }
+
+  protected onApplicationSortChange(sort: AqTableSort | null): void {
+    this.applicationSort.set(sort);
+    this.applicationsPageIndex.set(0);
+    this.loadApplications();
+  }
+
+  protected onMeasurementsPageChange(change: PaginatorChange): void {
+    this.measurementsPageIndex.set(change.pageIndex);
+    this.measurementsPageSize.set(change.pageSize);
+    this.loadMeasurements();
+  }
+
+  protected onApplicationsPageChange(change: PaginatorChange): void {
+    this.applicationsPageIndex.set(change.pageIndex);
+    this.applicationsPageSize.set(change.pageSize);
+    this.loadApplications();
   }
 
   private readonly addMeasurement = (payload: NewAquariumMeasurementPayload): Observable<void> => {
     const detail = this.detail();
 
     if (!detail) {
-      return of(void 0);
+      return EMPTY;
     }
 
-    const parameter = detail.parameters.find((item) => item.key === payload.parameterKey);
+    return this.aquariumDetailDataService
+      .createAquariumMeasurement(detail.id, {
+        waterParameter: payload.parameterKey,
+        value: payload.value,
+        measuredAt: this.combineDateAndTime(payload.date, payload.time),
+        notes: payload.notes,
+      })
+      .pipe(
+        tap(() => {
+          this.feedbackMessageService.showSuccess('Medição adicionada com sucesso.', {
+            hasIcon: true,
+            horizontalPosition: 'top',
+            verticalPosition: 'end',
+          });
+          this.refreshOverview();
 
-    if (!parameter) {
-      return of(void 0);
-    }
-
-    const measuredAt = `${payload.date}T${payload.time}:00`;
-    const measurement = this.buildMeasurement(parameter, payload.value, measuredAt);
-    const updatedParameters = detail.parameters.map((item) =>
-      item.key === parameter.key
-        ? {
-            ...item,
-            value: payload.value,
-            valueLabel: this.formatValue(payload.value, item.unit),
+          if (this.loadedMeasurements()) {
+            this.loadMeasurements();
           }
-        : item,
-    );
-
-    this.detail.set({
-      ...detail,
-      parameters: updatedParameters,
-      measurements: [measurement, ...detail.measurements],
-    });
-    this.feedbackMessageService.showSuccess('Medição adicionada com sucesso.', {
-      hasIcon: true,
-      horizontalPosition: 'top',
-      verticalPosition: 'end',
-    });
-
-    return of(void 0);
+        }),
+      );
   };
 
   private loadAquarium(aquariumId: string | null): void {
@@ -536,6 +517,11 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
     }
 
     this.status.set('loading');
+    this.overviewStatus.set('loading');
+    this.measurementsStatus.set('idle');
+    this.applicationsStatus.set('idle');
+    this.loadedMeasurements.set(false);
+    this.loadedApplications.set(false);
     this.detail.set(null);
 
     this.aquariumDetailDataService
@@ -545,55 +531,231 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
         next: (detail) => {
           this.detail.set(detail);
           this.status.set(detail ? 'ready' : 'not-found');
+          this.overviewStatus.set(detail ? 'ready' : 'idle');
+
+          if (detail) {
+            this.ensureTabData(this.activeTabId());
+
+            if (this.activeTabId() !== 'applications') {
+              this.loadRecentApplications();
+            }
+          }
         },
         error: () => {
           this.detail.set(null);
           this.status.set('error');
+          this.overviewStatus.set('error');
         },
       });
   }
 
-  private buildMeasurement(
-    parameter: AquariumDetailParameter,
-    value: number,
-    measuredAt: string,
-  ): AquariumDetailMeasurement {
-    const measuredDate = new Date(measuredAt);
+  private ensureTabData(tabId: AquariumDetailTabId): void {
+    if (tabId === 'measurements' && !this.loadedMeasurements()) {
+      this.loadMeasurements();
+    }
+
+    if (tabId === 'applications' && !this.loadedApplications()) {
+      this.loadApplications();
+    }
+  }
+
+  private refreshOverview(): void {
+    const detail = this.detail();
+
+    if (!detail) {
+      return;
+    }
+
+    this.overviewStatus.set('loading');
+    this.aquariumDetailDataService
+      .getAquariumOverview(detail.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (overview) => {
+          this.detail.update((current) =>
+            current
+              ? {
+                  ...current,
+                  summary: {
+                    ...current.summary,
+                    healthPercent: overview.summary.healthPercent,
+                    healthScoreLabel: overview.summary.healthScoreLabel,
+                    healthStatus: overview.summary.healthStatus,
+                    healthStatusLabel: overview.summary.healthStatusLabel,
+                    healthStatusColor: overview.summary.healthStatusColor,
+                  },
+                  parameters: overview.parameters,
+                }
+              : current,
+          );
+          this.overviewStatus.set('ready');
+        },
+        error: () => {
+          this.overviewStatus.set('error');
+        },
+      });
+  }
+
+  private loadMeasurements(): void {
+    const detail = this.detail();
+
+    if (!detail) {
+      return;
+    }
+
+    this.measurementsStatus.set('loading');
+    this.loadedMeasurements.set(true);
+    this.aquariumDetailDataService
+      .listAquariumMeasurements(detail.id, this.buildMeasurementQuery(), detail.waterParameters)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ({ measurements, pagination }) => {
+          this.detail.update((current) =>
+            current ? { ...current, measurements, measurementsPagination: pagination } : current,
+          );
+          this.measurementsStatus.set('ready');
+        },
+        error: () => {
+          this.measurementsStatus.set('error');
+        },
+      });
+  }
+
+  private loadRecentApplications(): void {
+    const detail = this.detail();
+
+    if (!detail) {
+      return;
+    }
+
+    this.aquariumDetailDataService
+      .listAquariumApplications(detail.id, {
+        page: 1,
+        pageSize: 5,
+        sort: 'appliedAt',
+        direction: 'desc',
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ({ applications, pagination }) => {
+          this.detail.update((current) =>
+            current ? { ...current, applications, applicationsPagination: pagination } : current,
+          );
+        },
+        error: () => {
+          // Aplicações recentes não devem bloquear o carregamento cadastral do aquário.
+        },
+      });
+  }
+
+  private loadApplications(): void {
+    const detail = this.detail();
+
+    if (!detail) {
+      return;
+    }
+
+    this.applicationsStatus.set('loading');
+    this.loadedApplications.set(true);
+    this.aquariumDetailDataService
+      .listAquariumApplications(detail.id, this.buildApplicationQuery())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ({ applications, pagination }) => {
+          this.detail.update((current) =>
+            current ? { ...current, applications, applicationsPagination: pagination } : current,
+          );
+          this.applicationsStatus.set('ready');
+        },
+        error: () => {
+          this.applicationsStatus.set('error');
+        },
+      });
+  }
+
+  private buildMeasurementQuery(): MeasurementQuery {
+    const filters = this.filtersForm.getRawValue();
+    const dateRange = this.toDateQuery(filters.date);
+    const sort = this.measurementSort();
 
     return {
-      id: `local-${Date.now()}`,
-      measuredAt,
-      dateLabel: measuredDate.toLocaleDateString('pt-BR', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      }),
-      timeLabel: measuredDate.toLocaleTimeString('pt-BR', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      }),
-      parameterKey: parameter.key,
-      parameterLabel: parameter.shortLabel,
-      value,
-      unit: parameter.unit,
-      valueLabel: this.formatValue(value, parameter.unit),
-      statusLabel: 'Normal',
-      statusColor: 'success',
-      trend: 'unknown',
-      trendIcon: 'remove',
-      trendLabel: 'Sem dados suficientes',
+      page: this.measurementsPageIndex() + 1,
+      pageSize: this.measurementsPageSize(),
+      parameter: filters.parameter[0],
+      ...dateRange,
+      sort: this.mapMeasurementSortKey(sort?.key),
+      direction: sort?.direction ?? 'desc',
     };
   }
 
-  private formatValue(value: number, unit: string): string {
-    const formatted = Number.isInteger(value) ? String(value) : value.toFixed(1);
+  private buildApplicationQuery(): ApplicationQuery {
+    const filters = this.applicationFiltersForm.getRawValue();
+    const dateRange = this.toDateQuery(filters.date);
+    const sort = this.applicationSort();
 
-    if (!unit) {
-      return formatted;
+    return {
+      page: this.applicationsPageIndex() + 1,
+      pageSize: this.applicationsPageSize(),
+      product: filters.productName || undefined,
+      type: filters.type || undefined,
+      ...dateRange,
+      sort: this.mapApplicationSortKey(sort?.key),
+      direction: sort?.direction ?? 'desc',
+    };
+  }
+
+  private toDateQuery(filter: DateFilterValue | null | undefined): {
+    startDate?: string;
+    endDate?: string;
+  } {
+    if (!filter) {
+      return {};
     }
 
-    return unit === '°C' ? `${formatted} ${unit}` : `${formatted} ${unit}`;
+    if (typeof filter === 'string') {
+      return {
+        startDate: this.startOfLocalDayIso(filter),
+        endDate: this.endOfLocalDayIso(filter),
+      };
+    }
+
+    return {
+      startDate: this.startOfLocalDayIso(filter.start),
+      endDate: this.endOfLocalDayIso(filter.end),
+    };
+  }
+
+  private combineDateAndTime(date: string, time: string): string {
+    return new Date(`${date}T${time}:00`).toISOString();
+  }
+
+  private startOfLocalDayIso(date: string): string {
+    return new Date(`${date}T00:00:00.000`).toISOString();
+  }
+
+  private endOfLocalDayIso(date: string): string {
+    return new Date(`${date}T23:59:59.999`).toISOString();
+  }
+
+  private mapMeasurementSortKey(key: string | undefined): MeasurementQuery['sort'] {
+    const map: Record<string, MeasurementQuery['sort']> = {
+      date: 'measuredAt',
+      parameter: 'parameter',
+      value: 'value',
+    };
+
+    return key ? map[key] : 'measuredAt';
+  }
+
+  private mapApplicationSortKey(key: string | undefined): ApplicationQuery['sort'] {
+    const map: Record<string, ApplicationQuery['sort']> = {
+      date: 'appliedAt',
+      productName: 'productName',
+      productType: 'productType',
+      doseLabel: 'amount',
+    };
+
+    return key ? map[key] : 'appliedAt';
   }
 
   private normalizeFilterText(value: string | null | undefined): string {
@@ -602,20 +764,6 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
       .replace(/[\u0300-\u036f]/g, '')
       .trim()
       .toLocaleLowerCase('pt-BR');
-  }
-
-  private matchesDateFilter(dateTime: string, filter: DateFilterValue | null | undefined): boolean {
-    if (!filter) {
-      return true;
-    }
-
-    const date = dateTime.slice(0, 10);
-
-    if (typeof filter === 'string') {
-      return date === filter;
-    }
-
-    return date >= filter.start && date <= filter.end;
   }
 
   private getAquaticLifeTypeIcon(type: string): string {
@@ -630,35 +778,6 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
     }
 
     return 'set_meal';
-  }
-
-  private sortMeasurements(
-    measurements: readonly AquariumDetailMeasurement[],
-    sort: AqTableSort | null,
-  ): readonly AquariumDetailMeasurement[] {
-    if (!sort) {
-      return measurements;
-    }
-
-    const direction = sort.direction === 'asc' ? 1 : -1;
-
-    return [...measurements].sort((left, right) => {
-      const leftValue = this.getMeasurementSortValue(left, sort.key);
-      const rightValue = this.getMeasurementSortValue(right, sort.key);
-
-      return leftValue.localeCompare(rightValue, 'pt-BR', { numeric: true }) * direction;
-    });
-  }
-
-  private getMeasurementSortValue(measurement: AquariumDetailMeasurement, key: string): string {
-    const values: Record<string, string> = {
-      date: measurement.measuredAt,
-      parameter: measurement.parameterLabel,
-      value: String(measurement.value),
-      status: measurement.statusLabel,
-    };
-
-    return values[key] ?? '';
   }
 
   private isTabId(value: string | null): value is AquariumDetailTabId {

@@ -10,6 +10,7 @@ const config = {
     '!src/app/**/*.spec.ts',
     '!src/app/**/*.routes.ts',
     '!src/app/**/index.ts',
+    '!src/app/**/mocks/**',
     '!src/app/features/components-showcase/**',
     '!src/main.ts',
     '!src/environments/**',

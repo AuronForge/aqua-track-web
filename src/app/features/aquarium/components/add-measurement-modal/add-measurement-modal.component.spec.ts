@@ -2,29 +2,23 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
 import { ModalRef } from '../../../../shared/modal/modal-ref';
-import { AquariumDetailParameter } from '../../models/aquarium-detail.model';
+import { AquariumWaterParameter } from '../../models/aquarium-detail.model';
 import { AddMeasurementModalComponent } from './add-measurement-modal.component';
 
-const parameters: AquariumDetailParameter[] = [
+const parameters: AquariumWaterParameter[] = [
   {
+    id: 'wp-1',
     key: 'ph',
-    label: 'pH',
-    shortLabel: 'pH',
-    icon: 'science',
-    value: 7.2,
-    valueLabel: '7.2',
-    unit: '',
-    tone: 'primary',
+    name: 'pH',
+    category: 'CHEMICAL',
+    defaultUnit: '',
   },
   {
+    id: 'wp-2',
     key: 'nitrate',
-    label: 'NO3',
-    shortLabel: 'NO3',
-    icon: 'water_drop',
-    value: 16,
-    valueLabel: '16 mg/L',
-    unit: 'mg/L',
-    tone: 'success',
+    name: 'Nitrato',
+    category: 'CHEMICAL',
+    defaultUnit: 'mg/L',
   },
 ];
 
@@ -61,7 +55,7 @@ describe('AddMeasurementModalComponent', () => {
     expect(component.parameterOptions()).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ id: 'ph', title: 'pH' }),
-        expect.objectContaining({ id: 'nitrate', title: 'NO3' }),
+        expect.objectContaining({ id: 'nitrate', title: 'Nitrato' }),
       ]),
     );
   });

@@ -52,7 +52,7 @@ export interface CreateAquariumPayload {
   readonly waterType: AquariumWaterType;
   readonly volume: number;
   readonly volumeUnit: AquariumVolumeUnit;
-  readonly setupDate: string;
+  readonly setupDate?: string | null;
   readonly displayPreferences: AquariumDisplayPreferencesValues;
   readonly alertParameters: Record<string, AquariumAlertParameterPreference>;
 }
@@ -67,3 +67,7 @@ export interface AquariumListResponseDto extends CreateAquariumPayload {
   readonly updatedAt: string;
   readonly deletedAt: string | null;
 }
+
+export type AquariumDetailResponseDto = AquariumListResponseDto;
+
+export type UpdateAquariumPayload = CreateAquariumPayload;

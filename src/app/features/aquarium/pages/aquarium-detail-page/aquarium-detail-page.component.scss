@@ -43,7 +43,8 @@
 }
 
 .aquarium-detail-page__card-icon,
-.aquarium-detail-page__parameter-icon {
+.aquarium-detail-page__parameter-icon,
+.aquarium-detail-page__empty-card-icon {
   display: inline-grid;
   width: theme.$aq-size-icon-container-md;
   height: theme.$aq-size-icon-container-md;
@@ -54,7 +55,6 @@
 }
 
 .aquarium-detail-page__time,
-.aquarium-detail-page__empty-inline,
 .aquarium-detail-page__state p {
   color: theme.$aq-color-text-secondary;
   font-size: theme.$aq-font-size-sm;
@@ -145,7 +145,8 @@
 }
 
 .aquarium-detail-page__summary-card,
-.aquarium-detail-page__parameter-card {
+.aquarium-detail-page__parameter-card,
+.aquarium-detail-page__empty-card {
   display: grid;
   gap: theme.$aq-space-sm;
   padding: theme.$aq-space-lg;
@@ -167,6 +168,21 @@
 
 .aquarium-detail-page__parameter-card strong {
   white-space: nowrap;
+}
+
+.aquarium-detail-page__empty-card {
+  justify-items: center;
+  padding: theme.$aq-space-2xl;
+  color: theme.$aq-color-text-secondary;
+  text-align: center;
+}
+
+.aquarium-detail-page__empty-card strong {
+  color: theme.$aq-color-text-primary;
+}
+
+.aquarium-detail-page__empty-card p {
+  margin: 0;
 }
 
 .aquarium-detail-page__alert-list {

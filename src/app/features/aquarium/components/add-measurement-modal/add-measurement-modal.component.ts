@@ -19,7 +19,7 @@ import { TextFormfieldComponent } from '../../../../shared/components/formfields
 import { TextareaFormfieldComponent } from '../../../../shared/components/formfields/textarea-formfield/textarea-formfield.component';
 import { ModalRef } from '../../../../shared/modal/modal-ref';
 import {
-  AquariumDetailParameter,
+  AquariumWaterParameter,
   NewAquariumMeasurementPayload,
 } from '../../models/aquarium-detail.model';
 
@@ -39,7 +39,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddMeasurementModalComponent {
-  readonly parameters = input.required<readonly AquariumDetailParameter[]>();
+  readonly parameters = input.required<readonly AquariumWaterParameter[]>();
   readonly submitMeasurement =
     input.required<(payload: NewAquariumMeasurementPayload) => Observable<void>>();
 
@@ -69,9 +69,9 @@ export class AddMeasurementModalComponent {
   protected readonly parameterOptions = computed<SelectFormfieldOption[]>(() =>
     this.parameters().map((parameter) => ({
       id: parameter.key,
-      title: parameter.label,
-      subtitle: parameter.unit ? `Unidade: ${parameter.unit}` : 'Sem unidade',
-      icon: parameter.icon,
+      title: parameter.name,
+      subtitle: parameter.defaultUnit ? `Unidade: ${parameter.defaultUnit}` : 'Sem unidade',
+      icon: 'science',
     })),
   );
 
@@ -80,7 +80,7 @@ export class AddMeasurementModalComponent {
     return this.parameters().find((parameter) => parameter.key === selectedKey) ?? null;
   });
 
-  protected readonly valueSuffix = computed(() => this.selectedParameter()?.unit ?? '');
+  protected readonly valueSuffix = computed(() => this.selectedParameter()?.defaultUnit ?? '');
 
   protected cancel(): void {
     this.modalRef.close({ reason: 'action', actionId: 'cancel' });

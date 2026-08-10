@@ -1,4 +1,4 @@
-/* istanbul ignore file -- fonte centralizada de dados de desenvolvimento substituivel por API. */
+/* istanbul ignore file */
 import {
   AquariumDetailAquaticLife,
   AquariumDetailApplication,

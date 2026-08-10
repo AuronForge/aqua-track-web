@@ -49,7 +49,7 @@
         search_off
       </span>
       <h1>Aquário não encontrado</h1>
-      <p>Não encontramos um aquário com o identificador informado.</p>
+      <p>Aquário não encontrado ou indisponível para o usuário atual.</p>
       <a aqButton routerLink="/aquariums" variant="flat" color="primary">Voltar para Aquários</a>
     </div>
   } @else if (status() === 'error') {
@@ -176,28 +176,33 @@
                 monitor_heart
               </span>
               <div>
-                <span>Alerta de Parâmetros</span>
+                <span>Saúde do aquário</span>
                 <br />
                 <strong>
-                  @if (parameterAlerts().length > 0) {
-                    {{ parameterAlerts().length }}
-                    {{
-                      parameterAlerts().length === 1
-                        ? 'parâmetro em alerta'
-                        : 'parâmetros em alerta'
-                    }}
-                  } @else {
-                    Nenhum alerta
-                  }
+                  {{ aquarium.summary.healthScoreLabel }}
                 </strong>
+                @if (aquarium.summary.healthStatus !== 'unknown') {
+                  <br />
+                  <aq-badge
+                    variant="tinted"
+                    size="small"
+                    [color]="aquarium.summary.healthStatusColor"
+                  >
+                    {{ aquarium.summary.healthStatusLabel }}
+                  </aq-badge>
+                }
               </div>
               @if (parameterAlerts().length > 0) {
                 <ul class="aquarium-detail-page__alert-list" aria-label="Parâmetros fora do padrão">
-                  @for (alert of parameterAlerts(); track alert.parameterKey) {
+                  @for (alert of parameterAlerts(); track alert.key) {
                     <li>
-                      <span>{{ alert.parameterLabel }}</span>
+                      <span>{{ alert.shortLabel }}</span>
                       <span>{{ alert.valueLabel }}</span>
-                      <aq-badge variant="tinted" size="small" [color]="alert.statusColor">
+                      <aq-badge
+                        variant="tinted"
+                        size="small"
+                        [color]="alert.statusColor ?? 'tertiary'"
+                      >
                         {{ alert.statusLabel }}
                       </aq-badge>
                     </li>
@@ -225,13 +230,22 @@
                     >
                       {{ parameter.icon }}
                     </span>
-                    <span>{{ parameter.shortLabel }}</span>
+                    <span>{{ parameter.label }}</span>
                     <strong>{{ parameter.valueLabel }}</strong>
                   </article>
                 }
               </div>
             } @else {
-              <p class="aquarium-detail-page__empty-inline">Nenhum parâmetro recente disponível.</p>
+              <div class="aquarium-detail-page__empty-card" role="status">
+                <span
+                  class="material-icons-outlined aquarium-detail-page__empty-card-icon"
+                  aria-hidden="true"
+                >
+                  science
+                </span>
+                <strong>Nenhum parâmetro recente</strong>
+                <p>As últimas medições compatíveis aparecerão aqui.</p>
+              </div>
             }
           </section>
 
@@ -250,7 +264,7 @@
               caption="Aplicações recentes"
               [emptyState]="{
                 title: 'Nenhuma aplicação recente',
-                description: 'As aplicações de produtos aparecerão aqui.',
+                description: 'As aplicações registradas aparecerão aqui.',
                 icon: 'water_drop',
               }"
             >
@@ -271,6 +285,7 @@
             aqFilterBar
             [formGroup]="filtersForm"
             [caption]="filteredMeasurementsCaption()"
+            columns="repeat(2, minmax(0, 1fr))"
             [clearDisabled]="!hasMeasurementFilters()"
             (clearFilters)="clearMeasurementFilters()"
           >
@@ -285,13 +300,6 @@
               label="Filtrar por parâmetro"
               placeholder="Todos os parâmetros"
               [options]="parameterOptions()"
-              [multiple]="true"
-            />
-            <aq-select-formfield
-              formControlName="status"
-              label="Filtrar por status"
-              placeholder="Todos os status"
-              [options]="statusOptions()"
               [multiple]="true"
             />
           </form>
@@ -320,11 +328,6 @@
             <ng-template aqTableCell="value" let-row>
               <strong>{{ row.valueLabel }}</strong>
             </ng-template>
-            <ng-template aqTableCell="status" let-row>
-              <aq-badge variant="tinted" size="small" [color]="row.statusColor">
-                {{ row.statusLabel }}
-              </aq-badge>
-            </ng-template>
             <ng-template aqTableCell="trend" let-row>
               <span
                 class="aquarium-detail-page__trend"
@@ -336,6 +339,14 @@
               </span>
             </ng-template>
           </aq-table>
+
+          <aq-paginator
+            [pageIndex]="measurementsPageIndex()"
+            [pageSize]="measurementsPageSize()"
+            [totalItems]="aquarium.measurementsPagination.totalItems"
+            [disabled]="measurementsStatus() === 'loading'"
+            (pageChange)="onMeasurementsPageChange($event)"
+          />
         </div>
       </aq-tab>
 
@@ -424,9 +435,11 @@
             caption="Histórico de aplicações"
             [emptyState]="{
               title: 'Nenhuma aplicação cadastrada',
-              description: 'As aplicações de produtos aparecerão aqui.',
+              description: 'As aplicações registradas aparecerão aqui.',
               icon: 'water_drop',
             }"
+            [sort]="applicationSort()"
+            (sortChange)="onApplicationSortChange($event)"
           >
             <ng-template aqTableCell="date" let-row>
               <strong>{{ row.dateLabel }}</strong>
@@ -435,6 +448,14 @@
               <strong>{{ row.productName }}</strong>
             </ng-template>
           </aq-table>
+
+          <aq-paginator
+            [pageIndex]="applicationsPageIndex()"
+            [pageSize]="applicationsPageSize()"
+            [totalItems]="aquarium.applicationsPagination.totalItems"
+            [disabled]="applicationsStatus() === 'loading'"
+            (pageChange)="onApplicationsPageChange($event)"
+          />
         </div>
       </aq-tab>
     </aq-tabs>

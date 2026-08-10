@@ -13,6 +13,10 @@
   align-items: end;
 }
 
+.filter-bar__fields > * {
+  min-width: 0;
+}
+
 .filter-bar__footer {
   display: flex;
   align-items: center;
