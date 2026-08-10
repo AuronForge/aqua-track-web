@@ -513,12 +513,16 @@ describe('AquariumListPageComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Volume combinado: 75L');
   });
 
-  it('should use the aquarium id in the details link', async () => {
+  it('should render aquarium cards as clickable links without the details button', async () => {
     const fixture = await createFixture();
-    const firstDetailsLink = fixture.nativeElement.querySelector(
-      'app-aquarium-summary-card a[aqbutton]',
-    ) as HTMLAnchorElement;
+    const firstCard = fixture.nativeElement.querySelector(
+      'app-aquarium-summary-card article',
+    ) as HTMLElement;
 
-    expect(firstDetailsLink.getAttribute('href')).toContain('/aquarium/aq-community');
+    expect(firstCard.getAttribute('role')).toBe('link');
+    expect(firstCard.getAttribute('data-aquarium-id')).toBe('aq-community');
+    expect(fixture.nativeElement.textContent).not.toContain(
+      TRANSLATIONS.pt.aquariumListDetailsAction,
+    );
   });
 });

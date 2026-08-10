@@ -3,6 +3,9 @@
 .aquarium-summary-card {
   display: block;
   height: 100%;
+  border-radius: theme.$aq-radius-md;
+  cursor: pointer;
+  outline: none;
 
   aq-info-card {
     display: block;
@@ -16,6 +19,10 @@
   &:focus-within aq-info-card {
     transform: translateY(-2px);
     filter: drop-shadow(0 22px 32px rgb(18 63 97 / 14%));
+  }
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
   }
 }
 
@@ -112,21 +119,8 @@
   color: theme.$aq-color-text-primary;
 }
 
-.aquarium-summary-card__details-link {
-  width: 100%;
-  margin-top: auto;
-}
-
-.aquarium-summary-card:hover .aquarium-summary-card__details-link,
-.aquarium-summary-card:focus-within .aquarium-summary-card__details-link {
-  background: theme.$aq-color-primary;
-  border-color: transparent;
-  color: theme.$aq-color-surface;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .aquarium-summary-card aq-info-card,
-  .aquarium-summary-card__details-link {
+  .aquarium-summary-card aq-info-card {
     transition: none;
   }
 
