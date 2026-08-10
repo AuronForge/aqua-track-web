@@ -1,0 +1,61 @@
+<div [class]="hostClass()">
+  @if (rows().length > 0) {
+    <div class="aq-table__scroller">
+      <table>
+        <caption>
+          {{
+            caption()
+          }}
+        </caption>
+        <thead>
+          <tr>
+            @for (column of columns(); track column.key) {
+              <th [style.min-width]="column.minWidth ?? null" scope="col">
+                @if (column.sortable) {
+                  <button type="button" class="aq-table__sort" (click)="nextSort(column)">
+                    {{ column.header }}
+                    <span class="material-icons-outlined" aria-hidden="true">
+                      {{ sortIcon(column) }}
+                    </span>
+                  </button>
+                } @else {
+                  {{ column.header }}
+                }
+              </th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track rowKey(row, $index)) {
+            <tr>
+              @for (column of columns(); track column.key) {
+                <td [attr.data-priority]="column.priority ?? null">
+                  @if (templateFor(column.key); as cellTemplate) {
+                    <ng-container
+                      [ngTemplateOutlet]="cellTemplate"
+                      [ngTemplateOutletContext]="{ $implicit: row }"
+                    />
+                  } @else {
+                    {{ cellValue(row, column) }}
+                  }
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <div class="aq-table__empty" role="status">
+      @if (emptyState()?.icon; as icon) {
+        <span class="material-icons-outlined aq-table__empty-icon" aria-hidden="true">
+          {{ icon }}
+        </span>
+      }
+      <strong>{{ emptyState()?.title ?? 'Nenhum registro encontrado' }}</strong>
+      @if (emptyState()?.description; as description) {
+        <p>{{ description }}</p>
+      }
+    </div>
+  }
+</div>

@@ -87,7 +87,7 @@ describe('AquariumSummaryCardComponent', () => {
     const link = fixture.nativeElement.querySelector('a[aqbutton]') as HTMLAnchorElement;
 
     expect(link.getAttribute('aria-label')).toBe('Ver detalhes do aquário AquÃ¡rio ComunitÃ¡rio');
-    expect(link.getAttribute('href')).toContain('/aquariums/aq-community');
+    expect(link.getAttribute('href')).toContain('/aquarium/aq-community');
   });
 
   it('should keep aq-info-card non-interactive when the details action is present', async () => {

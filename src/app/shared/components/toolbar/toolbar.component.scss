@@ -51,8 +51,8 @@
 // ── Page info ─────────────────────────────────────────────────────────────
 
 .toolbar__page-info {
-  flex: 0 1 24rem;
-  min-width: 0;
+  flex: 1 1 auto;
+  min-width: 12rem;
 }
 
 .toolbar__page-title {
@@ -76,9 +76,10 @@
 .toolbar__center-content {
   display: flex;
   align-items: center;
+  gap: theme.$aq-space-md;
   justify-content: flex-end;
-  flex: 1;
-  min-width: 0;
+  flex: 0 0 auto;
+  min-width: max-content;
 }
 
 // ── Actions ───────────────────────────────────────────────────────────────
@@ -149,6 +150,16 @@
   border-radius: 50%;
   background: theme.$aq-color-success;
   flex-shrink: 0;
+}
+
+@media (width <= 1200px) {
+  .toolbar {
+    gap: theme.$aq-space-md;
+  }
+
+  .toolbar__user-info {
+    display: none;
+  }
 }
 
 @media (width <= 768px) {

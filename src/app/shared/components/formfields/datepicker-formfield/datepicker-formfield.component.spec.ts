@@ -77,6 +77,18 @@ describe('DatepickerFormfieldComponent', () => {
     expect(overlayContainerElement.querySelector('.datepicker-formfield__panel')).toBeNull();
   });
 
+  it('should open on the current month without selecting a date', () => {
+    const today = new Date();
+
+    component.writeValue('');
+    component['toggle']();
+    fixture.detectChanges();
+
+    expect(component['selectedDate']()).toBeNull();
+    expect(component['viewDate']().getFullYear()).toBe(today.getFullYear());
+    expect(component['viewDate']().getMonth()).toBe(today.getMonth());
+  });
+
   it('should not toggle when disabled', () => {
     component.setDisabledState(true);
 

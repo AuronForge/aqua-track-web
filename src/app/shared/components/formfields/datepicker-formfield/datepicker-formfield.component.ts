@@ -434,6 +434,12 @@ export class DatepickerFormfieldComponent
 
   private openPanel(): void {
     this.disposeOverlay(false);
+    const selected = this.selectedDate();
+
+    if (!selected) {
+      const today = new Date();
+      this.viewDate.set(new Date(today.getFullYear(), today.getMonth(), 1));
+    }
 
     this.overlayRef = this.overlay.create({
       positionStrategy: this.buildPositionStrategy(),

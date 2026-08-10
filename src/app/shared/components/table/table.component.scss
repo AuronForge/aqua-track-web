@@ -1,0 +1,99 @@
+@use '../../theme' as theme;
+
+.aq-table {
+  overflow: hidden;
+  background: theme.$aq-color-surface;
+  border: 1px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-xs;
+  box-shadow: 0 1px 3px rgb(36 48 65 / 12%);
+}
+
+.aq-table__scroller {
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  color: theme.$aq-color-text-primary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+}
+
+caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+th,
+td {
+  padding: theme.$aq-space-md theme.$aq-space-lg;
+  text-align: left;
+  vertical-align: middle;
+}
+
+th {
+  color: theme.$aq-color-text-primary;
+  background: theme.$aq-color-surface-muted;
+  font-weight: theme.$aq-font-weight-semibold;
+}
+
+td {
+  border-top: 1px solid theme.$aq-color-border;
+}
+
+.aq-table--comfortable td {
+  padding-block: theme.$aq-space-lg;
+}
+
+.aq-table__sort {
+  display: inline-flex;
+  gap: theme.$aq-space-2xs;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+  }
+}
+
+.aq-table__sort .material-icons-outlined {
+  color: theme.$aq-color-text-tertiary;
+  font-size: theme.$aq-size-icon-sm;
+}
+
+.aq-table__empty {
+  display: grid;
+  justify-items: center;
+  gap: theme.$aq-space-xs;
+  padding: theme.$aq-space-2xl;
+  color: theme.$aq-color-text-secondary;
+  text-align: center;
+}
+
+.aq-table__empty strong {
+  color: theme.$aq-color-text-primary;
+}
+
+.aq-table__empty p {
+  margin: 0;
+}
+
+.aq-table__empty-icon {
+  display: inline-grid;
+  width: theme.$aq-size-icon-container-md;
+  height: theme.$aq-size-icon-container-md;
+  place-items: center;
+  color: theme.$aq-color-primary;
+  background: rgb(18 63 97 / 10%);
+  border-radius: theme.$aq-radius-xs;
+}

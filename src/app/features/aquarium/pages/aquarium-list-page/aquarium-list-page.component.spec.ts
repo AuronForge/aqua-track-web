@@ -519,6 +519,6 @@ describe('AquariumListPageComponent', () => {
       'app-aquarium-summary-card a[aqbutton]',
     ) as HTMLAnchorElement;
 
-    expect(firstDetailsLink.getAttribute('href')).toContain('/aquariums/aq-community');
+    expect(firstDetailsLink.getAttribute('href')).toContain('/aquarium/aq-community');
   });
 });

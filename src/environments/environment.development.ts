@@ -2,7 +2,7 @@
 // Do not edit by hand - values come from environment variables.
 export const environment = {
   production: false,
-  apiBaseUrl: 'https://emily-consent-pharmaceutical-cleaners.trycloudflare.com',
+  apiBaseUrl: 'https://unions-gym-networks-treated.trycloudflare.com',
   appName: 'AquaTrack',
-  appVersion: '0.1.0',
+  appVersion: '0.1.2',
 };
