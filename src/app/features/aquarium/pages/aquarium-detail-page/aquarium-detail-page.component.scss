@@ -54,17 +54,10 @@
 }
 
 .aquarium-detail-page__time,
-.aquarium-detail-page__applications-count,
-.aquarium-detail-page__table-count,
 .aquarium-detail-page__empty-inline,
 .aquarium-detail-page__state p {
   color: theme.$aq-color-text-secondary;
   font-size: theme.$aq-font-size-sm;
-}
-
-.aquarium-detail-page__applications-count,
-.aquarium-detail-page__table-count {
-  margin: 0;
 }
 
 .aquarium-detail-page__hero {
@@ -138,8 +131,7 @@
 }
 
 .aquarium-detail-page__summary-grid,
-.aquarium-detail-page__parameter-grid,
-.aquarium-detail-page__filters {
+.aquarium-detail-page__parameter-grid {
   display: grid;
   gap: theme.$aq-space-md;
 }
@@ -150,18 +142,6 @@
 
 .aquarium-detail-page__parameter-grid {
   grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
-}
-
-.aquarium-detail-page__filters {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.aquarium-detail-page__filters--life {
-  grid-template-columns: 2fr 2fr 1fr;
-}
-
-.aquarium-detail-page__filters--apps {
-  grid-template-columns: 3fr 4fr 3fr;
 }
 
 .aquarium-detail-page__summary-card,
@@ -227,7 +207,7 @@
   }
 
   .aquarium-detail-page__summary-grid,
-  .aquarium-detail-page__filters {
+  .aquarium-detail-page__parameter-grid {
     grid-template-columns: 1fr;
   }
 

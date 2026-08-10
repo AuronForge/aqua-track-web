@@ -1,0 +1,20 @@
+<div class="filter-bar__fields">
+  <ng-content />
+</div>
+
+<div class="filter-bar__footer">
+  <p class="filter-bar__caption" aria-live="polite">{{ caption() }}</p>
+
+  <button
+    aqButton
+    type="button"
+    variant="stroked"
+    color="tertiary"
+    size="small"
+    [disabled]="clearDisabled()"
+    (click)="onClearFilters()"
+  >
+    <span class="material-icons-outlined" aria-hidden="true">filter_alt_off</span>
+    {{ clearLabel() }}
+  </button>
+</div>

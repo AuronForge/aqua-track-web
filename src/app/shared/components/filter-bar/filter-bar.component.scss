@@ -1,0 +1,39 @@
+@use '../../theme' as theme;
+
+:host {
+  display: grid;
+  gap: theme.$aq-space-lg;
+  width: 100%;
+}
+
+.filter-bar__fields {
+  display: grid;
+  grid-template-columns: var(--aq-filter-bar-columns, repeat(3, minmax(0, 1fr)));
+  gap: theme.$aq-space-md;
+  align-items: end;
+}
+
+.filter-bar__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: theme.$aq-space-md;
+}
+
+.filter-bar__caption {
+  margin: 0;
+  color: theme.$aq-color-text-secondary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+}
+
+@media (width <= 820px) {
+  .filter-bar__fields {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-bar__footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

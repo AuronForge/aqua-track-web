@@ -20,6 +20,7 @@ import { Observable, of, startWith } from 'rxjs';
 import { PageTitleService } from '../../../../core/page-title/page-title.service';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { FilterBarComponent } from '../../../../shared/components/filter-bar';
 import {
   DatepickerRangeDirective,
   DatepickerRangeValue,
@@ -78,6 +79,7 @@ type DateFilterValue = string | DatepickerRangeValue;
     ButtonComponent,
     DatepickerRangeDirective,
     DatepickerFormfieldComponent,
+    FilterBarComponent,
     ReactiveFormsModule,
     RouterLink,
     SearchFormfieldComponent,

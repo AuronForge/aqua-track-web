@@ -267,7 +267,13 @@
 
       <aq-tab id="measurements" label="Medições">
         <div class="aquarium-detail-page__section">
-          <form class="aquarium-detail-page__filters" [formGroup]="filtersForm">
+          <form
+            aqFilterBar
+            [formGroup]="filtersForm"
+            [caption]="filteredMeasurementsCaption()"
+            [clearDisabled]="!hasMeasurementFilters()"
+            (clearFilters)="clearMeasurementFilters()"
+          >
             <aq-datepicker-formfield
               aqDateRange
               formControlName="date"
@@ -289,24 +295,6 @@
               [multiple]="true"
             />
           </form>
-
-          <div class="aquarium-detail-page__table-toolbar">
-            <p class="aquarium-detail-page__table-count">
-              {{ filteredMeasurementsCaption() }}
-            </p>
-            <button
-              aqButton
-              type="button"
-              variant="stroked"
-              color="tertiary"
-              size="small"
-              [disabled]="!hasMeasurementFilters()"
-              (click)="clearMeasurementFilters()"
-            >
-              <span class="material-icons-outlined" aria-hidden="true">filter_alt_off</span>
-              Limpar filtros
-            </button>
-          </div>
 
           <aq-table
             [rows]="filteredMeasurements()"
@@ -354,8 +342,12 @@
       <aq-tab id="aquatic-life" label="Vida aquática">
         <div class="aquarium-detail-page__section">
           <form
-            class="aquarium-detail-page__filters aquarium-detail-page__filters--life"
+            aqFilterBar
             [formGroup]="aquaticLifeFiltersForm"
+            [caption]="aquaticLifeCaption()"
+            columns="2fr 2fr 1fr"
+            [clearDisabled]="!hasAquaticLifeFilters()"
+            (clearFilters)="clearAquaticLifeFilters()"
           >
             <aq-search-formfield
               formControlName="name"
@@ -374,22 +366,6 @@
               [options]="aquaticLifeTypeOptions()"
             />
           </form>
-
-          <div class="aquarium-detail-page__table-toolbar">
-            <p class="aquarium-detail-page__applications-count">{{ aquaticLifeCaption() }}</p>
-            <button
-              aqButton
-              type="button"
-              variant="stroked"
-              color="tertiary"
-              size="small"
-              [disabled]="!hasAquaticLifeFilters()"
-              (click)="clearAquaticLifeFilters()"
-            >
-              <span class="material-icons-outlined" aria-hidden="true">filter_alt_off</span>
-              Limpar filtros
-            </button>
-          </div>
 
           <aq-table
             [rows]="filteredAquaticLife()"
@@ -415,8 +391,12 @@
       <aq-tab id="applications" label="Aplicações">
         <div class="aquarium-detail-page__section">
           <form
-            class="aquarium-detail-page__filters aquarium-detail-page__filters--apps"
+            aqFilterBar
             [formGroup]="applicationFiltersForm"
+            [caption]="applicationsCaption()"
+            columns="3fr 4fr 3fr"
+            [clearDisabled]="!hasApplicationFilters()"
+            (clearFilters)="clearApplicationFilters()"
           >
             <aq-datepicker-formfield
               aqDateRange
@@ -436,22 +416,6 @@
               [options]="applicationTypeOptions()"
             />
           </form>
-
-          <div class="aquarium-detail-page__table-toolbar">
-            <p class="aquarium-detail-page__applications-count">{{ applicationsCaption() }}</p>
-            <button
-              aqButton
-              type="button"
-              variant="stroked"
-              color="tertiary"
-              size="small"
-              [disabled]="!hasApplicationFilters()"
-              (click)="clearApplicationFilters()"
-            >
-              <span class="material-icons-outlined" aria-hidden="true">filter_alt_off</span>
-              Limpar filtros
-            </button>
-          </div>
 
           <aq-table
             [rows]="filteredApplications()"
