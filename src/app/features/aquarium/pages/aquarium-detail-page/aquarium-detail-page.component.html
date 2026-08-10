@@ -269,9 +269,10 @@
         <div class="aquarium-detail-page__section">
           <form class="aquarium-detail-page__filters" [formGroup]="filtersForm">
             <aq-datepicker-formfield
+              aqDateRange
               formControlName="date"
               label="Filtrar por data"
-              placeholder="dd/mm/aaaa"
+              placeholder="Data ou período"
             />
             <aq-select-formfield
               formControlName="parameter"
@@ -418,9 +419,10 @@
             [formGroup]="applicationFiltersForm"
           >
             <aq-datepicker-formfield
+              aqDateRange
               formControlName="date"
               label="Filtrar por data"
-              placeholder="dd/mm/aaaa"
+              placeholder="Data ou período"
             />
             <aq-search-formfield
               formControlName="productName"

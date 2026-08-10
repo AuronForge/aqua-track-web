@@ -238,6 +238,27 @@ describe('AquariumDetailPageComponent', () => {
     expect(fixture.nativeElement.textContent).not.toContain('Prime');
   });
 
+  it('filters applications by date range', async () => {
+    const { fixture } = await createFixture({ tab: 'applications' });
+    const component = fixture.componentInstance as AquariumDetailPageComponent & {
+      applicationFiltersForm: AquariumDetailPageComponent['applicationFiltersForm'];
+      filteredApplications: () => AquariumDetailApplication[];
+    };
+
+    component.applicationFiltersForm.setValue({
+      date: { start: '2026-02-22', end: '2026-02-24' },
+      productName: '',
+      type: null,
+    });
+    fixture.detectChanges();
+
+    expect(component.filteredApplications()).toEqual([
+      expect.objectContaining({ productName: 'Flourish' }),
+      expect.objectContaining({ productName: 'Stability' }),
+    ]);
+    expect(fixture.nativeElement.textContent).toContain('2 aplicações registradas');
+  });
+
   it('clears all application filters', async () => {
     const { fixture } = await createFixture({ tab: 'applications' });
     const component = fixture.componentInstance as AquariumDetailPageComponent & {
@@ -353,6 +374,29 @@ describe('AquariumDetailPageComponent', () => {
     expect(component.filteredMeasurements()).toEqual([
       expect.objectContaining({ parameterKey: 'nitrate', measuredAt: '2026-02-27T09:30:00' }),
     ]);
+  });
+
+  it('filters measurements by date range', async () => {
+    const { fixture } = await createFixture();
+    const component = fixture.componentInstance as AquariumDetailPageComponent & {
+      filtersForm: AquariumDetailPageComponent['filtersForm'];
+      filteredMeasurements: () => AquariumDetailMeasurement[];
+    };
+
+    component.filtersForm.setValue({
+      date: { start: '2026-02-24', end: '2026-02-25' },
+      parameter: [],
+      status: [],
+    });
+    fixture.detectChanges();
+
+    expect(component.filteredMeasurements()).toHaveLength(5);
+    expect(component.filteredMeasurements()).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ measuredAt: '2026-02-25T10:15:00' }),
+        expect.objectContaining({ measuredAt: '2026-02-24T19:00:00' }),
+      ]),
+    );
   });
 
   it('clears all measurement filters', async () => {

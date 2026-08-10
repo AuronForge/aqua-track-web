@@ -23,6 +23,7 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
 
 import { FormfieldErrorMessages } from '../formfield-error-messages.model';
+import { DatepickerRangeDirective, DatepickerRangeValue } from './datepicker-range.directive';
 
 type ViewMode = 'days' | 'months' | 'years';
 
@@ -31,6 +32,9 @@ interface CalendarDay {
   isCurrentMonth: boolean;
   isToday: boolean;
   isSelected: boolean;
+  isRangeStart: boolean;
+  isRangeEnd: boolean;
+  isInRange: boolean;
 }
 
 interface MonthItem {
@@ -89,6 +93,10 @@ export class DatepickerFormfieldComponent
   private readonly overlay = inject(Overlay);
   private readonly viewContainerRef = inject(ViewContainerRef);
   private readonly elementRef = inject(ElementRef<HTMLElement>);
+  private readonly rangeDirective = inject(DatepickerRangeDirective, {
+    self: true,
+    optional: true,
+  });
   private readonly triggerRef = viewChild.required<ElementRef<HTMLButtonElement>>('trigger');
   private readonly panelTemplate = viewChild.required<TemplateRef<unknown>>('panelTemplate');
 
@@ -99,6 +107,8 @@ export class DatepickerFormfieldComponent
   protected readonly isOpen = signal(false);
   protected readonly focused = signal(false);
   protected readonly selectedDate = signal<Date | null>(null);
+  protected readonly selectedRangeStart = signal<Date | null>(null);
+  protected readonly selectedRangeEnd = signal<Date | null>(null);
   protected readonly viewMode = signal<ViewMode>('days');
   protected readonly viewDate = signal(new Date(new Date().getFullYear() - 25, 0, 1));
   protected readonly cvaDisabled = signal(false);
@@ -109,7 +119,10 @@ export class DatepickerFormfieldComponent
   protected readonly hintId = computed(() => `${this.inputId()}-hint`);
   protected readonly errorId = computed(() => `${this.inputId()}-error`);
   protected readonly isDisabled = computed(() => this.disabledState() || this.cvaDisabled());
-  protected readonly isFilled = computed(() => !!this.selectedDate());
+  protected readonly isRangeMode = computed(() => !!this.rangeDirective);
+  protected readonly isFilled = computed(() =>
+    this.isRangeMode() ? !!this.selectedRangeStart() : !!this.selectedDate(),
+  );
 
   protected readonly describedBy = computed(() => {
     if (this.showError()) {
@@ -132,6 +145,26 @@ export class DatepickerFormfieldComponent
   });
 
   protected readonly displayValue = computed(() => {
+    if (this.isRangeMode()) {
+      const start = this.selectedRangeStart();
+      const end = this.selectedRangeEnd();
+
+      if (!start) {
+        return '';
+      }
+
+      const format = (date: Date): string =>
+        new Intl.DateTimeFormat(this.locale(), {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        }).format(date);
+
+      return end
+        ? `${format(start)}${this.rangeDirective?.separator() ?? ' - '}${format(end)}`
+        : format(start);
+    }
+
     const date = this.selectedDate();
 
     if (!date) {
@@ -181,19 +214,41 @@ export class DatepickerFormfieldComponent
   protected readonly calendarDays = computed<CalendarDay[]>(() => {
     const view = this.viewDate();
     const selected = this.selectedDate();
+    const rangeStart = this.selectedRangeStart();
+    const rangeEnd = this.selectedRangeEnd();
     const todayMs = this.startOfDay(new Date()).getTime();
     const year = view.getFullYear();
     const month = view.getMonth();
     const firstDayOfWeek = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    const toDay = (date: Date): CalendarDay => ({
-      date,
-      isCurrentMonth: date.getMonth() === month && date.getFullYear() === year,
-      isToday: this.startOfDay(date).getTime() === todayMs,
-      isSelected:
-        !!selected && this.startOfDay(date).getTime() === this.startOfDay(selected).getTime(),
-    });
+    const toDay = (date: Date): CalendarDay => {
+      const dayMs = this.startOfDay(date).getTime();
+      const selectedMs = selected ? this.startOfDay(selected).getTime() : null;
+      const rangeStartMs = rangeStart ? this.startOfDay(rangeStart).getTime() : null;
+      const rangeEndMs = rangeEnd ? this.startOfDay(rangeEnd).getTime() : null;
+      const rangeMinMs =
+        rangeStartMs !== null && rangeEndMs !== null ? Math.min(rangeStartMs, rangeEndMs) : null;
+      const rangeMaxMs =
+        rangeStartMs !== null && rangeEndMs !== null ? Math.max(rangeStartMs, rangeEndMs) : null;
+
+      return {
+        date,
+        isCurrentMonth: date.getMonth() === month && date.getFullYear() === year,
+        isToday: dayMs === todayMs,
+        isSelected: this.isRangeMode()
+          ? dayMs === rangeStartMs || dayMs === rangeEndMs
+          : dayMs === selectedMs,
+        isRangeStart: this.isRangeMode() && dayMs === rangeStartMs,
+        isRangeEnd: this.isRangeMode() && dayMs === rangeEndMs,
+        isInRange:
+          this.isRangeMode() &&
+          rangeMinMs !== null &&
+          rangeMaxMs !== null &&
+          dayMs > rangeMinMs &&
+          dayMs < rangeMaxMs,
+      };
+    };
 
     const days: CalendarDay[] = [];
 
@@ -205,9 +260,7 @@ export class DatepickerFormfieldComponent
       days.push(toDay(new Date(year, month, day)));
     }
 
-    const totalCells = Math.ceil((firstDayOfWeek + daysInMonth) / 7) * 7;
-
-    for (let day = 1; days.length < totalCells; day++) {
+    for (let day = 1; days.length < 42; day++) {
       days.push(toDay(new Date(year, month + 1, day)));
     }
 
@@ -243,7 +296,7 @@ export class DatepickerFormfieldComponent
   });
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  private onChange: (value: string) => void = () => {};
+  private onChange: (value: string | DatepickerRangeValue | null) => void = () => {};
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private onTouched: () => void = () => {};
 
@@ -295,17 +348,36 @@ export class DatepickerFormfieldComponent
   }
 
   writeValue(value: unknown): void {
+    if (this.isRangeValue(value)) {
+      const start = this.parseISODate(value.start);
+      const end = this.parseISODate(value.end);
+
+      this.selectedRangeStart.set(start);
+      this.selectedRangeEnd.set(end);
+      this.selectedDate.set(null);
+
+      if (start) {
+        this.viewDate.set(new Date(start.getFullYear(), start.getMonth(), 1));
+      }
+
+      return;
+    }
+
     if (typeof value === 'string' && value) {
       const date = new Date(`${value}T00:00:00`);
-      this.selectedDate.set(date);
+      this.selectedDate.set(this.isRangeMode() ? null : date);
+      this.selectedRangeStart.set(this.isRangeMode() ? date : null);
+      this.selectedRangeEnd.set(null);
       this.viewDate.set(new Date(date.getFullYear(), date.getMonth(), 1));
       return;
     }
 
     this.selectedDate.set(null);
+    this.selectedRangeStart.set(null);
+    this.selectedRangeEnd.set(null);
   }
 
-  registerOnChange(fn: (value: string) => void): void {
+  registerOnChange(fn: (value: string | DatepickerRangeValue | null) => void): void {
     this.onChange = fn;
   }
 
@@ -414,8 +486,39 @@ export class DatepickerFormfieldComponent
       this.viewDate.set(new Date(day.date.getFullYear(), day.date.getMonth(), 1));
     }
 
-    this.selectedDate.set(day.date);
+    if (this.isRangeMode()) {
+      this.selectRangeDay(day.date);
+      return;
+    }
+
+    this.selectedDate.set(this.startOfDay(day.date));
     this.onChange(this.toISODate(day.date));
+    this.controlStateVersion.update((version) => version + 1);
+    this.closePanel();
+  }
+
+  private selectRangeDay(date: Date): void {
+    const normalizedDate = this.startOfDay(date);
+    const start = this.selectedRangeStart();
+    const end = this.selectedRangeEnd();
+
+    if (!start || end) {
+      this.selectedDate.set(null);
+      this.selectedRangeStart.set(normalizedDate);
+      this.selectedRangeEnd.set(null);
+      this.onChange(this.toISODate(normalizedDate));
+      this.controlStateVersion.update((version) => version + 1);
+      return;
+    }
+
+    const startMs = this.startOfDay(start).getTime();
+    const endMs = normalizedDate.getTime();
+    const rangeStart = endMs < startMs ? normalizedDate : this.startOfDay(start);
+    const rangeEnd = endMs < startMs ? this.startOfDay(start) : normalizedDate;
+
+    this.selectedRangeStart.set(rangeStart);
+    this.selectedRangeEnd.set(rangeEnd);
+    this.onChange({ start: this.toISODate(rangeStart), end: this.toISODate(rangeEnd) });
     this.controlStateVersion.update((version) => version + 1);
     this.closePanel();
   }
@@ -531,6 +634,25 @@ export class DatepickerFormfieldComponent
     const nextDate = new Date(date);
     nextDate.setHours(0, 0, 0, 0);
     return nextDate;
+  }
+
+  private parseISODate(value: string): Date | null {
+    if (!value) {
+      return null;
+    }
+
+    const date = new Date(`${value}T00:00:00`);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  private isRangeValue(value: unknown): value is DatepickerRangeValue {
+    return (
+      this.isRangeMode() &&
+      typeof value === 'object' &&
+      value !== null &&
+      typeof (value as DatepickerRangeValue).start === 'string' &&
+      typeof (value as DatepickerRangeValue).end === 'string'
+    );
   }
 
   private toISODate(date: Date): string {

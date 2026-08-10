@@ -20,6 +20,10 @@ import { Observable, of, startWith } from 'rxjs';
 import { PageTitleService } from '../../../../core/page-title/page-title.service';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import {
+  DatepickerRangeDirective,
+  DatepickerRangeValue,
+} from '../../../../shared/components/formfields/datepicker-formfield/datepicker-range.directive';
 import { DatepickerFormfieldComponent } from '../../../../shared/components/formfields/datepicker-formfield/datepicker-formfield.component';
 import { SearchFormfieldComponent } from '../../../../shared/components/formfields/search-formfield/search-formfield.component';
 import { SelectFormfieldOption } from '../../../../shared/components/formfields/select-formfield/select-formfield-option.model';
@@ -62,6 +66,8 @@ const todayInputDate = (): string => {
   return `${year}-${month}-${day}`;
 };
 
+type DateFilterValue = string | DatepickerRangeValue;
+
 @Component({
   selector: 'app-aquarium-detail-page',
   standalone: true,
@@ -70,6 +76,7 @@ const todayInputDate = (): string => {
     AqTableComponent,
     BadgeComponent,
     ButtonComponent,
+    DatepickerRangeDirective,
     DatepickerFormfieldComponent,
     ReactiveFormsModule,
     RouterLink,
@@ -99,7 +106,7 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
   private readonly toolbarContentTemplate = viewChild<TemplateRef<unknown>>('toolbarContent');
 
   protected readonly filtersForm = new FormGroup({
-    date: new FormControl('', { nonNullable: true }),
+    date: new FormControl<DateFilterValue>('', { nonNullable: true }),
     parameter: new FormControl<string[]>([], { nonNullable: true }),
     status: new FormControl<string[]>([], { nonNullable: true }),
   });
@@ -129,7 +136,7 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
     return Boolean(filters.name || filters.scientificName || filters.type);
   });
   protected readonly applicationFiltersForm = new FormGroup({
-    date: new FormControl(todayInputDate(), { nonNullable: true }),
+    date: new FormControl<DateFilterValue>(todayInputDate(), { nonNullable: true }),
     productName: new FormControl('', { nonNullable: true }),
     type: new FormControl<string | null>(null),
   });
@@ -246,7 +253,7 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
     }
 
     const filtered = detail.measurements.filter((measurement) => {
-      const matchesDate = filters.date ? measurement.measuredAt.startsWith(filters.date) : true;
+      const matchesDate = this.matchesDateFilter(measurement.measuredAt, filters.date);
       const matchesParameter = filters.parameter?.length
         ? filters.parameter.includes(measurement.parameterKey)
         : true;
@@ -300,7 +307,7 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
     const productName = this.normalizeFilterText(filters.productName);
 
     return detail.applications.filter((application) => {
-      const matchesDate = filters.date ? application.appliedAt.startsWith(filters.date) : true;
+      const matchesDate = this.matchesDateFilter(application.appliedAt, filters.date);
       const matchesProductName = productName
         ? this.normalizeFilterText(application.productName).includes(productName)
         : true;
@@ -593,6 +600,20 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
       .replace(/[\u0300-\u036f]/g, '')
       .trim()
       .toLocaleLowerCase('pt-BR');
+  }
+
+  private matchesDateFilter(dateTime: string, filter: DateFilterValue | null | undefined): boolean {
+    if (!filter) {
+      return true;
+    }
+
+    const date = dateTime.slice(0, 10);
+
+    if (typeof filter === 'string') {
+      return date === filter;
+    }
+
+    return date >= filter.start && date <= filter.end;
   }
 
   private getAquaticLifeTypeIcon(type: string): string {
