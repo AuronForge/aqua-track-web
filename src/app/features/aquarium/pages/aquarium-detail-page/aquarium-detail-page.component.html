@@ -1,33 +1,4 @@
 <section class="aquarium-detail-page" aria-label="Detalhes do aquário">
-  <ng-template #toolbarContent>
-    <button
-      aqButton
-      type="button"
-      variant="flat"
-      color="primary"
-      size="small"
-      (click)="openAddMeasurementModal()"
-    >
-      <span class="material-icons" aria-hidden="true">add</span>
-      Nova Medição
-    </button>
-    <a aqButton routerLink="/applications/new" variant="flat" color="primary" size="small">
-      <span class="material-icons" aria-hidden="true">add</span>
-      Nova Aplicação
-    </a>
-    <button
-      aqButton
-      type="button"
-      variant="flat"
-      color="primary"
-      size="small"
-      (click)="notifyAquaticLifeCreateUnavailable()"
-    >
-      <span class="material-icons" aria-hidden="true">add</span>
-      Adicionar espécie
-    </button>
-  </ng-template>
-
   @if (status() === 'loading') {
     <div class="aquarium-detail-page__loading" aria-busy="true" role="status">
       <div class="aquarium-detail-page__skeleton aquarium-detail-page__skeleton--title"></div>
@@ -81,25 +52,54 @@
           </div>
         </div>
       </div>
+    </header>
+
+    <div class="aquarium-detail-page__navigation">
+      <a class="aq-back-link" href="/aquariums" (click)="onBack($event)">
+        <span class="material-icons" aria-hidden="true">chevron_left</span>
+        Voltar para Aquários
+      </a>
 
       <div class="aquarium-detail-page__actions">
         <button
           aqButton
           type="button"
+          variant="flat"
+          color="primary"
+          size="small"
+          (click)="openAddMeasurementModal()"
+        >
+          <span class="material-icons" aria-hidden="true">add</span>
+          Nova Medição
+        </button>
+        <a aqButton routerLink="/applications/new" variant="flat" color="primary" size="small">
+          <span class="material-icons" aria-hidden="true">add</span>
+          Nova Aplicação
+        </a>
+        <button
+          aqButton
+          type="button"
+          variant="flat"
+          color="primary"
+          size="small"
+          (click)="notifyAquaticLifeCreateUnavailable()"
+        >
+          <span class="material-icons" aria-hidden="true">add</span>
+          Adicionar espécie
+        </button>
+        <button
+          aqButton
+          type="button"
           variant="stroked"
           color="tertiary"
+          size="small"
           (click)="notifyEditUnavailable()"
         >
           <span class="material-icons-outlined" aria-hidden="true">edit</span>
           Editar
         </button>
       </div>
-    </header>
-
-    <a class="aq-back-link" href="/aquariums" (click)="onBack($event)">
-      <span class="material-icons" aria-hidden="true">chevron_left</span>
-      Voltar para Aquários
-    </a>
+    </div>
 
     <article class="aquarium-detail-page__hero" aria-label="Imagem de destaque do aquário">
       @if (aquarium.heroImageUrl) {

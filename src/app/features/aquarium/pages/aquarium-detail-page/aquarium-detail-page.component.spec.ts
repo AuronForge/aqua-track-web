@@ -268,7 +268,12 @@ describe('AquariumDetailPageComponent', () => {
       expect.objectContaining({ page: 1, pageSize: 5, sort: 'appliedAt', direction: 'desc' }),
     );
     expect(pageTitleService.set).toHaveBeenCalledWith('');
-    expect(pageTitleService.setToolbarContent).toHaveBeenCalledWith(expect.anything());
+    expect(pageTitleService.setToolbarContent).not.toHaveBeenCalled();
+    expect(
+      Array.from(
+        fixture.nativeElement.querySelectorAll('.aquarium-detail-page__actions [aqButton]'),
+      ).map((button) => (button as HTMLElement).textContent?.trim().replace(/\s+/g, ' ')),
+    ).toEqual(['add Nova Medição', 'add Nova Aplicação', 'add Adicionar espécie', 'edit Editar']);
   });
 
   it('shows only warning or error parameters in the operational health alert list', async () => {
@@ -454,7 +459,7 @@ describe('AquariumDetailPageComponent', () => {
     expect(feedbackMessageService.showSuccess).toHaveBeenCalled();
   });
 
-  it('uses browser history for back link and cleans toolbar on destroy', async () => {
+  it('uses browser history for back link', async () => {
     const { fixture, pageTitleService } = await createFixture();
     const location = TestBed.inject(Location);
     const backSpy = jest.spyOn(location, 'back');
@@ -469,7 +474,7 @@ describe('AquariumDetailPageComponent', () => {
 
     expect(preventDefaultSpy).toHaveBeenCalled();
     expect(backSpy).toHaveBeenCalled();
-    expect(pageTitleService.setToolbarContent).toHaveBeenLastCalledWith(null);
+    expect(pageTitleService.setToolbarContent).not.toHaveBeenCalled();
   });
 
   it('keeps server-backed tabs isolated when resources fail or no detail is loaded', async () => {

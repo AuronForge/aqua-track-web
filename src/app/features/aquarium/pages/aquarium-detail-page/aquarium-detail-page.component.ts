@@ -1,15 +1,11 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  OnDestroy,
   OnInit,
-  TemplateRef,
   computed,
   inject,
   signal,
-  viewChild,
 } from '@angular/core';
 import { Location } from '@angular/common';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
@@ -86,7 +82,7 @@ type DateFilterValue = string | DatepickerRangeValue;
   styleUrl: './aquarium-detail-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AquariumDetailPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly location = inject(Location);
@@ -110,7 +106,6 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
   protected readonly applicationsPageSize = signal(10);
   private readonly loadedMeasurements = signal(false);
   private readonly loadedApplications = signal(false);
-  private readonly toolbarContentTemplate = viewChild<TemplateRef<unknown>>('toolbarContent');
 
   protected readonly filtersForm = new FormGroup({
     date: new FormControl<DateFilterValue>('', { nonNullable: true }),
@@ -357,14 +352,6 @@ export class AquariumDetailPageComponent implements OnInit, AfterViewInit, OnDes
         this.applicationsPageIndex.set(0);
         this.loadApplications();
       });
-  }
-
-  ngAfterViewInit(): void {
-    this.pageTitleService.setToolbarContent(this.toolbarContentTemplate() ?? null);
-  }
-
-  ngOnDestroy(): void {
-    this.pageTitleService.setToolbarContent(null);
   }
 
   protected onTabChange(tabId: string): void {

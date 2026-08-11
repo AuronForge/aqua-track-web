@@ -7,6 +7,7 @@
 }
 
 .aquarium-detail-page__header,
+.aquarium-detail-page__navigation,
 .aquarium-detail-page__table-toolbar,
 .aquarium-detail-page__actions,
 .aquarium-detail-page__identity,
@@ -18,6 +19,7 @@
 }
 
 .aquarium-detail-page__header,
+.aquarium-detail-page__navigation,
 .aquarium-detail-page__table-toolbar {
   justify-content: space-between;
 }
@@ -25,6 +27,10 @@
 .aquarium-detail-page__actions,
 .aquarium-detail-page__hero-tags {
   flex-wrap: wrap;
+}
+
+.aquarium-detail-page__actions {
+  justify-content: flex-end;
 }
 
 .aquarium-detail-page h1,
@@ -217,9 +223,13 @@
 @media (width <= 820px) {
   .aquarium-detail-page__header,
   .aquarium-detail-page__table-toolbar,
-  .aquarium-detail-page__actions {
+  .aquarium-detail-page__navigation {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .aquarium-detail-page__actions {
+    justify-content: flex-start;
   }
 
   .aquarium-detail-page__summary-grid,
