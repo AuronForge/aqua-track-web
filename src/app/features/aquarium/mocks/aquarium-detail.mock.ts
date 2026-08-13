@@ -247,11 +247,20 @@ function aquaticLife(
   quantity: number,
   notes: string,
 ): AquariumDetailAquaticLife {
+  const introducedAt = '2026-02-01T00:00:00.000Z';
+
   return {
     id,
     name,
     scientificName,
     typeLabel,
+    introducedAt,
+    introducedAtLabel: new Date(introducedAt).toLocaleDateString('pt-BR', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    }),
+    quantity,
     quantityLabel: `${quantity} ${quantity === 1 ? 'indivíduo' : 'indivíduos'}`,
     notes,
   };

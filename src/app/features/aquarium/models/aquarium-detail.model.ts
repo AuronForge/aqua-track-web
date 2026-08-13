@@ -80,6 +80,9 @@ export interface AquariumDetailAquaticLife extends Record<string, unknown> {
   readonly name: string;
   readonly scientificName: string;
   readonly typeLabel: string;
+  readonly introducedAt: string | null;
+  readonly introducedAtLabel: string;
+  readonly quantity: number;
   readonly quantityLabel: string;
   readonly notes: string;
 }
@@ -103,6 +106,7 @@ export interface AquariumDetailViewModel {
   readonly applications: readonly AquariumDetailApplication[];
   readonly applicationsPagination: AquariumPaginationViewModel;
   readonly aquaticLife: readonly AquariumDetailAquaticLife[];
+  readonly aquaticLifePagination: AquariumPaginationViewModel;
 }
 
 export interface NewAquariumMeasurementPayload {

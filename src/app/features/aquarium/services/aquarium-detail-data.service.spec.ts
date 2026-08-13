@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
-import { AquariumListResponseDto } from '../models/aquarium-api.dto';
+import { AquariumAquaticLifePageDto, AquariumDetailResponseDto } from '../models/aquarium-api.dto';
 import {
   AquariumApplicationsPageDto,
   AquariumOverviewDto,
@@ -38,26 +38,6 @@ const displayPreferences = {
   displayPotassium: true,
 };
 
-const aquarium: AquariumListResponseDto = {
-  id: 'aq-1',
-  ownerId: 'user-1',
-  name: 'Community Tank',
-  description: null,
-  type: 'COMMUNITY',
-  waterType: 'FRESHWATER',
-  volume: 75,
-  volumeUnit: 'LITER',
-  setupDate: '2024-01-15T00:00:00.000Z',
-  displayPreferences,
-  alertParameters: {},
-  primaryPhotoUrl: 'https://example.com/aquarium.jpg',
-  photosCount: 1,
-  status: 'ACTIVE',
-  createdAt: '2026-01-01T00:00:00.000Z',
-  updatedAt: '2026-01-01T00:00:00.000Z',
-  deletedAt: null,
-};
-
 const overview: AquariumOverviewDto = {
   health: { score: null, status: 'UNKNOWN' },
   latestMeasurements: [
@@ -80,6 +60,55 @@ const overview: AquariumOverviewDto = {
       trend: 'UP',
     },
   ],
+};
+
+const aquarium: AquariumDetailResponseDto = {
+  id: 'aq-1',
+  ownerId: 'user-1',
+  name: 'Community Tank',
+  description: null,
+  type: 'COMMUNITY',
+  waterType: 'FRESHWATER',
+  volume: 75,
+  volumeUnit: 'LITER',
+  setupDate: '2024-01-15T00:00:00.000Z',
+  displayPreferences,
+  alertParameters: {},
+  aquaticLife: [
+    {
+      category: 'FISH',
+      commonName: 'Neon tetra',
+      scientificName: 'Paracheirodon innesi',
+      quantity: 12,
+      introducedAt: null,
+      notes: 'Cardume ativo',
+    },
+  ],
+  coverPhoto: {
+    id: 'photo-1',
+    aquariumId: 'aq-1',
+    url: 'https://example.com/aquarium.jpg',
+    originalUrl: 'https://example.com/aquarium-original.jpg',
+    mediumUrl: 'https://example.com/aquarium-medium.jpg',
+    thumbnailUrl: 'https://example.com/aquarium-thumb.jpg',
+    contentType: 'image/jpeg',
+    originalFileName: 'aquarium.jpg',
+    caption: null,
+    altText: 'Vista frontal do aquario',
+    takenAt: null,
+    isPrimary: true,
+    sortOrder: 0,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    deletedAt: null,
+  },
+  primaryPhotoUrl: 'https://example.com/aquarium.jpg',
+  photosCount: 1,
+  overview,
+  status: 'ACTIVE',
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-01-01T00:00:00.000Z',
+  deletedAt: null,
 };
 
 const waterParameters: WaterParameterDto[] = [
@@ -150,14 +179,28 @@ const applicationsPage: AquariumApplicationsPageDto = {
   pagination: { page: 1, pageSize: 10, totalItems: 1, totalPages: 1 },
 };
 
+const aquaticLifePage: AquariumAquaticLifePageDto = {
+  data: [
+    {
+      category: 'PLANT',
+      commonName: 'Java moss',
+      scientificName: null,
+      quantity: 3,
+      introducedAt: '2026-01-02T00:00:00.000Z',
+      notes: null,
+    },
+  ],
+  pagination: { page: 1, pageSize: 10, totalItems: 1, totalPages: 1 },
+};
+
 describe('AquariumDetailDataService', () => {
-  function setup(aquariumResponse: AquariumListResponseDto = aquarium) {
+  function setup(aquariumResponse: AquariumDetailResponseDto = aquarium) {
     const aquariumApiService = {
       getAquarium: jest.fn(() => of(aquariumResponse)),
-      getAquariumOverview: jest.fn(() => of(overview)),
       listWaterParametersByAquarium: jest.fn(() => of(waterParameters)),
       listAquariumMeasurements: jest.fn(() => of(measurementsPage)),
       createAquariumMeasurement: jest.fn(() => of(void 0)),
+      listAquariumAquaticLife: jest.fn(() => of(aquaticLifePage)),
       listAquariumApplications: jest.fn(() => of(applicationsPage)),
     };
     const systemValuesApiService = {
@@ -186,7 +229,6 @@ describe('AquariumDetailDataService', () => {
 
     service.getAquariumDetail('aq-1').subscribe((detail) => {
       expect(aquariumApiService.getAquarium).toHaveBeenCalledWith('aq-1');
-      expect(aquariumApiService.getAquariumOverview).toHaveBeenCalledWith('aq-1');
       expect(aquariumApiService.listWaterParametersByAquarium).toHaveBeenCalledWith('aq-1');
       expect(systemValuesApiService.listAquariumTypes).toHaveBeenCalled();
       expect(detail?.name).toBe('Community Tank');
@@ -198,6 +240,17 @@ describe('AquariumDetailDataService', () => {
       expect(detail?.summary.healthScoreLabel).toBe('Sem dados');
       expect(detail?.summary.healthStatusLabel).toBe('Sem dados');
       expect(detail?.parameters.map((parameter) => parameter.key)).toEqual(['ph', 'nitrate']);
+      expect(detail?.heroImageUrl).toBe('https://example.com/aquarium-medium.jpg');
+      expect(detail?.heroAlt).toBe('Vista frontal do aquario');
+      expect(detail?.aquaticLife[0]).toEqual(
+        expect.objectContaining({
+          name: 'Neon tetra',
+          scientificName: 'Paracheirodon innesi',
+          typeLabel: 'Peixe',
+          quantityLabel: '12 unidades',
+          notes: 'Cardume ativo',
+        }),
+      );
       expect(detail?.parameters[1]).toEqual(
         expect.objectContaining({
           valueLabel: '16 mg/L',
@@ -208,6 +261,7 @@ describe('AquariumDetailDataService', () => {
       expect(detail?.waterParameters.map((parameter) => parameter.key)).toEqual(['ph', 'nitrate']);
       expect(detail?.measurementsPagination.totalItems).toBe(0);
       expect(detail?.applicationsPagination.totalItems).toBe(0);
+      expect(detail?.aquaticLifePagination.totalItems).toBe(1);
       done();
     });
   });
@@ -250,8 +304,9 @@ describe('AquariumDetailDataService', () => {
       waterType: 'SALTWATER',
       volume: 1,
       volumeUnit: 'GALLON',
-      setupDate: null,
+      setupDate: 'not-a-date',
       primaryPhotoUrl: null,
+      coverPhoto: null,
       status: 'ARCHIVED',
     });
     const systemValuesApiService = TestBed.inject(SystemValuesApiService) as unknown as {
@@ -281,16 +336,30 @@ describe('AquariumDetailDataService', () => {
     });
   });
 
+  it('maps plural gallon capacity labels', (done) => {
+    const { service } = setup({
+      ...aquarium,
+      volume: 2,
+      volumeUnit: 'GALLON',
+    });
+
+    service.getAquariumDetail('aq-1').subscribe((detail) => {
+      expect(detail?.volumeLabel).toBe('2gal');
+      expect(detail?.summary.capacityLabel).toBe('Capacidade total: 2 galões');
+      done();
+    });
+  });
+
   it('maps overview health statuses and score without inventing values', (done) => {
     const { service } = setup();
     const api = TestBed.inject(AquariumApiService) as unknown as {
-      getAquariumOverview: jest.Mock;
+      getAquarium: jest.Mock;
     };
-    api.getAquariumOverview.mockReturnValue(
+    api.getAquarium.mockReturnValue(
       of({
-        health: { score: 92, status: 'CRITICAL' },
-        latestMeasurements: [],
-      } satisfies AquariumOverviewDto),
+        ...aquarium,
+        overview: { health: { score: 92, status: 'CRITICAL' }, latestMeasurements: [] },
+      } satisfies AquariumDetailResponseDto),
     );
 
     service.getAquariumOverview('aq-1').subscribe((result) => {
@@ -306,50 +375,53 @@ describe('AquariumDetailDataService', () => {
   it('localizes known parameter names and enum-like units from overview measurements', (done) => {
     const { service } = setup();
     const api = TestBed.inject(AquariumApiService) as unknown as {
-      getAquariumOverview: jest.Mock;
+      getAquarium: jest.Mock;
     };
-    api.getAquariumOverview.mockReturnValue(
+    api.getAquarium.mockReturnValue(
       of({
-        health: { score: 80, status: 'STABLE' },
-        latestMeasurements: [
-          {
-            parameter: 'magnesium',
-            parameterName: 'Magnesium',
-            value: 1340.1,
-            unit: 'MG_L',
-            measuredAt: '2026-08-10T12:00:00.000Z',
-            status: 'NORMAL',
-            trend: 'STABLE',
-          },
-          {
-            parameter: 'temperature',
-            parameterName: 'Temp',
-            value: 25.9,
-            unit: 'CELSIUS',
-            measuredAt: '2026-08-10T12:00:00.000Z',
-            status: 'NORMAL',
-            trend: 'STABLE',
-          },
-          {
-            parameter: 'density_salinity',
-            parameterName: 'Density / Salinity',
-            value: 1.1,
-            unit: 'SPECIFIC_GRAVITY',
-            measuredAt: '2026-08-10T12:00:00.000Z',
-            status: 'NORMAL',
-            trend: 'STABLE',
-          },
-          {
-            parameter: 'ph',
-            parameterName: 'pH',
-            value: 8.3,
-            unit: 'PH',
-            measuredAt: '2026-08-10T12:00:00.000Z',
-            status: 'NORMAL',
-            trend: 'STABLE',
-          },
-        ],
-      } satisfies AquariumOverviewDto),
+        ...aquarium,
+        overview: {
+          health: { score: 80, status: 'STABLE' },
+          latestMeasurements: [
+            {
+              parameter: 'magnesium',
+              parameterName: 'Magnesium',
+              value: 1340.1,
+              unit: 'MG_L',
+              measuredAt: '2026-08-10T12:00:00.000Z',
+              status: 'NORMAL',
+              trend: 'STABLE',
+            },
+            {
+              parameter: 'temperature',
+              parameterName: 'Temp',
+              value: 25.9,
+              unit: 'CELSIUS',
+              measuredAt: '2026-08-10T12:00:00.000Z',
+              status: 'NORMAL',
+              trend: 'STABLE',
+            },
+            {
+              parameter: 'density_salinity',
+              parameterName: 'Density / Salinity',
+              value: 1.1,
+              unit: 'SPECIFIC_GRAVITY',
+              measuredAt: '2026-08-10T12:00:00.000Z',
+              status: 'NORMAL',
+              trend: 'STABLE',
+            },
+            {
+              parameter: 'ph',
+              parameterName: 'pH',
+              value: 8.3,
+              unit: 'PH',
+              measuredAt: '2026-08-10T12:00:00.000Z',
+              status: 'NORMAL',
+              trend: 'STABLE',
+            },
+          ],
+        },
+      } satisfies AquariumDetailResponseDto),
     );
 
     service.getAquariumOverview('aq-1').subscribe((result) => {
@@ -391,13 +463,13 @@ describe('AquariumDetailDataService', () => {
   ] as const)('maps overview health status %s', (status, label, color, done) => {
     const { service } = setup();
     const api = TestBed.inject(AquariumApiService) as unknown as {
-      getAquariumOverview: jest.Mock;
+      getAquarium: jest.Mock;
     };
-    api.getAquariumOverview.mockReturnValue(
+    api.getAquarium.mockReturnValue(
       of({
-        health: { score: 80, status },
-        latestMeasurements: [],
-      } satisfies AquariumOverviewDto),
+        ...aquarium,
+        overview: { health: { score: 80, status }, latestMeasurements: [] },
+      } satisfies AquariumDetailResponseDto),
     );
 
     service.getAquariumOverview('aq-1').subscribe((result) => {
@@ -439,6 +511,25 @@ describe('AquariumDetailDataService', () => {
 
     service.createAquariumMeasurement('aq-1', payload).subscribe(() => {
       expect(aquariumApiService.createAquariumMeasurement).toHaveBeenCalledWith('aq-1', payload);
+      done();
+    });
+  });
+
+  it('maps paginated aquatic life and delegates the query to the aquarium endpoint', (done) => {
+    const { service, aquariumApiService } = setup();
+    const query = { page: 1, pageSize: 10, sort: 'appliedAt' as const, direction: 'desc' as const };
+
+    service.listAquariumAquaticLife('aq-1', query).subscribe((page) => {
+      expect(aquariumApiService.listAquariumAquaticLife).toHaveBeenCalledWith('aq-1', query);
+      expect(page.pagination.totalItems).toBe(1);
+      expect(page.aquaticLife[0]).toEqual(
+        expect.objectContaining({
+          name: 'Java moss',
+          typeLabel: 'Planta',
+          introducedAtLabel: '2 de jan. de 2026',
+          quantityLabel: '3 unidades',
+        }),
+      );
       done();
     });
   });

@@ -37,6 +37,7 @@ import { TabComponent, TabsComponent } from '../../../../shared/components/tabs'
 import { FeedbackMessageService } from '../../../../shared/services/feedback-message.service';
 import { ModalService } from '../../../../shared/services/modal.service';
 import { AddMeasurementModalComponent } from '../../components/add-measurement-modal/add-measurement-modal.component';
+import { AquariumAquaticLifeQuery } from '../../models/aquarium-api.dto';
 import { ApplicationQuery, MeasurementQuery } from '../../models/aquarium-operational-api.dto';
 import {
   AquariumDetailAquaticLife,
@@ -96,16 +97,21 @@ export class AquariumDetailPageComponent implements OnInit {
   protected readonly overviewStatus = signal<AquariumResourceStatus>('idle');
   protected readonly measurementsStatus = signal<AquariumResourceStatus>('idle');
   protected readonly applicationsStatus = signal<AquariumResourceStatus>('idle');
+  protected readonly aquaticLifeStatus = signal<AquariumResourceStatus>('idle');
   protected readonly detail = signal<AquariumDetailViewModel | null>(null);
   protected readonly activeTabId = signal<AquariumDetailTabId>('overview');
   protected readonly measurementSort = signal<AqTableSort | null>(null);
   protected readonly applicationSort = signal<AqTableSort | null>(null);
+  protected readonly aquaticLifeSort = signal<AqTableSort | null>(null);
   protected readonly measurementsPageIndex = signal(0);
   protected readonly measurementsPageSize = signal(10);
   protected readonly applicationsPageIndex = signal(0);
   protected readonly applicationsPageSize = signal(10);
+  protected readonly aquaticLifePageIndex = signal(0);
+  protected readonly aquaticLifePageSize = signal(10);
   private readonly loadedMeasurements = signal(false);
   private readonly loadedApplications = signal(false);
+  private readonly loadedAquaticLife = signal(false);
 
   protected readonly filtersForm = new FormGroup({
     date: new FormControl<DateFilterValue>('', { nonNullable: true }),
@@ -197,18 +203,38 @@ export class AquariumDetailPageComponent implements OnInit {
     },
   ];
   protected readonly aquaticLifeColumns: readonly AqTableColumn<AquariumDetailAquaticLife>[] = [
-    { key: 'name', header: 'Nome', property: 'name', minWidth: '12rem', priority: 'primary' },
+    {
+      key: 'name',
+      header: 'Nome',
+      property: 'name',
+      sortable: true,
+      minWidth: '12rem',
+      priority: 'primary',
+    },
     {
       key: 'scientificName',
       header: 'Nome científico',
       property: 'scientificName',
       minWidth: '14rem',
     },
-    { key: 'typeLabel', header: 'Tipo', property: 'typeLabel', minWidth: '10rem' },
+    {
+      key: 'typeLabel',
+      header: 'Tipo',
+      property: 'typeLabel',
+      sortable: true,
+      minWidth: '10rem',
+    },
+    {
+      key: 'introducedAt',
+      header: 'Introdução',
+      sortable: true,
+      minWidth: '11rem',
+    },
     {
       key: 'quantityLabel',
       header: 'Quantidade',
       property: 'quantityLabel',
+      sortable: true,
       minWidth: '10rem',
       priority: 'primary',
     },
@@ -261,7 +287,7 @@ export class AquariumDetailPageComponent implements OnInit {
     return count === 1 ? '1 aplicação registrada' : `${count} aplicações registradas`;
   });
   protected readonly aquaticLifeCaption = computed(() => {
-    const count = this.filteredAquaticLife().length;
+    const count = this.detail()?.aquaticLifePagination.totalItems ?? 0;
     return count === 1 ? '1 item registrado' : `${count} itens registrados`;
   });
   protected readonly filteredAquaticLife = computed(() => {
@@ -454,6 +480,12 @@ export class AquariumDetailPageComponent implements OnInit {
     this.loadApplications();
   }
 
+  protected onAquaticLifeSortChange(sort: AqTableSort | null): void {
+    this.aquaticLifeSort.set(sort);
+    this.aquaticLifePageIndex.set(0);
+    this.loadAquaticLife();
+  }
+
   protected onMeasurementsPageChange(change: PaginatorChange): void {
     this.measurementsPageIndex.set(change.pageIndex);
     this.measurementsPageSize.set(change.pageSize);
@@ -464,6 +496,12 @@ export class AquariumDetailPageComponent implements OnInit {
     this.applicationsPageIndex.set(change.pageIndex);
     this.applicationsPageSize.set(change.pageSize);
     this.loadApplications();
+  }
+
+  protected onAquaticLifePageChange(change: PaginatorChange): void {
+    this.aquaticLifePageIndex.set(change.pageIndex);
+    this.aquaticLifePageSize.set(change.pageSize);
+    this.loadAquaticLife();
   }
 
   private readonly addMeasurement = (payload: NewAquariumMeasurementPayload): Observable<void> => {
@@ -507,8 +545,10 @@ export class AquariumDetailPageComponent implements OnInit {
     this.overviewStatus.set('loading');
     this.measurementsStatus.set('idle');
     this.applicationsStatus.set('idle');
+    this.aquaticLifeStatus.set('idle');
     this.loadedMeasurements.set(false);
     this.loadedApplications.set(false);
+    this.loadedAquaticLife.set(false);
     this.detail.set(null);
 
     this.aquariumDetailDataService
@@ -544,6 +584,36 @@ export class AquariumDetailPageComponent implements OnInit {
     if (tabId === 'applications' && !this.loadedApplications()) {
       this.loadApplications();
     }
+
+    if (tabId === 'aquatic-life' && !this.loadedAquaticLife()) {
+      this.loadAquaticLife();
+    }
+  }
+
+  private loadAquaticLife(): void {
+    const detail = this.detail();
+
+    if (!detail) {
+      return;
+    }
+
+    this.loadedAquaticLife.set(true);
+    this.aquaticLifeStatus.set('loading');
+    this.aquariumDetailDataService
+      .listAquariumAquaticLife(detail.id, this.buildAquaticLifeQuery())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ({ aquaticLife, pagination }) => {
+          this.detail.update((current) =>
+            current ? { ...current, aquaticLife, aquaticLifePagination: pagination } : current,
+          );
+          this.aquaticLifeStatus.set('ready');
+        },
+        error: () => {
+          this.loadedAquaticLife.set(false);
+          this.aquaticLifeStatus.set('error');
+        },
+      });
   }
 
   private refreshOverview(): void {
@@ -691,6 +761,17 @@ export class AquariumDetailPageComponent implements OnInit {
     };
   }
 
+  private buildAquaticLifeQuery(): AquariumAquaticLifeQuery {
+    const sort = this.aquaticLifeSort();
+
+    return {
+      page: this.aquaticLifePageIndex() + 1,
+      pageSize: this.aquaticLifePageSize(),
+      sort: this.mapAquaticLifeSortKey(sort?.key),
+      direction: sort?.direction ?? 'desc',
+    };
+  }
+
   private toDateQuery(filter: DateFilterValue | null | undefined): {
     startDate?: string;
     endDate?: string;
@@ -740,6 +821,17 @@ export class AquariumDetailPageComponent implements OnInit {
       productName: 'productName',
       productType: 'productType',
       doseLabel: 'amount',
+    };
+
+    return key ? map[key] : 'appliedAt';
+  }
+
+  private mapAquaticLifeSortKey(key: string | undefined): AquariumAquaticLifeQuery['sort'] {
+    const map: Record<string, AquariumAquaticLifeQuery['sort']> = {
+      name: 'commonName',
+      typeLabel: 'category',
+      introducedAt: 'introducedAt',
+      quantityLabel: 'quantity',
     };
 
     return key ? map[key] : 'appliedAt';

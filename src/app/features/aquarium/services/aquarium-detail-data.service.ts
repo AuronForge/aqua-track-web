@@ -4,6 +4,8 @@ import { Observable, catchError, forkJoin, map, of, throwError } from 'rxjs';
 
 import { BadgeColor } from '../../../shared/components/badge/badge-color.type';
 import {
+  AquariumAquaticLifeQuery,
+  AquariumDetailAquaticLifeDto,
   AquariumDetailResponseDto,
   AquariumRecordStatus,
   AquariumWaterType,
@@ -22,6 +24,7 @@ import {
 } from '../models/aquarium-operational-api.dto';
 import {
   AquariumDetailApplication,
+  AquariumDetailAquaticLife,
   AquariumDetailMeasurement,
   AquariumDetailParameter,
   AquariumDetailViewModel,
@@ -93,12 +96,11 @@ export class AquariumDetailDataService {
   getAquariumDetail(aquariumId: string): Observable<AquariumDetailViewModel | null> {
     return forkJoin({
       aquarium: this.aquariumApiService.getAquarium(aquariumId),
-      overview: this.aquariumApiService.getAquariumOverview(aquariumId),
       waterParameters: this.aquariumApiService.listWaterParametersByAquarium(aquariumId),
       aquariumTypes: this.systemValuesApiService.listAquariumTypes(),
     }).pipe(
-      map(({ aquarium, overview, waterParameters, aquariumTypes }) =>
-        this.mapAquarium(aquarium, overview, waterParameters, aquariumTypes),
+      map(({ aquarium, waterParameters, aquariumTypes }) =>
+        this.mapAquarium(aquarium, waterParameters, aquariumTypes),
       ),
       catchError((error: unknown) => {
         if (error instanceof HttpErrorResponse && error.status === 404) {
@@ -114,10 +116,10 @@ export class AquariumDetailDataService {
     readonly summary: AquariumDetailViewModel['summary'];
     readonly parameters: readonly AquariumDetailParameter[];
   }> {
-    return this.aquariumApiService.getAquariumOverview(aquariumId).pipe(
-      map((overview) => ({
-        summary: this.mapOverviewSummary(overview),
-        parameters: this.mapLatestMeasurements(overview.latestMeasurements),
+    return this.aquariumApiService.getAquarium(aquariumId).pipe(
+      map((aquarium) => ({
+        summary: this.mapOverviewSummary(aquarium.overview),
+        parameters: this.mapLatestMeasurements(aquarium.overview.latestMeasurements),
       })),
     );
   }
@@ -147,6 +149,21 @@ export class AquariumDetailDataService {
     return this.aquariumApiService.createAquariumMeasurement(aquariumId, payload);
   }
 
+  listAquariumAquaticLife(
+    aquariumId: string,
+    query: AquariumAquaticLifeQuery,
+  ): Observable<{
+    readonly aquaticLife: readonly AquariumDetailAquaticLife[];
+    readonly pagination: AquariumPaginationViewModel;
+  }> {
+    return this.aquariumApiService.listAquariumAquaticLife(aquariumId, query).pipe(
+      map((page) => ({
+        aquaticLife: page.data.map((life, index) => this.mapAquaticLife(life, index)),
+        pagination: page.pagination,
+      })),
+    );
+  }
+
   listAquariumApplications(
     aquariumId: string,
     query: ApplicationQuery,
@@ -164,7 +181,6 @@ export class AquariumDetailDataService {
 
   private mapAquarium(
     aquarium: AquariumDetailResponseDto,
-    overview: AquariumOverviewDto,
     waterParameters: readonly WaterParameterDto[],
     aquariumTypes: readonly SystemValueApiDto[],
   ): AquariumDetailViewModel {
@@ -172,7 +188,18 @@ export class AquariumDetailDataService {
     const volumeLabel = this.mapVolume(aquarium.volume, aquarium.volumeUnit);
     const setupDateLabel = this.formatDate(aquarium.setupDate);
     const status = this.mapStatus(aquarium.status);
-    const overviewSummary = this.mapOverviewSummary(overview);
+    const overviewSummary = this.mapOverviewSummary(aquarium.overview);
+    const heroImageUrl =
+      aquarium.coverPhoto?.mediumUrl ??
+      aquarium.coverPhoto?.url ??
+      aquarium.primaryPhotoUrl ??
+      aquarium.photoUrl ??
+      null;
+    const heroAlt = aquarium.coverPhoto?.altText ?? `Foto do aquário ${aquarium.name}`;
+
+    const aquaticLife = (aquarium.aquaticLife ?? []).map((life, index) =>
+      this.mapAquaticLife(life, index),
+    );
 
     return {
       id: aquarium.id,
@@ -183,20 +210,26 @@ export class AquariumDetailDataService {
       setupDateLabel,
       statusLabel: status.label,
       statusColor: status.color,
-      heroImageUrl: aquarium.primaryPhotoUrl,
-      heroAlt: `Foto do aquário ${aquarium.name}`,
+      heroImageUrl,
+      heroAlt,
       summary: {
         ...overviewSummary,
         capacityLabel: this.mapCapacityLabel(aquarium.volume, aquarium.volumeUnit),
         setupDateLabel,
       },
       waterParameters: waterParameters.map((parameter) => this.mapWaterParameter(parameter)),
-      parameters: this.mapLatestMeasurements(overview.latestMeasurements),
+      parameters: this.mapLatestMeasurements(aquarium.overview.latestMeasurements),
       measurements: [],
       measurementsPagination: EMPTY_PAGINATION,
       applications: [],
       applicationsPagination: EMPTY_PAGINATION,
-      aquaticLife: [],
+      aquaticLife,
+      aquaticLifePagination: {
+        page: 1,
+        pageSize: aquaticLife.length || EMPTY_PAGINATION.pageSize,
+        totalItems: aquaticLife.length,
+        totalPages: aquaticLife.length > 0 ? 1 : 0,
+      },
     };
   }
 
@@ -323,6 +356,46 @@ export class AquariumDetailDataService {
       doseLabel: this.formatValue(application.dose, application.doseUnit),
       notes: application.notes ?? '',
     };
+  }
+
+  private mapAquaticLife(
+    life: AquariumDetailAquaticLifeDto,
+    index: number,
+  ): AquariumDetailAquaticLife {
+    const legacyLife = life as AquariumDetailAquaticLifeDto & {
+      readonly id?: string;
+      readonly name?: string;
+      readonly type?: string;
+    };
+    const name = life.commonName || legacyLife.name || 'Sem nome';
+    const typeLabel =
+      legacyLife.type || (life.category ? this.mapAquaticLifeCategory(life.category) : 'Outro');
+    const quantity = Number.isFinite(life.quantity) && life.quantity > 0 ? life.quantity : 1;
+    const introducedAt = life.introducedAt ?? null;
+
+    return {
+      id: legacyLife.id ?? `${life.category}-${name}-${index}`,
+      name,
+      scientificName: life.scientificName ?? '',
+      typeLabel,
+      introducedAt,
+      introducedAtLabel: this.formatDate(introducedAt),
+      quantity,
+      quantityLabel: quantity === 1 ? '1 unidade' : `${quantity} unidades`,
+      notes: life.notes ?? '',
+    };
+  }
+
+  private mapAquaticLifeCategory(category: AquariumDetailAquaticLifeDto['category']): string {
+    const labels: Record<AquariumDetailAquaticLifeDto['category'], string> = {
+      FISH: 'Peixe',
+      PLANT: 'Planta',
+      CORAL: 'Coral',
+      INVERTEBRATE: 'Invertebrado',
+      OTHER: 'Outro',
+    };
+
+    return labels[category];
   }
 
   private mapHealthStatus(status: AquariumOverviewDto['health']['status']): {

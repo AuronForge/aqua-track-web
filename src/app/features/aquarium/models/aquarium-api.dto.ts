@@ -1,3 +1,5 @@
+import { AquariumOverviewDto } from './aquarium-operational-api.dto';
+
 export type AquariumType =
   | 'COMMUNITY'
   | 'SPECIES_ONLY'
@@ -60,6 +62,7 @@ export interface CreateAquariumPayload {
 export interface AquariumListResponseDto extends CreateAquariumPayload {
   readonly id: string;
   readonly ownerId: string;
+  readonly photoUrl?: string | null;
   readonly primaryPhotoUrl: string | null;
   readonly photosCount: number;
   readonly status: AquariumRecordStatus;
@@ -68,6 +71,58 @@ export interface AquariumListResponseDto extends CreateAquariumPayload {
   readonly deletedAt: string | null;
 }
 
-export type AquariumDetailResponseDto = AquariumListResponseDto;
+export interface AquariumPhotoDto {
+  readonly id: string;
+  readonly aquariumId: string;
+  readonly url: string;
+  readonly originalUrl: string;
+  readonly mediumUrl: string;
+  readonly thumbnailUrl: string;
+  readonly contentType: string;
+  readonly originalFileName: string | null;
+  readonly caption: string | null;
+  readonly altText: string | null;
+  readonly takenAt: string | null;
+  readonly isPrimary: boolean;
+  readonly sortOrder: number;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+  readonly deletedAt: string | null;
+}
 
-export type UpdateAquariumPayload = CreateAquariumPayload;
+export interface AquariumDetailAquaticLifeDto {
+  readonly category: 'FISH' | 'PLANT' | 'CORAL' | 'INVERTEBRATE' | 'OTHER';
+  readonly commonName: string;
+  readonly scientificName: string | null;
+  readonly quantity: number;
+  readonly introducedAt: string | null;
+  readonly notes: string | null;
+}
+
+export interface AquariumDetailResponseDto extends AquariumListResponseDto {
+  readonly aquaticLife?: readonly AquariumDetailAquaticLifeDto[];
+  readonly coverPhoto: AquariumPhotoDto | null;
+  readonly photos?: readonly AquariumPhotoDto[];
+  readonly overview: AquariumOverviewDto;
+}
+
+export interface AquariumAquaticLifePageDto {
+  readonly data: readonly AquariumDetailAquaticLifeDto[];
+  readonly pagination: {
+    readonly page: number;
+    readonly pageSize: number;
+    readonly totalItems: number;
+    readonly totalPages: number;
+  };
+}
+
+export interface AquariumAquaticLifeQuery {
+  readonly page: number;
+  readonly pageSize: number;
+  readonly sort?: 'category' | 'commonName' | 'introducedAt' | 'quantity' | 'appliedAt';
+  readonly direction?: 'asc' | 'desc';
+}
+
+export type UpdateAquariumPayload = CreateAquariumPayload & {
+  readonly aquaticLife?: readonly AquariumDetailAquaticLifeDto[];
+};

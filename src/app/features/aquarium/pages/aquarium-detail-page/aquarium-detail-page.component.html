@@ -383,11 +383,13 @@
             [columns]="aquaticLifeColumns"
             rowId="id"
             caption="Vida aquática"
+            [sort]="aquaticLifeSort()"
             [emptyState]="{
               title: 'Nenhuma vida aquática cadastrada',
               description: 'Peixes, plantas e invertebrados aparecerão aqui.',
               icon: 'set_meal',
             }"
+            (sortChange)="onAquaticLifeSortChange($event)"
           >
             <ng-template aqTableCell="name" let-row>
               <strong>{{ row.name }}</strong>
@@ -395,7 +397,18 @@
             <ng-template aqTableCell="scientificName" let-row>
               <span>{{ row.scientificName }}</span>
             </ng-template>
+            <ng-template aqTableCell="introducedAt" let-row>
+              <strong>{{ row.introducedAtLabel }}</strong>
+            </ng-template>
           </aq-table>
+
+          <aq-paginator
+            [pageIndex]="aquaticLifePageIndex()"
+            [pageSize]="aquaticLifePageSize()"
+            [totalItems]="aquarium.aquaticLifePagination.totalItems"
+            [disabled]="aquaticLifeStatus() === 'loading'"
+            (pageChange)="onAquaticLifePageChange($event)"
+          />
         </div>
       </aq-tab>
 

@@ -233,20 +233,29 @@ describe('AquariumApiService', () => {
     });
   });
 
-  it('gets aquarium overview from the specific endpoint', () => {
-    service.getAquariumOverview('aq-1').subscribe();
-
-    const req = httpMock.expectOne('http://localhost:3000/aquariums/aq-1/overview');
-    expect(req.request.method).toBe('GET');
-    req.flush({ health: { score: null, status: 'UNKNOWN' }, latestMeasurements: [] });
-  });
-
   it('gets compatible water parameters by aquarium id', () => {
     service.listWaterParametersByAquarium('aq-1').subscribe();
 
     const req = httpMock.expectOne('http://localhost:3000/water-parameters/by-aquarium/aq-1');
     expect(req.request.method).toBe('GET');
     req.flush([]);
+  });
+
+  it('gets paginated aquarium aquatic life with supported query params', () => {
+    service
+      .listAquariumAquaticLife('aq-1', {
+        page: 1,
+        pageSize: 10,
+        sort: 'appliedAt',
+        direction: 'desc',
+      })
+      .subscribe();
+
+    const req = httpMock.expectOne(
+      'http://localhost:3000/aquariums/aq-1/aquatic-life?page=1&pageSize=10&sort=appliedAt&direction=desc',
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush({ data: [], pagination: { page: 1, pageSize: 10, totalItems: 0, totalPages: 0 } });
   });
 
   it('gets paginated aquarium measurements with supported query params', () => {

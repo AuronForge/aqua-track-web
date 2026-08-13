@@ -82,6 +82,7 @@ const detail: AquariumDetailViewModel = {
   applications: [],
   applicationsPagination: pagination,
   aquaticLife: [],
+  aquaticLifePagination: pagination,
 };
 
 const measurements: readonly AquariumDetailMeasurement[] = [
@@ -121,6 +122,9 @@ const aquaticLife = [
     name: 'Neon',
     scientificName: 'Paracheirodon innesi',
     typeLabel: 'Peixe',
+    introducedAt: '2026-01-02T00:00:00.000Z',
+    introducedAtLabel: '2 de jan. de 2026',
+    quantity: 8,
     quantityLabel: '8 unidades',
     notes: '',
   },
@@ -129,6 +133,9 @@ const aquaticLife = [
     name: 'Anubia',
     scientificName: 'Anubias barteri',
     typeLabel: 'Planta',
+    introducedAt: null,
+    introducedAtLabel: 'Data indisponível',
+    quantity: 2,
     quantityLabel: '2 unidades',
     notes: '',
   },
@@ -137,6 +144,9 @@ const aquaticLife = [
     name: 'Camarão',
     scientificName: 'Neocaridina davidi',
     typeLabel: 'Invertebrado',
+    introducedAt: '2026-02-02T00:00:00.000Z',
+    introducedAtLabel: '2 de fev. de 2026',
+    quantity: 12,
     quantityLabel: '12 unidades',
     notes: '',
   },
@@ -163,6 +173,7 @@ async function createFixture({
     getAquariumOverview: jest.Mock;
     listAquariumMeasurements: jest.Mock;
     createAquariumMeasurement: jest.Mock;
+    listAquariumAquaticLife: jest.Mock;
     listAquariumApplications: jest.Mock;
   };
   modalService: { open: jest.Mock };
@@ -195,6 +206,12 @@ async function createFixture({
       }),
     ),
     createAquariumMeasurement: jest.fn(() => of(void 0)),
+    listAquariumAquaticLife: jest.fn(() =>
+      of({
+        aquaticLife,
+        pagination: { page: 1, pageSize: 10, totalItems: 3, totalPages: 1 },
+      }),
+    ),
     listAquariumApplications: jest.fn(() =>
       of({
         applications,
@@ -573,6 +590,29 @@ describe('AquariumDetailPageComponent', () => {
     expect(component.hasAquaticLifeFilters()).toBe(false);
     expect(component.hasApplicationFilters()).toBe(false);
     expect(component.hasMeasurementFilters()).toBe(false);
+  });
+
+  it('lazy loads aquatic life from the paginated endpoint when the aquatic-life tab opens', async () => {
+    const { fixture, detailService } = await createFixture();
+    const component = fixture.componentInstance as AquariumDetailPageComponent & {
+      onTabChange: (tab: string) => void;
+      filteredAquaticLife: () => readonly typeof aquaticLife;
+    };
+
+    component.onTabChange('aquatic-life');
+    fixture.detectChanges();
+
+    expect(detailService.getAquariumDetail).toHaveBeenCalledTimes(1);
+    expect(detailService.listAquariumAquaticLife).toHaveBeenCalledWith(
+      'aq-1',
+      expect.objectContaining({ page: 1, pageSize: 10, sort: 'appliedAt', direction: 'desc' }),
+    );
+    expect(component.filteredAquaticLife().map((life) => life.id)).toEqual([
+      'life-1',
+      'life-2',
+      'life-3',
+    ]);
+    expect(fixture.nativeElement.textContent).toContain('Neon');
   });
 
   it('keeps computed collections empty and ignores filter reloads when no tab data is loaded', async () => {

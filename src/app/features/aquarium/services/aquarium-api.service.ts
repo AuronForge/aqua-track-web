@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
 import {
+  AquariumAquaticLifePageDto,
+  AquariumAquaticLifeQuery,
   AquariumDetailResponseDto,
   AquariumListResponseDto,
   AquariumType,
@@ -13,7 +15,6 @@ import {
 import {
   ApplicationQuery,
   AquariumApplicationsPageDto,
-  AquariumOverviewDto,
   CreateAquariumApplicationRequestDto,
   CreateMeasurementRequestDto,
   MeasurementQuery,
@@ -71,21 +72,33 @@ export class AquariumApiService {
     payload: Partial<
       Pick<
         UpdateAquariumPayload,
-        'name' | 'description' | 'type' | 'waterType' | 'volume' | 'volumeUnit' | 'setupDate'
+        | 'name'
+        | 'description'
+        | 'type'
+        | 'waterType'
+        | 'volume'
+        | 'volumeUnit'
+        | 'setupDate'
+        | 'aquaticLife'
       >
     >,
   ): Observable<AquariumDetailResponseDto> {
     return this.http.patch<AquariumDetailResponseDto>(`${this.baseUrl}/${aquariumId}`, payload);
   }
 
-  getAquariumOverview(aquariumId: string): Observable<AquariumOverviewDto> {
-    return this.http.get<AquariumOverviewDto>(`${this.baseUrl}/${aquariumId}/overview`);
-  }
-
   listWaterParametersByAquarium(aquariumId: string): Observable<readonly WaterParameterDto[]> {
     return this.http.get<readonly WaterParameterDto[]>(
       `${environment.apiBaseUrl}/water-parameters/by-aquarium/${aquariumId}`,
     );
+  }
+
+  listAquariumAquaticLife(
+    aquariumId: string,
+    query: AquariumAquaticLifeQuery,
+  ): Observable<AquariumAquaticLifePageDto> {
+    return this.http.get<AquariumAquaticLifePageDto>(`${this.baseUrl}/${aquariumId}/aquatic-life`, {
+      params: this.cleanParams(query),
+    });
   }
 
   listAquariumMeasurements(
