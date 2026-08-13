@@ -42,6 +42,13 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'menu', pathMatch: 'full' },
       {
+        path: 'alert',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/alert/alert-showcase.component').then(
+            (m) => m.AlertShowcaseComponent,
+          ),
+      },
+      {
         path: 'menu',
         loadComponent: () =>
           import('./features/components-showcase/pages/nav-menu/nav-menu-showcase.component').then(
@@ -126,6 +133,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'paginator',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/paginator/paginator-showcase.component').then(
+            (m) => m.PaginatorShowcaseComponent,
+          ),
+      },
+      {
         path: 'badge',
         loadComponent: () =>
           import('./features/components-showcase/pages/badge/badge-showcase.component').then(
@@ -172,6 +186,20 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/components-showcase/pages/formfields/textarea-formfield-showcase.component').then(
             (m) => m.TextareaFormfieldShowcaseComponent,
+          ),
+      },
+      {
+        path: 'tabs',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/tabs/tabs-showcase.component').then(
+            (m) => m.TabsShowcaseComponent,
+          ),
+      },
+      {
+        path: 'table',
+        loadComponent: () =>
+          import('./features/components-showcase/pages/table/table-showcase.component').then(
+            (m) => m.TableShowcaseComponent,
           ),
       },
     ],

@@ -1,0 +1,119 @@
+@use '../../theme' as theme;
+
+:host {
+  --_accent: #{theme.$aq-color-information};
+  --_accent-strong: #{theme.$aq-color-information-strong};
+  --_accent-muted: rgb(26 115 232 / 10%);
+  --_border: rgb(26 115 232 / 28%);
+
+  display: block;
+  inline-size: 100%;
+  color: theme.$aq-color-text-primary;
+}
+
+:host(.alert--success) {
+  --_accent: #{theme.$aq-color-success};
+  --_accent-strong: #{theme.$aq-color-success-strong};
+  --_accent-muted: rgb(45 138 78 / 10%);
+  --_border: rgb(45 138 78 / 28%);
+}
+
+:host(.alert--warning) {
+  --_accent: #{theme.$aq-color-warning};
+  --_accent-strong: #{theme.$aq-color-warning-strong};
+  --_accent-muted: rgb(230 172 0 / 14%);
+  --_border: rgb(230 172 0 / 34%);
+}
+
+:host(.alert--error) {
+  --_accent: #{theme.$aq-color-error};
+  --_accent-strong: #{theme.$aq-color-error-strong};
+  --_accent-muted: rgb(217 48 37 / 9%);
+  --_border: rgb(217 48 37 / 28%);
+}
+
+:host(.alert--neutral) {
+  --_accent: #{theme.$aq-color-tertiary};
+  --_accent-strong: #{theme.$aq-color-tertiary-strong};
+  --_accent-muted: #{theme.$aq-color-surface-muted};
+  --_border: #{theme.$aq-color-border-strong};
+}
+
+.alert__surface {
+  display: flex;
+  align-items: flex-start;
+  gap: theme.$aq-space-sm;
+  inline-size: 100%;
+  min-inline-size: 0;
+  padding: theme.$aq-space-md;
+  border: 1px solid var(--_border);
+  border-radius: theme.$aq-radius-sm;
+  background: var(--_accent-muted);
+}
+
+.alert__icon {
+  flex: 0 0 auto;
+  margin-top: 0.0625rem;
+  color: var(--_accent-strong);
+  font-size: theme.$aq-size-icon-md;
+  line-height: 1;
+  user-select: none;
+}
+
+.alert__content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-inline-size: 0;
+  gap: theme.$aq-space-xs;
+}
+
+.alert__title {
+  margin: 0;
+  color: theme.$aq-color-text-primary;
+  font: theme.$aq-font-weight-semibold theme.$aq-font-size-md/#{theme.$aq-line-height-tight}
+    theme.$aq-font-family-base;
+  overflow-wrap: anywhere;
+}
+
+.alert__message {
+  color: theme.$aq-color-text-primary;
+  font: theme.$aq-font-weight-regular theme.$aq-font-size-md/#{theme.$aq-line-height-base}
+    theme.$aq-font-family-base;
+  overflow-wrap: anywhere;
+}
+
+.alert__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: theme.$aq-space-xs;
+  padding-top: theme.$aq-space-xs;
+}
+
+.alert__message:empty,
+.alert__actions:empty {
+  display: none;
+}
+
+.alert__dismiss {
+  margin-top: -0.375rem;
+  margin-right: -0.375rem;
+}
+
+@media (width <= 640px) {
+  .alert__surface {
+    gap: theme.$aq-space-xs;
+    padding: theme.$aq-space-sm;
+  }
+
+  .alert__actions {
+    align-items: stretch;
+  }
+
+  /* stylelint-disable selector-pseudo-element-no-unknown */
+  .alert__actions ::ng-deep [aqAlertAction] {
+    flex: 1 1 100%;
+  }
+  /* stylelint-enable selector-pseudo-element-no-unknown */
+}

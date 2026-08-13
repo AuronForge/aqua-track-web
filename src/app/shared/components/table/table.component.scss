@@ -1,64 +1,156 @@
 @use '../../theme' as theme;
 
-.aq-table {
+:host {
+  display: block;
+  color: theme.$aq-color-text-primary;
+  font-family: theme.$aq-font-family-base;
+}
+
+.table__surface {
+  width: 100%;
   overflow: hidden;
   background: theme.$aq-color-surface;
   border: 1px solid theme.$aq-color-border;
-  border-radius: theme.$aq-radius-xs;
-  box-shadow: 0 1px 3px rgb(36 48 65 / 12%);
+  border-radius: theme.$aq-radius-md;
 }
 
-.aq-table__scroller {
-  overflow: auto;
-}
-
-table {
+.table__scroll {
   width: 100%;
+  overflow-x: auto;
+}
+
+.table__table {
+  width: 100%;
+  min-width: 42rem;
   border-collapse: collapse;
-  color: theme.$aq-color-text-primary;
-  font-family: theme.$aq-font-family-base;
+  table-layout: fixed;
+}
+
+.table__table caption {
+  padding: theme.$aq-space-sm theme.$aq-space-md;
+  text-align: left;
   font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-semibold;
+  color: theme.$aq-color-text-secondary;
 }
 
-caption {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-}
-
-th,
-td {
+.table__cell {
   padding: theme.$aq-space-md theme.$aq-space-lg;
+  border-bottom: 1px solid theme.$aq-color-border;
+  font-size: theme.$aq-font-size-sm;
+  line-height: theme.$aq-line-height-base;
   text-align: left;
   vertical-align: middle;
+  overflow-wrap: anywhere;
 }
 
-th {
-  color: theme.$aq-color-text-primary;
+thead .table__cell {
   background: theme.$aq-color-surface-muted;
+  color: theme.$aq-color-text-secondary;
+  font-size: theme.$aq-font-size-xs;
   font-weight: theme.$aq-font-weight-semibold;
 }
 
-td {
-  border-top: 1px solid theme.$aq-color-border;
+tbody tr:last-child .table__cell {
+  border-bottom: none;
 }
 
-.aq-table--comfortable td {
-  padding-block: theme.$aq-space-lg;
+:host(.table--compact) .table__cell {
+  padding-block: theme.$aq-space-sm;
 }
 
-.aq-table__sort {
+:host(.table--sticky-header) thead .table__cell {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.table__row {
+  transition:
+    background-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+:host(.table--clickable) .table__row {
+  cursor: pointer;
+
+  &:hover {
+    background: theme.$aq-color-surface-muted;
+  }
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.table__row--selected {
+  background: theme.$aq-color-surface-accent;
+}
+
+.table__cell--center {
+  text-align: center;
+}
+
+.table__cell--end {
+  text-align: right;
+}
+
+.table__cell--selection {
+  width: 3.5rem;
+  min-width: 3.5rem;
+  padding-inline: theme.$aq-space-md;
+  text-align: center;
+}
+
+.table__header-content,
+.table__sort-button {
   display: inline-flex;
-  gap: theme.$aq-space-2xs;
   align-items: center;
+  gap: theme.$aq-space-2xs;
+  min-height: 2rem;
+}
+
+.table__sort-button {
+  width: 100%;
   padding: 0;
-  border: 0;
   background: transparent;
+  border: 0;
   color: inherit;
   font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+
+  &:hover {
+    color: theme.$aq-color-primary;
+  }
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+
+    border-radius: theme.$aq-radius-xs;
+  }
+}
+
+.table__cell--center .table__sort-button {
+  justify-content: center;
+}
+
+.table__cell--end .table__sort-button {
+  justify-content: flex-end;
+}
+
+.table__sort-icon {
+  font-size: theme.$aq-size-icon-sm;
+  color: theme.$aq-color-text-tertiary;
+}
+
+.table__checkbox {
+  width: 1rem;
+  height: 1rem;
+  accent-color: theme.$aq-color-primary;
   cursor: pointer;
 
   &:focus-visible {
@@ -66,34 +158,129 @@ td {
   }
 }
 
-.aq-table__sort .material-icons-outlined {
-  color: theme.$aq-color-text-tertiary;
-  font-size: theme.$aq-size-icon-sm;
-}
-
-.aq-table__empty {
-  display: grid;
-  justify-items: center;
+.table__state {
+  display: flex;
+  min-height: 12rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: theme.$aq-space-xs;
-  padding: theme.$aq-space-2xl;
-  color: theme.$aq-color-text-secondary;
+  padding: theme.$aq-space-xl theme.$aq-space-lg;
   text-align: center;
 }
 
-.aq-table__empty strong {
-  color: theme.$aq-color-text-primary;
+.table__state-icon {
+  font-size: 2rem;
+  color: theme.$aq-color-text-tertiary;
 }
 
-.aq-table__empty p {
+.table__state-title {
   margin: 0;
+  font-size: theme.$aq-font-size-md;
+  font-weight: theme.$aq-font-weight-semibold;
+  color: theme.$aq-color-text-secondary;
 }
 
-.aq-table__empty-icon {
-  display: inline-grid;
-  width: theme.$aq-size-icon-container-md;
-  height: theme.$aq-size-icon-container-md;
-  place-items: center;
-  color: theme.$aq-color-primary;
-  background: rgb(18 63 97 / 10%);
-  border-radius: theme.$aq-radius-xs;
+.table__state-description {
+  max-width: 28rem;
+  margin: 0;
+  font-size: theme.$aq-font-size-sm;
+  color: theme.$aq-color-text-tertiary;
+}
+
+.table__state-action,
+.table__state-action-label {
+  margin-top: theme.$aq-space-xs;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-semibold;
+}
+
+.table__state-action {
+  min-height: 2.25rem;
+  padding: 0 theme.$aq-space-md;
+  background: theme.$aq-color-primary;
+  border: 1px solid theme.$aq-color-primary;
+  border-radius: theme.$aq-radius-pill;
+  color: theme.$aq-color-surface;
+  cursor: pointer;
+
+  &:hover {
+    background: theme.$aq-color-primary-strong;
+  }
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+  }
+}
+
+.table__state-action-label {
+  color: theme.$aq-color-text-secondary;
+}
+
+.table__skeleton {
+  display: block;
+  width: 70%;
+  height: 0.875rem;
+  border-radius: theme.$aq-radius-pill;
+  background: linear-gradient(
+    90deg,
+    theme.$aq-color-surface-muted 0%,
+    theme.$aq-color-border 50%,
+    theme.$aq-color-surface-muted 100%
+  );
+  background-size: 200% 100%;
+  animation: table-skeleton 1.2s ease-in-out infinite;
+}
+
+.table__visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes table-skeleton {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (width <= 48rem) {
+  .table__cell--priority-optional {
+    display: none;
+  }
+
+  .table__table {
+    min-width: 34rem;
+  }
+}
+
+@media (width <= 36rem) {
+  .table__cell--priority-secondary {
+    display: none;
+  }
+
+  .table__table {
+    min-width: 28rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .table__row,
+  .table__sort-button,
+  .table__state-action {
+    transition: none;
+  }
+
+  .table__skeleton {
+    animation: none;
+  }
 }

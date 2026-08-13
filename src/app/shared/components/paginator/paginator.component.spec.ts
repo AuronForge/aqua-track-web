@@ -1,8 +1,8 @@
+import { OverlayModule } from '@angular/cdk/overlay';
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { OverlayModule } from '@angular/cdk/overlay';
 
-import { PaginatorChange } from './paginator-change.model';
+import { AqPaginationChange, PaginatorChange } from './paginator-change.model';
 import { PaginatorComponent } from './paginator.component';
 
 @Component({
@@ -10,23 +10,37 @@ import { PaginatorComponent } from './paginator.component';
   imports: [PaginatorComponent],
   template: `
     <aq-paginator
+      [page]="page()"
       [pageIndex]="pageIndex()"
       [pageSize]="pageSize()"
       [pageSizeOptions]="pageSizeOptions()"
       [totalItems]="totalItems()"
       [disabled]="disabled()"
+      [loading]="loading()"
+      [showFirstLastButtons]="showFirstLastButtons()"
+      [showPageSizeSelector]="showPageSizeSelector()"
+      (paginationChange)="onPaginationChange($event)"
       (pageChange)="onPageChange($event)"
     />
   `,
 })
 class TestHostComponent {
+  readonly page = signal<number | null>(1);
   readonly pageIndex = signal(0);
   readonly pageSize = signal(5);
-  readonly pageSizeOptions = signal([5, 10, 20]);
+  readonly pageSizeOptions = signal<readonly number[]>([5, 10, 20]);
   readonly totalItems = signal(12);
   readonly disabled = signal(false);
+  readonly loading = signal(false);
+  readonly showFirstLastButtons = signal(true);
+  readonly showPageSizeSelector = signal(true);
 
+  lastPaginationChange: AqPaginationChange | null = null;
   lastPageChange: PaginatorChange | null = null;
+
+  onPaginationChange(event: AqPaginationChange): void {
+    this.lastPaginationChange = event;
+  }
 
   onPageChange(event: PaginatorChange): void {
     this.lastPageChange = event;
@@ -41,16 +55,20 @@ describe('PaginatorComponent', () => {
     return hostFixture.debugElement.children[0].componentInstance;
   }
 
-  function getInfo(): HTMLElement | null {
-    return element.querySelector('.paginator__info');
+  function getNav(): HTMLElement | null {
+    return element.querySelector('nav');
   }
 
-  function getPrevButton(): HTMLButtonElement | null {
-    return element.querySelector('[aria-label="Pagina anterior"]');
+  function getPageSummary(): HTMLElement | null {
+    return element.querySelector('.paginator__page');
   }
 
-  function getNextButton(): HTMLButtonElement | null {
-    return element.querySelector('[aria-label="Proxima pagina"]');
+  function getRangeSummary(): HTMLElement | null {
+    return element.querySelector('.paginator__range');
+  }
+
+  function getButton(label: string): HTMLButtonElement | null {
+    return element.querySelector(`[aria-label="${label}"]`);
   }
 
   function getPageSizeTrigger(): HTMLButtonElement | null {
@@ -71,124 +89,189 @@ describe('PaginatorComponent', () => {
     expect(getComponent()).toBeTruthy();
   });
 
-  it('should always have the base paginator class', () => {
-    expect(element.querySelector('aq-paginator')!.classList).toContain('paginator');
+  it('should expose the normalized state', () => {
+    expect(getComponent()['state']()).toEqual({
+      page: 1,
+      pageSize: 5,
+      totalItems: 12,
+      totalPages: 3,
+    });
   });
 
-  it('should display correct page info on first page', () => {
-    expect(getInfo()?.textContent?.trim()).toBe('1-5 de 12');
+  it('should display only the current item range and total', () => {
+    expect(getPageSummary()).toBeNull();
+    expect(getRangeSummary()?.textContent?.trim()).toBe('1-5 de 12 itens');
   });
 
-  it('should display correct page info on second page', () => {
-    hostFixture.componentInstance.pageIndex.set(1);
+  it('should calculate total pages with exact division', () => {
+    hostFixture.componentInstance.totalItems.set(10);
     hostFixture.detectChanges();
 
-    expect(getInfo()?.textContent?.trim()).toBe('6-10 de 12');
+    expect(getComponent()['totalPages']()).toBe(2);
   });
 
-  it('should display correct page info on last partial page', () => {
-    hostFixture.componentInstance.pageIndex.set(2);
+  it('should calculate total pages with non exact division', () => {
+    expect(getComponent()['totalPages']()).toBe(3);
+  });
+
+  it('should calculate one page when total is lower than page size', () => {
+    hostFixture.componentInstance.totalItems.set(4);
     hostFixture.detectChanges();
 
-    expect(getInfo()?.textContent?.trim()).toBe('11-12 de 12');
+    expect(getComponent()['totalPages']()).toBe(1);
+    expect(getRangeSummary()?.textContent?.trim()).toBe('1-4 de 4 itens');
   });
 
-  it('should display 0-0 de 0 when totalItems is 0', () => {
+  it('should display a stable empty state when there are no items', () => {
     hostFixture.componentInstance.totalItems.set(0);
     hostFixture.detectChanges();
 
-    expect(getInfo()?.textContent?.trim()).toBe('0-0 de 0');
+    expect(getComponent()['state']()).toEqual({
+      page: 0,
+      pageSize: 5,
+      totalItems: 0,
+      totalPages: 0,
+    });
+    expect(getRangeSummary()?.textContent?.trim()).toBe('0 de 0 itens');
   });
 
-  it('should have aria-live on the info element', () => {
-    expect(getInfo()?.getAttribute('aria-live')).toBe('polite');
-  });
-
-  it('should disable the previous button on the first page', () => {
-    expect(getPrevButton()?.disabled).toBe(true);
-  });
-
-  it('should enable the previous button when not on the first page', () => {
-    hostFixture.componentInstance.pageIndex.set(1);
+  it('should calculate the last partial range', () => {
+    hostFixture.componentInstance.page.set(3);
     hostFixture.detectChanges();
 
-    expect(getPrevButton()?.disabled).toBe(false);
+    expect(getRangeSummary()?.textContent?.trim()).toBe('11-12 de 12 itens');
   });
 
-  it('should emit pageChange with decremented pageIndex when previous is clicked', () => {
-    hostFixture.componentInstance.pageIndex.set(2);
+  it('should clamp page lower than one', () => {
+    hostFixture.componentInstance.page.set(-3);
     hostFixture.detectChanges();
 
-    getPrevButton()?.click();
+    expect(getComponent()['currentPage']()).toBe(1);
+  });
 
+  it('should clamp page greater than total pages', () => {
+    hostFixture.componentInstance.page.set(99);
+    hostFixture.detectChanges();
+
+    expect(getComponent()['currentPage']()).toBe(3);
+    expect(getRangeSummary()?.textContent?.trim()).toBe('11-12 de 12 itens');
+  });
+
+  it('should normalize invalid page size and total items', () => {
+    hostFixture.componentInstance.pageSize.set(0);
+    hostFixture.componentInstance.totalItems.set(-1);
+    hostFixture.detectChanges();
+
+    expect(getComponent()['state']()).toEqual({
+      page: 0,
+      pageSize: 10,
+      totalItems: 0,
+      totalPages: 0,
+    });
+  });
+
+  it('should include the current page size in sanitized options', () => {
+    hostFixture.componentInstance.pageSize.set(15);
+    hostFixture.componentInstance.pageSizeOptions.set([10, 10, -1, 0, 20]);
+    hostFixture.detectChanges();
+
+    expect(getComponent()['pageSizeSelectOptions']()).toEqual([
+      { id: '10', title: '10' },
+      { id: '15', title: '15' },
+      { id: '20', title: '20' },
+    ]);
+  });
+
+  it('should disable first and previous buttons on the first page', () => {
+    expect(getButton('Ir para a primeira pagina')?.disabled).toBe(true);
+    expect(getButton('Ir para a pagina anterior')?.disabled).toBe(true);
+    expect(getButton('Ir para a proxima pagina')?.disabled).toBe(false);
+    expect(getButton('Ir para a ultima pagina')?.disabled).toBe(false);
+  });
+
+  it('should enable all navigation buttons on an intermediate page', () => {
+    hostFixture.componentInstance.page.set(2);
+    hostFixture.detectChanges();
+
+    expect(getButton('Ir para a primeira pagina')?.disabled).toBe(false);
+    expect(getButton('Ir para a pagina anterior')?.disabled).toBe(false);
+    expect(getButton('Ir para a proxima pagina')?.disabled).toBe(false);
+    expect(getButton('Ir para a ultima pagina')?.disabled).toBe(false);
+  });
+
+  it('should disable next and last buttons on the last page', () => {
+    hostFixture.componentInstance.page.set(3);
+    hostFixture.detectChanges();
+
+    expect(getButton('Ir para a primeira pagina')?.disabled).toBe(false);
+    expect(getButton('Ir para a pagina anterior')?.disabled).toBe(false);
+    expect(getButton('Ir para a proxima pagina')?.disabled).toBe(true);
+    expect(getButton('Ir para a ultima pagina')?.disabled).toBe(true);
+  });
+
+  it('should disable all navigation buttons on a single page', () => {
+    hostFixture.componentInstance.totalItems.set(5);
+    hostFixture.detectChanges();
+
+    expect(getButton('Ir para a primeira pagina')?.disabled).toBe(true);
+    expect(getButton('Ir para a pagina anterior')?.disabled).toBe(true);
+    expect(getButton('Ir para a proxima pagina')?.disabled).toBe(true);
+    expect(getButton('Ir para a ultima pagina')?.disabled).toBe(true);
+  });
+
+  it('should emit consolidated and legacy events when going to previous page', () => {
+    hostFixture.componentInstance.page.set(2);
+    hostFixture.detectChanges();
+
+    getButton('Ir para a pagina anterior')?.click();
+
+    expect(hostFixture.componentInstance.lastPaginationChange).toEqual({ page: 1, pageSize: 5 });
+    expect(hostFixture.componentInstance.lastPageChange).toEqual({ pageIndex: 0, pageSize: 5 });
+  });
+
+  it('should emit consolidated and legacy events when going to next page', () => {
+    getButton('Ir para a proxima pagina')?.click();
+
+    expect(hostFixture.componentInstance.lastPaginationChange).toEqual({ page: 2, pageSize: 5 });
     expect(hostFixture.componentInstance.lastPageChange).toEqual({ pageIndex: 1, pageSize: 5 });
   });
 
-  it('should not emit pageChange when previous is clicked on first page', () => {
-    getPrevButton()?.click();
-
-    expect(hostFixture.componentInstance.lastPageChange).toBeNull();
-  });
-
-  it('should not emit pageChange when onPrevious is called on the first page', () => {
-    getComponent()['onPrevious']();
-
-    expect(hostFixture.componentInstance.lastPageChange).toBeNull();
-  });
-
-  it('should enable the next button when there are more pages', () => {
-    expect(getNextButton()?.disabled).toBe(false);
-  });
-
-  it('should disable the next button on the last page', () => {
-    hostFixture.componentInstance.pageIndex.set(2);
+  it('should emit when going to the first page', () => {
+    hostFixture.componentInstance.page.set(3);
     hostFixture.detectChanges();
 
-    expect(getNextButton()?.disabled).toBe(true);
+    getButton('Ir para a primeira pagina')?.click();
+
+    expect(hostFixture.componentInstance.lastPaginationChange).toEqual({ page: 1, pageSize: 5 });
   });
 
-  it('should emit pageChange with incremented pageIndex when next is clicked', () => {
-    getNextButton()?.click();
+  it('should emit when going to the last page', () => {
+    getButton('Ir para a ultima pagina')?.click();
 
-    expect(hostFixture.componentInstance.lastPageChange).toEqual({ pageIndex: 1, pageSize: 5 });
+    expect(hostFixture.componentInstance.lastPaginationChange).toEqual({ page: 3, pageSize: 5 });
   });
 
-  it('should not emit pageChange when next is clicked on the last page', () => {
-    hostFixture.componentInstance.pageIndex.set(2);
-    hostFixture.detectChanges();
+  it('should not emit when disabled navigation is clicked', () => {
+    getButton('Ir para a primeira pagina')?.click();
+    getButton('Ir para a pagina anterior')?.click();
 
-    getNextButton()?.click();
-
-    expect(hostFixture.componentInstance.lastPageChange).toBeNull();
+    expect(hostFixture.componentInstance.lastPaginationChange).toBeNull();
   });
 
-  it('should not emit pageChange when onNext is called on the last page', () => {
-    hostFixture.componentInstance.pageIndex.set(2);
-    hostFixture.detectChanges();
-
-    getComponent()['onNext']();
-
-    expect(hostFixture.componentInstance.lastPageChange).toBeNull();
-  });
-
-  it('should reset pageIndex to 0 when page size changes', () => {
-    hostFixture.componentInstance.pageIndex.set(2);
+  it('should reset to page one when page size changes', () => {
+    hostFixture.componentInstance.page.set(3);
     hostFixture.detectChanges();
 
     getComponent()['onSizeChange']({ option: { id: '10', title: '10' } });
 
+    expect(hostFixture.componentInstance.lastPaginationChange).toEqual({ page: 1, pageSize: 10 });
     expect(hostFixture.componentInstance.lastPageChange).toEqual({ pageIndex: 0, pageSize: 10 });
   });
 
-  it('should map page size options to select options', () => {
-    hostFixture.componentInstance.pageSizeOptions.set([15, 30, 60]);
-    hostFixture.detectChanges();
+  it('should not emit when selecting the current page size', () => {
+    getComponent()['onSizeChange']({ option: { id: '5', title: '5' } });
 
-    expect(getComponent()['pageSizeSelectOptions']()).toEqual([
-      { id: '15', title: '15' },
-      { id: '30', title: '30' },
-      { id: '60', title: '60' },
-    ]);
+    expect(hostFixture.componentInstance.lastPaginationChange).toBeNull();
   });
 
   it('should sync the page size control with the pageSize input', () => {
@@ -204,29 +287,66 @@ describe('PaginatorComponent', () => {
     expect(getPageSizeTrigger()?.textContent).toContain('5');
   });
 
-  it('should apply paginator--disabled class when disabled', () => {
+  it('should hide the page size selector when configured', () => {
+    hostFixture.componentInstance.showPageSizeSelector.set(false);
+    hostFixture.detectChanges();
+
+    expect(getPageSizeTrigger()).toBeNull();
+  });
+
+  it('should hide first and last buttons when configured', () => {
+    hostFixture.componentInstance.showFirstLastButtons.set(false);
+    hostFixture.detectChanges();
+
+    expect(getButton('Ir para a primeira pagina')).toBeNull();
+    expect(getButton('Ir para a ultima pagina')).toBeNull();
+    expect(getButton('Ir para a pagina anterior')).toBeTruthy();
+    expect(getButton('Ir para a proxima pagina')).toBeTruthy();
+  });
+
+  it('should disable interactions while disabled', () => {
     hostFixture.componentInstance.disabled.set(true);
     hostFixture.detectChanges();
 
     expect(element.querySelector('aq-paginator')!.classList).toContain('paginator--disabled');
+    expect(getPageSizeTrigger()?.disabled).toBe(true);
+    expect(getButton('Ir para a proxima pagina')?.disabled).toBe(true);
+
+    getComponent()['onNext']();
+
+    expect(hostFixture.componentInstance.lastPaginationChange).toBeNull();
   });
 
-  it('should not apply paginator--disabled class when not disabled', () => {
-    expect(element.querySelector('aq-paginator')!.classList).not.toContain('paginator--disabled');
-  });
-
-  it('should disable the page size select when paginator is disabled', () => {
-    hostFixture.componentInstance.disabled.set(true);
+  it('should disable interactions and expose aria-busy while loading', () => {
+    hostFixture.componentInstance.loading.set(true);
     hostFixture.detectChanges();
 
+    expect(element.querySelector('aq-paginator')!.classList).toContain('paginator--loading');
+    expect(getNav()?.getAttribute('aria-busy')).toBe('true');
     expect(getPageSizeTrigger()?.disabled).toBe(true);
+    expect(getButton('Ir para a proxima pagina')?.disabled).toBe(true);
+
+    getComponent()['onNext']();
+
+    expect(hostFixture.componentInstance.lastPaginationChange).toBeNull();
   });
 
-  it('should have aria-label on the previous button', () => {
-    expect(getPrevButton()?.getAttribute('aria-label')).toBe('Pagina anterior');
+  it('should use a semantic labelled navigation region', () => {
+    expect(getNav()?.getAttribute('aria-label')).toBe('Paginacao dos resultados');
   });
 
-  it('should have aria-label on the next button', () => {
-    expect(getNextButton()?.getAttribute('aria-label')).toBe('Proxima pagina');
+  it('should keep icons decorative', () => {
+    const icon = element.querySelector('.paginator__button .material-icons-outlined');
+
+    expect(icon?.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('should support the legacy zero based pageIndex API', () => {
+    hostFixture.componentInstance.page.set(null);
+    hostFixture.componentInstance.pageIndex.set(1);
+    hostFixture.detectChanges();
+
+    expect(getComponent()['currentPage']()).toBe(2);
+    expect(getRangeSummary()?.textContent?.trim()).toBe('6-10 de 12 itens');
   });
 });

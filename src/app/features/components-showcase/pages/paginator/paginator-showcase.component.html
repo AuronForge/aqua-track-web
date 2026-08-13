@@ -1,0 +1,251 @@
+<section class="showcase__section">
+  <h2 class="showcase__section-title">Paginator</h2>
+  <p class="showcase__section-desc">
+    Controle generico para paginar tabelas, cards, listas e grids. O componente nao busca dados: ele
+    exibe o estado atual e emite a intencao de mudanca para o consumidor controlar a colecao.
+  </p>
+
+  <h3 class="showcase__group-title">Como usar</h3>
+  <div class="showcase__usage">
+    <aq-code-block language="typescript" [code]="codeTs" />
+    <aq-code-block language="html" [code]="codeHtml" />
+  </div>
+
+  <h3 class="showcase__group-title">Propriedades</h3>
+  <div class="showcase__props">
+    <table class="showcase__props-table">
+      <thead>
+        <tr>
+          <th>Input / Output</th>
+          <th>Tipo</th>
+          <th>Padrao</th>
+          <th>Descricao</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="showcase__props-name">page</span></td>
+          <td><span class="showcase__props-type">number | null</span></td>
+          <td><span class="showcase__props-default">null</span></td>
+          <td>Pagina publica atual, iniciada em 1.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">pageSize</span></td>
+          <td><span class="showcase__props-type">number</span></td>
+          <td><span class="showcase__props-default">10</span></td>
+          <td>Quantidade de itens por pagina.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">totalItems</span></td>
+          <td><span class="showcase__props-type">number</span></td>
+          <td><span class="showcase__props-default">required</span></td>
+          <td>Total da colecao completa; totalPages e derivado dele com pageSize.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">pageSizeOptions</span></td>
+          <td><span class="showcase__props-type">readonly number[]</span></td>
+          <td><span class="showcase__props-default">[5, 10, 20]</span></td>
+          <td>Opcoes positivas do seletor; duplicadas e invalidas sao normalizadas.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">disabled / loading</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">false</span></td>
+          <td>Desabilitam controles; loading tambem aplica aria-busy e preserva os valores.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">showFirstLastButtons</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">true</span></td>
+          <td>Controla os botoes de primeira e ultima pagina.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">showPageSizeSelector</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">true</span></td>
+          <td>Controla a exibicao do seletor de itens por pagina.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">paginationChange</span></td>
+          <td><span class="showcase__props-type">AqPaginationChange</span></td>
+          <td><span class="showcase__props-default">output</span></td>
+          <td>Emite page e pageSize quando o usuario navega ou troca o tamanho.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="showcase__group-title">Paginacao basica</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">Controlado pelo consumidor, com evento consolidado</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded showcase__card-stage--block"
+      >
+        <aq-paginator
+          [page]="basicPage()"
+          [pageSize]="basicPageSize()"
+          [totalItems]="117"
+          [pageSizeOptions]="[10, 20, 50]"
+          (paginationChange)="onBasicPaginationChange($event)"
+        />
+
+        @if (lastEvent()) {
+          <p class="showcase__event-log">
+            Evento: pagina <strong>{{ lastEvent()!.page }}</strong
+            >, tamanho <strong>{{ lastEvent()!.pageSize }}</strong>
+          </p>
+        }
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Estados</h3>
+  <div class="showcase__row paginator-showcase__states">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Primeira pagina</p>
+      <div class="paginator-showcase__state-box">
+        <aq-paginator [page]="1" [pageSize]="10" [totalItems]="42" />
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Pagina intermediaria</p>
+      <div class="paginator-showcase__state-box">
+        <aq-paginator [page]="3" [pageSize]="10" [totalItems]="42" />
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Ultima pagina</p>
+      <div class="paginator-showcase__state-box">
+        <aq-paginator [page]="5" [pageSize]="10" [totalItems]="42" />
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Pagina unica</p>
+      <div class="paginator-showcase__state-box">
+        <aq-paginator [page]="1" [pageSize]="10" [totalItems]="7" />
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Sem itens</p>
+      <div class="paginator-showcase__state-box">
+        <aq-paginator [page]="1" [pageSize]="10" [totalItems]="0" />
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Desabilitado</p>
+      <div class="paginator-showcase__state-box">
+        <aq-paginator [page]="2" [pageSize]="10" [totalItems]="42" [disabled]="true" />
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Carregamento</p>
+      <div class="paginator-showcase__state-box">
+        <aq-paginator [page]="2" [pageSize]="10" [totalItems]="42" [loading]="true" />
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Sem primeira/ultima</p>
+      <div class="paginator-showcase__state-box">
+        <aq-paginator [page]="2" [pageSize]="10" [totalItems]="42" [showFirstLastButtons]="false" />
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Sem seletor</p>
+      <div class="paginator-showcase__state-box">
+        <aq-paginator [page]="2" [pageSize]="10" [totalItems]="42" [showPageSizeSelector]="false" />
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Integracao com tabela</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded showcase__card-stage--block"
+      >
+        <aq-table
+          [rows]="visibleMeasurements()"
+          [columns]="columns"
+          rowId="id"
+          caption="Medicoes paginadas"
+        >
+          <ng-template aqTableCell="status" let-row>
+            <aq-badge size="small" variant="tinted" [color]="getStatusColor(row.status)">
+              {{ getStatusLabel(row.status) }}
+            </aq-badge>
+          </ng-template>
+        </aq-table>
+
+        <aq-paginator
+          class="paginator-showcase__pager"
+          [page]="tablePage()"
+          [pageSize]="tablePageSize()"
+          [totalItems]="measurements.length"
+          [pageSizeOptions]="[5, 10]"
+          (paginationChange)="onTablePaginationChange($event)"
+        />
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Integracao com cards</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded showcase__card-stage--block"
+      >
+        <div class="paginator-showcase__grid">
+          @for (aquarium of visibleAquariums(); track aquarium.id) {
+            <article class="paginator-showcase__aquarium">
+              <strong>{{ aquarium.name }}</strong>
+              <span>{{ aquarium.type }}</span>
+              <small>{{ aquarium.volume }}</small>
+            </article>
+          }
+        </div>
+
+        <aq-paginator
+          class="paginator-showcase__pager"
+          [page]="cardsPage()"
+          [pageSize]="cardsPageSize()"
+          [totalItems]="aquariums.length"
+          [pageSizeOptions]="[4, 8]"
+          (paginationChange)="onCardsPaginationChange($event)"
+        />
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Integracao com lista</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <div
+        class="showcase__card-stage showcase__card-stage--background showcase__card-stage--padded showcase__card-stage--block"
+      >
+        <ul class="paginator-showcase__list">
+          @for (item of visibleListItems(); track item.id) {
+            <li>{{ item.name }}</li>
+          }
+        </ul>
+
+        <aq-paginator
+          class="paginator-showcase__pager"
+          [page]="listPage()"
+          [pageSize]="listPageSize()"
+          [totalItems]="listItems.length"
+          [pageSizeOptions]="[5, 10]"
+          (paginationChange)="onListPaginationChange($event)"
+        />
+      </div>
+    </div>
+  </div>
+</section>
