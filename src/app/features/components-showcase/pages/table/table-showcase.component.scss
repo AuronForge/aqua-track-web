@@ -1,0 +1,53 @@
+@use '../../../../shared/theme' as theme;
+@use '../../showcase-page';
+
+.table-showcase__date {
+  display: inline-flex;
+  flex-direction: column;
+  gap: theme.$aq-space-2xs;
+
+  span {
+    color: theme.$aq-color-text-secondary;
+    font-size: theme.$aq-font-size-xs;
+  }
+}
+
+.table-showcase__unit {
+  margin-left: theme.$aq-space-2xs;
+  color: theme.$aq-color-text-secondary;
+  font-size: theme.$aq-font-size-xs;
+}
+
+.table-showcase__trend {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: theme.$aq-color-tertiary;
+
+  .material-icons-outlined {
+    font-size: theme.$aq-size-icon-md;
+  }
+}
+
+.table-showcase__states {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: theme.$aq-space-md;
+}
+
+.table-showcase__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (width <= 64rem) {
+  .table-showcase__states {
+    grid-template-columns: 1fr;
+  }
+}

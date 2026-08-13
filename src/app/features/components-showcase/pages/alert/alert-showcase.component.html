@@ -1,0 +1,200 @@
+<section class="showcase__section">
+  <h2 class="showcase__section-title">Alert</h2>
+  <p class="showcase__section-desc">
+    Alerta inline, persistente e contextual para orientacoes, avisos, confirmacoes e erros que
+    precisam permanecer no fluxo da tela enquanto forem relevantes.
+  </p>
+
+  <h3 class="showcase__group-title">Como usar</h3>
+  <div class="showcase__usage">
+    <aq-code-block language="typescript" [code]="componentCodeTs" />
+    <aq-code-block language="html" [code]="codeHtml" />
+  </div>
+
+  <h3 class="showcase__group-title">Propriedades</h3>
+  <div class="showcase__props">
+    <table class="showcase__props-table">
+      <thead>
+        <tr>
+          <th>Input / Output</th>
+          <th>Tipo</th>
+          <th>Padrao</th>
+          <th>Descricao</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="showcase__props-name">variant</span></td>
+          <td>
+            <span class="showcase__props-type"
+              >'info' | 'success' | 'warning' | 'error' | 'neutral'</span
+            >
+          </td>
+          <td><span class="showcase__props-default">'info'</span></td>
+          <td>Define tom visual, icone padrao e semantica acessivel.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">title</span></td>
+          <td><span class="showcase__props-type">string | undefined</span></td>
+          <td><span class="showcase__props-default">undefined</span></td>
+          <td>Titulo opcional exibido antes do conteudo projetado.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">icon</span></td>
+          <td><span class="showcase__props-type">string | undefined</span></td>
+          <td><span class="showcase__props-default">icone da variante</span></td>
+          <td>Nome do Material Icon usado para substituir o icone padrao.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">showIcon</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">true</span></td>
+          <td>Controla a exibicao do icone sem remover a semantica textual.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">dismissible</span></td>
+          <td><span class="showcase__props-type">boolean</span></td>
+          <td><span class="showcase__props-default">false</span></td>
+          <td>Exibe o botao de fechar e permite o consumidor remover o alerta.</td>
+        </tr>
+        <tr>
+          <td><span class="showcase__props-name">ariaLabel</span></td>
+          <td><span class="showcase__props-type">string | undefined</span></td>
+          <td><span class="showcase__props-default">undefined</span></td>
+          <td>Nome acessivel opcional quando o contexto visual nao e suficiente.</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="showcase__props-name">dismissed</span>
+            <span class="showcase__props-output">output</span>
+          </td>
+          <td><span class="showcase__props-type">void</span></td>
+          <td><span class="showcase__props-default">-</span></td>
+          <td>Emitido quando o usuario aciona o fechamento.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="showcase__group-title">Variantes</h3>
+  <div class="showcase__row">
+    @for (item of variants; track item.variant) {
+      <div class="showcase__card showcase__card--full">
+        <p class="showcase__card-label">{{ item.variant }}</p>
+        <div class="showcase__card-stage showcase__card-stage--padded showcase__alert-stage">
+          <aq-alert [variant]="item.variant" [title]="item.title">
+            {{ item.message }}
+          </aq-alert>
+        </div>
+      </div>
+    }
+  </div>
+
+  <h3 class="showcase__group-title">Conteudo e acoes</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">Somente texto</p>
+      <div class="showcase__card-stage showcase__card-stage--padded showcase__alert-stage">
+        <aq-alert variant="neutral">
+          A proxima atualizacao das medicoes ocorrera em alguns minutos.
+        </aq-alert>
+      </div>
+    </div>
+
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">Com acoes</p>
+      <div class="showcase__card-stage showcase__card-stage--padded showcase__alert-stage">
+        <aq-alert variant="warning" title="Parametros fora da faixa recomendada">
+          Revise as ultimas medicoes antes de adicionar novos habitantes.
+          <button aqButton aqAlertAction type="button" variant="stroked" color="warning">
+            Ver medicoes
+          </button>
+          <button aqButton aqAlertAction type="button" variant="basic" color="tertiary">
+            Ignorar agora
+          </button>
+        </aq-alert>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Icones e fechamento</h3>
+  <div class="showcase__row">
+    <div class="showcase__card">
+      <p class="showcase__card-label">Sem icone</p>
+      <div class="showcase__card-stage showcase__card-stage--padded showcase__alert-stage">
+        <aq-alert variant="info" title="Resumo do aquario" [showIcon]="false">
+          Use quando o contexto textual ja estiver claro.
+        </aq-alert>
+      </div>
+    </div>
+
+    <div class="showcase__card">
+      <p class="showcase__card-label">Icone customizado</p>
+      <div class="showcase__card-stage showcase__card-stage--padded showcase__alert-stage">
+        <aq-alert variant="info" title="Nivel de agua" icon="water_drop">
+          Complete a reposicao antes da proxima medicao.
+        </aq-alert>
+      </div>
+    </div>
+
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">Dispensavel</p>
+      <div class="showcase__card-stage showcase__card-stage--padded showcase__alert-stage">
+        @if (showDismissibleAlert()) {
+          <aq-alert
+            variant="success"
+            title="Novo recurso disponivel"
+            [dismissible]="true"
+            (dismissed)="handleDismissed()"
+          >
+            Agora voce pode acompanhar o historico completo das medicoes.
+          </aq-alert>
+        } @else {
+          <button aqButton type="button" variant="stroked" (click)="restoreDismissibleAlert()">
+            Restaurar alerta
+          </button>
+        }
+      </div>
+      <p class="showcase__event-log">
+        Eventos dismissed emitidos: <strong>{{ dismissCount() }}</strong>
+      </p>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Responsividade</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <p class="showcase__card-label">Container estreito e texto longo</p>
+      <div
+        class="showcase__card-stage showcase__card-stage--padded showcase__alert-stage showcase__alert-stage--narrow"
+      >
+        <aq-alert variant="error" title="Titulo extenso para validar quebras sem overflow">
+          Nao foi possivel salvar a medicao porque alguns parametros obrigatorios ainda precisam ser
+          revisados. Confira temperatura, pH, amonia, nitrito e nitrato antes de tentar novamente.
+          <button aqButton aqAlertAction type="button" variant="stroked" color="error">
+            Revisar formulario
+          </button>
+        </aq-alert>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="showcase__group-title">Acessibilidade</h3>
+  <div class="showcase__row">
+    <div class="showcase__card showcase__card--full">
+      <div class="showcase__card-stage showcase__card-stage--padded showcase__alert-stage">
+        <p class="showcase__doc-item">
+          Variantes <strong>error</strong> e <strong>warning</strong> usam
+          <code>role="alert"</code> e <code>aria-live="assertive"</code>.
+        </p>
+        <p class="showcase__doc-item">
+          Variantes <strong>info</strong>, <strong>success</strong> e <strong>neutral</strong> usam
+          <code>role="status"</code> e <code>aria-live="polite"</code>.
+        </p>
+        <p class="showcase__doc-item">
+          O icone e decorativo; o significado deve estar tambem no titulo ou na mensagem.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

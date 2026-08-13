@@ -1,0 +1,47 @@
+@use '../../showcase-page';
+@use '../../../../shared/theme' as theme;
+
+.tabs-showcase__panel {
+  padding: theme.$aq-space-md;
+  background: theme.$aq-color-surface-muted;
+  border: 1px solid theme.$aq-color-border;
+  border-radius: theme.$aq-radius-sm;
+  color: theme.$aq-color-text-primary;
+}
+
+.tabs-showcase__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: theme.$aq-space-xs;
+  margin-bottom: theme.$aq-space-md;
+}
+
+.tabs-showcase__metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: theme.$aq-space-sm;
+
+  span {
+    padding: theme.$aq-space-md;
+    background: theme.$aq-color-surface;
+    border: 1px solid theme.$aq-color-border;
+    border-radius: theme.$aq-radius-sm;
+    font-weight: theme.$aq-font-weight-semibold;
+  }
+}
+
+.tabs-showcase__table {
+  width: 100%;
+  border-collapse: collapse;
+  background: theme.$aq-color-surface;
+
+  td {
+    padding: theme.$aq-space-sm;
+    border-bottom: 1px solid theme.$aq-color-border;
+    color: theme.$aq-color-text-primary;
+  }
+}
+
+.tabs-showcase__narrow {
+  max-width: 26rem;
+}

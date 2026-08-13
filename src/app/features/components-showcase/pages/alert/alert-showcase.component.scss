@@ -1,0 +1,22 @@
+@use '../../showcase-page';
+@use '../../../../shared/theme' as theme;
+
+.showcase__alert-stage {
+  width: 100%;
+  min-width: 0;
+}
+
+.showcase__alert-stage--narrow {
+  max-width: 24rem;
+}
+
+.showcase__doc-item {
+  max-width: 58rem;
+  color: theme.$aq-color-text-primary;
+  font: theme.$aq-font-weight-regular 0.92rem/#{theme.$aq-line-height-loose}
+    theme.$aq-font-family-base;
+
+  &:not(:last-child) {
+    margin-bottom: theme.$aq-space-sm;
+  }
+}
