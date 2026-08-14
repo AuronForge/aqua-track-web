@@ -7,25 +7,6 @@
   width: 100%;
 }
 
-.aquarium-create-page__back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: theme.$aq-space-2xs;
-  width: fit-content;
-  color: theme.$aq-color-text-secondary;
-  font-size: theme.$aq-font-size-sm;
-  font-weight: theme.$aq-font-weight-medium;
-  text-decoration: none;
-
-  &:hover {
-    color: theme.$aq-color-primary;
-  }
-
-  &:focus-visible {
-    @include theme.aq-focus-ring;
-  }
-}
-
 .aquarium-create-page__header {
   display: flex;
   align-items: center;

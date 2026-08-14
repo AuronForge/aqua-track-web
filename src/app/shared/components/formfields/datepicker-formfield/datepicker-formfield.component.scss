@@ -282,12 +282,27 @@
   font-weight: theme.$aq-font-weight-semibold;
 }
 
+.datepicker-formfield__day--in-range:not(.datepicker-formfield__day--selected) {
+  background: theme.$aq-color-surface-accent;
+  color: theme.$aq-color-primary;
+}
+
 .datepicker-formfield__day--selected,
 .datepicker-formfield__month-btn--selected,
 .datepicker-formfield__year-btn--selected {
   background: linear-gradient(175deg, #18486d 0%, theme.$aq-color-primary 100%);
   color: theme.$aq-color-surface;
   box-shadow: 0 4px 12px -4px rgb(18 63 97 / 55%);
+}
+
+.datepicker-formfield__day--range-start {
+  border-top-right-radius: theme.$aq-radius-xs;
+  border-bottom-right-radius: theme.$aq-radius-xs;
+}
+
+.datepicker-formfield__day--range-end {
+  border-top-left-radius: theme.$aq-radius-xs;
+  border-bottom-left-radius: theme.$aq-radius-xs;
 }
 
 .datepicker-formfield__month-grid,

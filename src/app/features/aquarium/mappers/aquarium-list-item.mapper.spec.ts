@@ -127,6 +127,37 @@ describe('mapAquariumApiToListItem', () => {
     });
   });
 
+  it('returns zero installed amount when setup date is missing', () => {
+    expect(
+      mapAquariumApiToListItem(
+        {
+          ...aquarium,
+          setupDate: null,
+        },
+        aquariumTypeValues,
+      ),
+    ).toMatchObject({
+      installedAmount: 0,
+      installedUnit: 'MONTH',
+    });
+  });
+
+  it('subtracts the current partial month when setup day has not arrived yet', () => {
+    expect(
+      mapAquariumApiToListItem(
+        {
+          ...aquarium,
+          setupDate: '2026-06-30T00:00:00.000Z',
+        },
+        aquariumTypeValues,
+        new Date('2026-07-28T12:00:00.000Z'),
+      ),
+    ).toMatchObject({
+      installedAmount: 1,
+      installedUnit: 'MONTH',
+    });
+  });
+
   it('normalizes future setup dates to at least one month for recent aquariums', () => {
     expect(
       mapAquariumApiToListItem(

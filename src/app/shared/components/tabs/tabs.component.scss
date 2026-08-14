@@ -1,0 +1,99 @@
+@use '../../theme' as theme;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.tabs__header {
+  display: flex;
+  align-items: flex-end;
+  gap: theme.$aq-space-md;
+  overflow: auto hidden;
+  border-bottom: 1px solid theme.$aq-color-border;
+  background: transparent;
+  scrollbar-width: thin;
+  scrollbar-color: theme.$aq-color-border-strong transparent;
+}
+
+.tabs__header::-webkit-scrollbar {
+  height: theme.$aq-space-2xs;
+}
+
+.tabs__header::-webkit-scrollbar-thumb {
+  background: theme.$aq-color-border-strong;
+  border-radius: theme.$aq-radius-pill;
+}
+
+.tabs__tab {
+  position: relative;
+  flex: 0 0 auto;
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: theme.$aq-radius-xs theme.$aq-radius-xs 0 0;
+  padding: theme.$aq-space-xs 0.125rem theme.$aq-space-sm;
+  background: transparent;
+  color: theme.$aq-color-text-secondary;
+  font-family: theme.$aq-font-family-base;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-medium;
+  line-height: theme.$aq-line-height-base;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 1px;
+    background: transparent;
+    transition:
+      background-color 150ms ease,
+      height 150ms ease;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: theme.$aq-color-text-tertiary;
+    opacity: 0.65;
+  }
+
+  &:hover:not(:disabled) {
+    color: theme.$aq-color-text-primary;
+    background: theme.$aq-color-surface-muted;
+  }
+
+  &:active:not(:disabled) {
+    color: theme.$aq-color-primary;
+  }
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+  }
+}
+
+.tabs__tab--selected {
+  color: theme.$aq-color-primary;
+  font-weight: theme.$aq-font-weight-semibold;
+
+  &::after {
+    height: 2px;
+    background: theme.$aq-color-primary;
+  }
+}
+
+.tabs__panel {
+  padding-top: theme.$aq-space-lg;
+  color: theme.$aq-color-text-primary;
+  font-family: theme.$aq-font-family-base;
+  line-height: theme.$aq-line-height-base;
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "aqua-track-web",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "scripts": {
     "ng": "ng",
     "start": "node scripts/set-env.js development && ng serve --configuration development",
@@ -11,7 +11,7 @@
     "build:prod": "node scripts/set-env.js production && ng build --configuration production",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage --watchAll=false",
+    "test:coverage": "jest --coverage --watchAll=false --progress=false",
     "lint": "npm run lint:ts && npm run lint:styles",
     "lint:ts": "ng lint",
     "lint:styles": "stylelint \"src/**/*.scss\"",
