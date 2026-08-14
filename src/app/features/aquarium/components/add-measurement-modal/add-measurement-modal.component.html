@@ -1,0 +1,92 @@
+<form class="add-measurement-modal" [formGroup]="form" (ngSubmit)="save()">
+  <div class="add-measurement-modal__header">
+    <span class="material-icons-outlined add-measurement-modal__header-icon" aria-hidden="true">
+      science
+    </span>
+    <div>
+      <h2 class="add-measurement-modal__title">Adicionar Medição</h2>
+      <p class="add-measurement-modal__description">
+        Registre uma nova leitura de parâmetro da água para seu aquário
+      </p>
+    </div>
+    <button
+      aqButton
+      type="button"
+      variant="icon"
+      color="tertiary"
+      class="add-measurement-modal__close"
+      aria-label="Fechar modal"
+      (click)="cancel()"
+    >
+      <span class="material-icons-outlined" aria-hidden="true">close</span>
+    </button>
+  </div>
+
+  <div class="add-measurement-modal__body">
+    <aq-select-formfield
+      formControlName="parameterKey"
+      label="Parâmetro"
+      placeholder="Selecione um parâmetro..."
+      [options]="parameterOptions()"
+      [required]="true"
+      [errorMessages]="{ required: 'Selecione um parâmetro.' }"
+    />
+
+    <aq-text-formfield
+      formControlName="value"
+      label="Valor"
+      placeholder="Insira o valor"
+      [suffixText]="valueSuffix()"
+      [required]="true"
+      [errorMessages]="{
+        required: 'Informe o valor.',
+        pattern: 'Informe um valor numérico válido.',
+      }"
+    />
+
+    <div class="add-measurement-modal__grid">
+      <aq-datepicker-formfield
+        formControlName="date"
+        label="Data"
+        placeholder="dd/mm/aaaa"
+        [required]="true"
+        [errorMessages]="{ required: 'Informe a data.' }"
+      />
+
+      <aq-text-formfield
+        formControlName="time"
+        label="Hora"
+        placeholder="hh:mm"
+        [required]="true"
+        [errorMessages]="{
+          required: 'Informe a hora.',
+          pattern: 'Use o formato HH:mm.',
+        }"
+      />
+    </div>
+
+    <aq-textarea-formfield
+      formControlName="notes"
+      label="Observações (Opcional)"
+      placeholder="Adicione observações, kit de teste usado ou outras informações relevantes..."
+      [rows]="4"
+      resize="none"
+    />
+
+    @if (submitError()) {
+      <p class="add-measurement-modal__error" role="alert">
+        Não foi possível salvar a medição. Tente novamente.
+      </p>
+    }
+  </div>
+
+  <footer class="add-measurement-modal__footer">
+    <button aqButton type="button" variant="stroked" color="tertiary" (click)="cancel()">
+      Cancelar
+    </button>
+    <button aqButton type="submit" variant="flat" color="primary" [disabled]="saving()">
+      <span class="material-icons-outlined" aria-hidden="true">save</span>
+      {{ saving() ? 'Salvando...' : 'Salvar' }}
+    </button>
+  </footer>
+</form>

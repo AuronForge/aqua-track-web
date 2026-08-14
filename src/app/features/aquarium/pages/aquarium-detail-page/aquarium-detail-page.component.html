@@ -1,0 +1,476 @@
+<section class="aquarium-detail-page" aria-label="Detalhes do aquário">
+  @if (status() === 'loading') {
+    <div class="aquarium-detail-page__loading" aria-busy="true" role="status">
+      <div class="aquarium-detail-page__skeleton aquarium-detail-page__skeleton--title"></div>
+      <div class="aquarium-detail-page__skeleton aquarium-detail-page__skeleton--hero"></div>
+      <div class="aquarium-detail-page__skeleton aquarium-detail-page__skeleton--table"></div>
+    </div>
+  } @else if (status() === 'invalid-id') {
+    <div class="aquarium-detail-page__state" role="alert">
+      <span class="material-icons-outlined aquarium-detail-page__state-icon" aria-hidden="true">
+        report
+      </span>
+      <h1>UUID inválido</h1>
+      <p>Confira o endereço acessado e tente novamente pela listagem de aquários.</p>
+      <a aqButton routerLink="/aquariums" variant="flat" color="primary">Voltar para Aquários</a>
+    </div>
+  } @else if (status() === 'not-found') {
+    <div class="aquarium-detail-page__state" role="status">
+      <span class="material-icons-outlined aquarium-detail-page__state-icon" aria-hidden="true">
+        search_off
+      </span>
+      <h1>Aquário não encontrado</h1>
+      <p>Aquário não encontrado ou indisponível para o usuário atual.</p>
+      <a aqButton routerLink="/aquariums" variant="flat" color="primary">Voltar para Aquários</a>
+    </div>
+  } @else if (status() === 'error') {
+    <div class="aquarium-detail-page__state" role="alert">
+      <span class="material-icons-outlined aquarium-detail-page__state-icon" aria-hidden="true">
+        error_outline
+      </span>
+      <h1>Não foi possível carregar o aquário</h1>
+      <p>Tente novamente em instantes para buscar os dados atualizados.</p>
+      <button aqButton type="button" variant="flat" color="primary" (click)="retry()">
+        Tentar novamente
+      </button>
+    </div>
+  } @else if (detail(); as aquarium) {
+    <header class="aquarium-detail-page__header">
+      <div class="aquarium-detail-page__identity">
+        <span
+          class="aquarium-detail-page__identity-icon material-icons-outlined"
+          aria-hidden="true"
+        >
+          water_drop
+        </span>
+        <div>
+          <div class="aquarium-detail-page__name-row">
+            <h1>{{ aquarium.name }}</h1>
+            <aq-badge variant="tinted" [color]="aquarium.statusColor" size="small">
+              {{ aquarium.statusLabel }}
+            </aq-badge>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="aquarium-detail-page__navigation">
+      <a class="aq-back-link" href="/aquariums" (click)="onBack($event)">
+        <span class="material-icons" aria-hidden="true">chevron_left</span>
+        Voltar para Aquários
+      </a>
+
+      <div class="aquarium-detail-page__actions">
+        <button
+          aqButton
+          type="button"
+          variant="flat"
+          color="primary"
+          size="small"
+          (click)="openAddMeasurementModal()"
+        >
+          <span class="material-icons" aria-hidden="true">add</span>
+          Nova Medição
+        </button>
+        <a aqButton routerLink="/applications/new" variant="flat" color="primary" size="small">
+          <span class="material-icons" aria-hidden="true">add</span>
+          Nova Aplicação
+        </a>
+        <button
+          aqButton
+          type="button"
+          variant="flat"
+          color="primary"
+          size="small"
+          (click)="notifyAquaticLifeCreateUnavailable()"
+        >
+          <span class="material-icons" aria-hidden="true">add</span>
+          Adicionar espécie
+        </button>
+        <button
+          aqButton
+          type="button"
+          variant="stroked"
+          color="tertiary"
+          size="small"
+          (click)="notifyEditUnavailable()"
+        >
+          <span class="material-icons-outlined" aria-hidden="true">edit</span>
+          Editar
+        </button>
+      </div>
+    </div>
+
+    <article class="aquarium-detail-page__hero" aria-label="Imagem de destaque do aquário">
+      @if (aquarium.heroImageUrl) {
+        <img [src]="aquarium.heroImageUrl" [alt]="aquarium.heroAlt" />
+      } @else {
+        <div
+          class="aquarium-detail-page__hero-fallback"
+          role="img"
+          [attr.aria-label]="aquarium.heroAlt"
+        >
+          <span class="material-icons-outlined" aria-hidden="true">water</span>
+        </div>
+      }
+      <div class="aquarium-detail-page__hero-overlay" aria-hidden="true"></div>
+      <div class="aquarium-detail-page__hero-tags">
+        <span class="aquarium-detail-page__hero-tag aquarium-detail-page__hero-tag--strong">
+          <small>Tipo</small>
+          {{ aquarium.waterTypeLabel }}
+        </span>
+        <span class="aquarium-detail-page__hero-tag">
+          <small>Volume</small>
+          {{ aquarium.volumeLabel }}
+        </span>
+        <span class="aquarium-detail-page__hero-tag">
+          <small>Início</small>
+          {{ aquarium.setupDateLabel }}
+        </span>
+      </div>
+    </article>
+
+    <aq-tabs
+      [activeTabId]="activeTabId()"
+      ariaLabel="Seções do detalhe do aquário"
+      (activeTabChange)="onTabChange($event)"
+    >
+      <aq-tab id="overview" label="Visão Geral">
+        <div class="aquarium-detail-page__overview">
+          <div class="aquarium-detail-page__summary-grid">
+            <article class="aquarium-detail-page__summary-card">
+              <span
+                class="material-icons-outlined aquarium-detail-page__card-icon"
+                aria-hidden="true"
+              >
+                water_drop
+              </span>
+              <div>
+                <span>Volume</span>
+                <br />
+                <strong>{{ aquarium.volumeLabel }}</strong>
+              </div>
+            </article>
+
+            <article class="aquarium-detail-page__summary-card">
+              <span
+                class="material-icons-outlined aquarium-detail-page__card-icon aquarium-detail-page__card-icon--accent"
+                aria-hidden="true"
+              >
+                calendar_month
+              </span>
+              <div>
+                <span>Início</span>
+                <br />
+                <strong>{{ aquarium.summary.setupDateLabel }}</strong>
+              </div>
+            </article>
+
+            <article
+              class="aquarium-detail-page__summary-card aquarium-detail-page__summary-card--alerts"
+            >
+              <span
+                class="material-icons-outlined aquarium-detail-page__card-icon aquarium-detail-page__alert-icon"
+                aria-hidden="true"
+              >
+                monitor_heart
+              </span>
+              <div>
+                <span>Saúde do aquário</span>
+                <br />
+                <strong>
+                  {{ aquarium.summary.healthScoreLabel }}
+                </strong>
+                @if (aquarium.summary.healthStatus !== 'unknown') {
+                  <br />
+                  <aq-badge
+                    variant="tinted"
+                    size="small"
+                    [color]="aquarium.summary.healthStatusColor"
+                  >
+                    {{ aquarium.summary.healthStatusLabel }}
+                  </aq-badge>
+                }
+              </div>
+              @if (parameterAlerts().length > 0) {
+                <ul class="aquarium-detail-page__alert-list" aria-label="Parâmetros fora do padrão">
+                  @for (alert of parameterAlerts(); track alert.key) {
+                    <li>
+                      <span>{{ alert.shortLabel }}</span>
+                      <span>{{ alert.valueLabel }}</span>
+                      <aq-badge
+                        variant="tinted"
+                        size="small"
+                        [color]="alert.statusColor ?? 'tertiary'"
+                      >
+                        {{ alert.statusLabel }}
+                      </aq-badge>
+                    </li>
+                  }
+                </ul>
+              }
+            </article>
+          </div>
+
+          <section
+            class="aquarium-detail-page__parameters"
+            aria-labelledby="recent-parameters-title"
+          >
+            <h2 id="recent-parameters-title">Parâmetros Recentes</h2>
+            @if (recentParameters().length > 0) {
+              <div class="aquarium-detail-page__parameter-grid">
+                @for (parameter of recentParameters(); track parameter.key) {
+                  <article
+                    class="aquarium-detail-page__parameter-card"
+                    [attr.data-tone]="parameter.tone"
+                  >
+                    <span
+                      class="material-icons-outlined aquarium-detail-page__parameter-icon"
+                      aria-hidden="true"
+                    >
+                      {{ parameter.icon }}
+                    </span>
+                    <span>{{ parameter.label }}</span>
+                    <strong>{{ parameter.valueLabel }}</strong>
+                  </article>
+                }
+              </div>
+            } @else {
+              <div class="aquarium-detail-page__empty-card" role="status">
+                <span
+                  class="material-icons-outlined aquarium-detail-page__empty-card-icon"
+                  aria-hidden="true"
+                >
+                  science
+                </span>
+                <strong>Nenhum parâmetro recente</strong>
+                <p>As últimas medições compatíveis aparecerão aqui.</p>
+              </div>
+            }
+          </section>
+
+          <section
+            class="aquarium-detail-page__section"
+            aria-labelledby="recent-applications-title"
+          >
+            <div class="aquarium-detail-page__table-toolbar">
+              <h2 id="recent-applications-title">Aplicações Recentes</h2>
+            </div>
+
+            <aq-table
+              [rows]="recentApplications()"
+              [columns]="applicationColumns"
+              rowId="id"
+              caption="Aplicações recentes"
+              [emptyState]="{
+                title: 'Nenhuma aplicação recente',
+                description: 'As aplicações registradas aparecerão aqui.',
+                icon: 'water_drop',
+              }"
+            >
+              <ng-template aqTableCell="date" let-row>
+                <strong>{{ row.dateLabel }}</strong>
+              </ng-template>
+              <ng-template aqTableCell="productName" let-row>
+                <strong>{{ row.productName }}</strong>
+              </ng-template>
+            </aq-table>
+          </section>
+        </div>
+      </aq-tab>
+
+      <aq-tab id="measurements" label="Medições">
+        <div class="aquarium-detail-page__section">
+          <form
+            aqFilterBar
+            [formGroup]="filtersForm"
+            [caption]="filteredMeasurementsCaption()"
+            columns="repeat(2, minmax(0, 1fr))"
+            [clearDisabled]="!hasMeasurementFilters()"
+            (clearFilters)="clearMeasurementFilters()"
+          >
+            <aq-datepicker-formfield
+              aqDateRange
+              formControlName="date"
+              label="Filtrar por data"
+              placeholder="Data ou período"
+            />
+            <aq-select-formfield
+              formControlName="parameter"
+              label="Filtrar por parâmetro"
+              placeholder="Todos os parâmetros"
+              [options]="parameterOptions()"
+              [multiple]="true"
+            />
+          </form>
+
+          <aq-table
+            [rows]="filteredMeasurements()"
+            [columns]="measurementColumns"
+            rowId="id"
+            caption="Histórico de medições"
+            [emptyState]="{
+              title: 'Nenhuma medição encontrada',
+              description: 'Adicione uma medição ou ajuste os filtros para ver resultados.',
+              icon: 'assignment',
+            }"
+            [sort]="measurementSort()"
+            density="comfortable"
+            (sortChange)="onMeasurementSortChange($event)"
+          >
+            <ng-template aqTableCell="date" let-row>
+              <strong class="aquarium-detail-page__date">{{ row.dateLabel }}</strong>
+              <span class="aquarium-detail-page__time">{{ row.timeLabel }}</span>
+            </ng-template>
+            <ng-template aqTableCell="parameter" let-row>
+              <strong>{{ row.parameterLabel }}</strong>
+            </ng-template>
+            <ng-template aqTableCell="value" let-row>
+              <strong>{{ row.valueLabel }}</strong>
+            </ng-template>
+            <ng-template aqTableCell="trend" let-row>
+              <span
+                class="aquarium-detail-page__trend"
+                [attr.data-trend]="row.trend"
+                [attr.aria-label]="row.trendLabel"
+                role="img"
+              >
+                <span class="material-icons-outlined" aria-hidden="true">{{ row.trendIcon }}</span>
+              </span>
+            </ng-template>
+          </aq-table>
+
+          <aq-paginator
+            [pageIndex]="measurementsPageIndex()"
+            [pageSize]="measurementsPageSize()"
+            [totalItems]="aquarium.measurementsPagination.totalItems"
+            [disabled]="measurementsStatus() === 'loading'"
+            (pageChange)="onMeasurementsPageChange($event)"
+          />
+        </div>
+      </aq-tab>
+
+      <aq-tab id="aquatic-life" label="Vida aquática">
+        <div class="aquarium-detail-page__section">
+          <form
+            aqFilterBar
+            [formGroup]="aquaticLifeFiltersForm"
+            [caption]="aquaticLifeCaption()"
+            columns="2fr 2fr 1fr"
+            [clearDisabled]="!hasAquaticLifeFilters()"
+            (clearFilters)="clearAquaticLifeFilters()"
+          >
+            <aq-search-formfield
+              formControlName="name"
+              label="Filtrar por nome"
+              placeholder="Nome da espécie"
+            />
+            <aq-search-formfield
+              formControlName="scientificName"
+              label="Filtrar por nome científico"
+              placeholder="Nome científico"
+            />
+            <aq-select-formfield
+              formControlName="type"
+              label="Filtrar por tipo"
+              placeholder="Todos os tipos"
+              [options]="aquaticLifeTypeOptions()"
+            />
+          </form>
+
+          <aq-table
+            [rows]="filteredAquaticLife()"
+            [columns]="aquaticLifeColumns"
+            rowId="id"
+            caption="Vida aquática"
+            [sort]="aquaticLifeSort()"
+            [emptyState]="{
+              title: 'Nenhuma vida aquática cadastrada',
+              description: 'Peixes, plantas e invertebrados aparecerão aqui.',
+              icon: 'set_meal',
+            }"
+            (sortChange)="onAquaticLifeSortChange($event)"
+          >
+            <ng-template aqTableCell="name" let-row>
+              <strong>{{ row.name }}</strong>
+            </ng-template>
+            <ng-template aqTableCell="scientificName" let-row>
+              <span>{{ row.scientificName }}</span>
+            </ng-template>
+            <ng-template aqTableCell="introducedAt" let-row>
+              <strong>{{ row.introducedAtLabel }}</strong>
+            </ng-template>
+          </aq-table>
+
+          <aq-paginator
+            [pageIndex]="aquaticLifePageIndex()"
+            [pageSize]="aquaticLifePageSize()"
+            [totalItems]="aquarium.aquaticLifePagination.totalItems"
+            [disabled]="aquaticLifeStatus() === 'loading'"
+            (pageChange)="onAquaticLifePageChange($event)"
+          />
+        </div>
+      </aq-tab>
+
+      <aq-tab id="applications" label="Aplicações">
+        <div class="aquarium-detail-page__section">
+          <form
+            aqFilterBar
+            [formGroup]="applicationFiltersForm"
+            [caption]="applicationsCaption()"
+            columns="3fr 4fr 3fr"
+            [clearDisabled]="!hasApplicationFilters()"
+            (clearFilters)="clearApplicationFilters()"
+          >
+            <aq-datepicker-formfield
+              aqDateRange
+              formControlName="date"
+              label="Filtrar por data"
+              placeholder="Data ou período"
+            />
+            <aq-search-formfield
+              formControlName="productName"
+              label="Filtrar por produto"
+              placeholder="Nome do produto"
+            />
+            <aq-select-formfield
+              formControlName="type"
+              label="Filtrar por tipo"
+              placeholder="Todos os tipos"
+              [options]="applicationTypeOptions()"
+            />
+          </form>
+
+          <aq-table
+            [rows]="filteredApplications()"
+            [columns]="applicationColumns"
+            rowId="id"
+            caption="Histórico de aplicações"
+            [emptyState]="{
+              title: 'Nenhuma aplicação cadastrada',
+              description: 'As aplicações registradas aparecerão aqui.',
+              icon: 'water_drop',
+            }"
+            [sort]="applicationSort()"
+            (sortChange)="onApplicationSortChange($event)"
+          >
+            <ng-template aqTableCell="date" let-row>
+              <strong>{{ row.dateLabel }}</strong>
+            </ng-template>
+            <ng-template aqTableCell="productName" let-row>
+              <strong>{{ row.productName }}</strong>
+            </ng-template>
+          </aq-table>
+
+          <aq-paginator
+            [pageIndex]="applicationsPageIndex()"
+            [pageSize]="applicationsPageSize()"
+            [totalItems]="aquarium.applicationsPagination.totalItems"
+            [disabled]="applicationsStatus() === 'loading'"
+            (pageChange)="onApplicationsPageChange($event)"
+          />
+        </div>
+      </aq-tab>
+    </aq-tabs>
+  }
+</section>

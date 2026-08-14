@@ -15,4 +15,11 @@ export const AQUARIUM_ROUTES: Routes = [
         (m) => m.AquariumCreatePageComponent,
       ),
   },
+  {
+    path: ':uuid',
+    loadComponent: () =>
+      import('./pages/aquarium-detail-page/aquarium-detail-page.component').then(
+        (m) => m.AquariumDetailPageComponent,
+      ),
+  },
 ];

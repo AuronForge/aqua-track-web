@@ -8,12 +8,16 @@
     </div>
   }
 
-  <div class="toolbar__page-info">
-    <h1 class="toolbar__page-title">{{ pageTitle() }}</h1>
-    @if (pageSubtitle()) {
-      <p class="toolbar__page-subtitle">{{ pageSubtitle() }}</p>
-    }
-  </div>
+  @if (pageTitle() || pageSubtitle()) {
+    <div class="toolbar__page-info">
+      @if (pageTitle()) {
+        <h1 class="toolbar__page-title">{{ pageTitle() }}</h1>
+      }
+      @if (pageSubtitle()) {
+        <p class="toolbar__page-subtitle">{{ pageSubtitle() }}</p>
+      }
+    </div>
+  }
 
   <div class="toolbar__center-content">
     @if (centerContentTemplate()) {

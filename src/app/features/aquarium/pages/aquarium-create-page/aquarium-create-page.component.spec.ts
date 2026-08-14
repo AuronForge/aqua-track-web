@@ -944,9 +944,7 @@ describe('AquariumCreatePageComponent', () => {
     const fixture = await createFixture();
     const location = TestBed.inject(Location);
     const backSpy = jest.spyOn(location, 'back').mockImplementation();
-    const backLink = fixture.nativeElement.querySelector(
-      '.aquarium-create-page__back-link',
-    ) as HTMLAnchorElement;
+    const backLink = fixture.nativeElement.querySelector('.aq-back-link') as HTMLAnchorElement;
 
     backLink.click();
 
