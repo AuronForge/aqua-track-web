@@ -55,9 +55,13 @@ function normalizeVolumeToLiters(
 }
 
 function calculateInstalledAmount(
-  setupDate: string,
+  setupDate: string | null | undefined,
   now: Date,
 ): { amount: number; unit: AquariumListInstallTimeUnit } {
+  if (!setupDate) {
+    return { amount: 0, unit: 'MONTH' };
+  }
+
   const parsedSetupDate = new Date(setupDate);
 
   if (Number.isNaN(parsedSetupDate.getTime())) {

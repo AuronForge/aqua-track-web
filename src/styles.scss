@@ -20,3 +20,22 @@ body {
     radial-gradient(circle at top, rgb(35 192 232 / 12%), transparent 30%), rgb(18 63 97 / 52%);
   backdrop-filter: blur(3px);
 }
+
+.aq-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: theme.$aq-space-2xs;
+  width: fit-content;
+  color: theme.$aq-color-text-secondary;
+  font-size: theme.$aq-font-size-sm;
+  font-weight: theme.$aq-font-weight-medium;
+  text-decoration: none;
+
+  &:hover {
+    color: theme.$aq-color-primary;
+  }
+
+  &:focus-visible {
+    @include theme.aq-focus-ring;
+  }
+}

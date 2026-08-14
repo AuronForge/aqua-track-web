@@ -211,6 +211,15 @@ describe('SelectFormfieldComponent', () => {
     expect(getTriggerAt(1).textContent).toContain('Agua doce');
   });
 
+  it('should not render an inline clear action for selected values', () => {
+    host.secondaryControl.setValue('freshwater');
+    fixture.detectChanges();
+
+    expect(getComponents()[1].querySelector('.select-formfield__clear')).toBeNull();
+    expect(host.secondaryControl.value).toBe('freshwater');
+    expect(getDropdown()).toBeNull();
+  });
+
   it('should support multiple selected ids through [formControl]', () => {
     host.multipleControl.setValue(['freshwater', 'marine']);
     fixture.detectChanges();

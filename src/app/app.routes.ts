@@ -228,6 +228,13 @@ export const routes: Routes = [
           import('./features/aquarium/aquarium.routes').then((m) => m.AQUARIUM_ROUTES),
       },
       {
+        path: 'aquarium/:uuid',
+        loadComponent: () =>
+          import('./features/aquarium/pages/aquarium-detail-page/aquarium-detail-page.component').then(
+            (m) => m.AquariumDetailPageComponent,
+          ),
+      },
+      {
         path: 'measurements/new',
         loadComponent: () =>
           import('./features/measurement/pages/measurement-create-page/measurement-create-page.component').then(

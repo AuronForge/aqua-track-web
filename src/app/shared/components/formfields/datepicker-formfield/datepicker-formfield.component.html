@@ -83,6 +83,9 @@
             [class.datepicker-formfield__day--other-month]="!day.isCurrentMonth"
             [class.datepicker-formfield__day--today]="day.isToday"
             [class.datepicker-formfield__day--selected]="day.isSelected"
+            [class.datepicker-formfield__day--range-start]="day.isRangeStart"
+            [class.datepicker-formfield__day--range-end]="day.isRangeEnd"
+            [class.datepicker-formfield__day--in-range]="day.isInRange"
             (click)="selectDay(day)"
           >
             {{ day.date.getDate() }}

@@ -4,6 +4,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 
+import { DatepickerRangeDirective, DatepickerRangeValue } from './datepicker-range.directive';
 import { DatepickerFormfieldComponent } from './datepicker-formfield.component';
 
 interface CalendarDay {
@@ -11,7 +12,20 @@ interface CalendarDay {
   isCurrentMonth: boolean;
   isToday: boolean;
   isSelected: boolean;
+  isRangeStart: boolean;
+  isRangeEnd: boolean;
+  isInRange: boolean;
 }
+
+const calendarDay = (date: Date, isCurrentMonth = true): CalendarDay => ({
+  date,
+  isCurrentMonth,
+  isToday: false,
+  isSelected: false,
+  isRangeStart: false,
+  isRangeEnd: false,
+  isInRange: false,
+});
 
 @Component({
   standalone: true,
@@ -36,6 +50,22 @@ class TestHostComponent {
       validators: [Validators.required],
     }),
   });
+}
+
+@Component({
+  standalone: true,
+  imports: [DatepickerFormfieldComponent, DatepickerRangeDirective, ReactiveFormsModule],
+  template: `
+    <aq-datepicker-formfield
+      aqDateRange
+      label="Período"
+      placeholder="Início e fim"
+      [formControl]="rangeControl"
+    />
+  `,
+})
+class RangeHostComponent {
+  readonly rangeControl = new FormControl<string | DatepickerRangeValue | null>(null);
 }
 
 describe('DatepickerFormfieldComponent', () => {
@@ -77,6 +107,18 @@ describe('DatepickerFormfieldComponent', () => {
     expect(overlayContainerElement.querySelector('.datepicker-formfield__panel')).toBeNull();
   });
 
+  it('should open on the current month without selecting a date', () => {
+    const today = new Date();
+
+    component.writeValue('');
+    component['toggle']();
+    fixture.detectChanges();
+
+    expect(component['selectedDate']()).toBeNull();
+    expect(component['viewDate']().getFullYear()).toBe(today.getFullYear());
+    expect(component['viewDate']().getMonth()).toBe(today.getMonth());
+  });
+
   it('should not toggle when disabled', () => {
     component.setDisabledState(true);
 
@@ -101,12 +143,7 @@ describe('DatepickerFormfieldComponent', () => {
   it('should emit an ISO value when selecting a day', () => {
     const onChange = jest.fn();
     const onTouched = jest.fn();
-    const day: CalendarDay = {
-      date: new Date(2000, 0, 5),
-      isCurrentMonth: true,
-      isToday: false,
-      isSelected: false,
-    };
+    const day = calendarDay(new Date(2000, 0, 5));
 
     component.registerOnChange(onChange);
     component.registerOnTouched(onTouched);
@@ -257,12 +294,7 @@ describe('DatepickerFormfieldComponent', () => {
   it('should move the calendar view when selecting a day from another month', () => {
     component['viewDate'].set(new Date(2024, 5, 1));
 
-    component['selectDay']({
-      date: new Date(2024, 6, 1),
-      isCurrentMonth: false,
-      isToday: false,
-      isSelected: false,
-    });
+    component['selectDay'](calendarDay(new Date(2024, 6, 1), false));
 
     expect(component['viewDate']().getMonth()).toBe(6);
   });
@@ -271,7 +303,7 @@ describe('DatepickerFormfieldComponent', () => {
     component.writeValue('2000-06-15');
     component['viewDate'].set(new Date(2000, 5, 1));
 
-    expect(component['calendarDays']().length % 7).toBe(0);
+    expect(component['calendarDays']()).toHaveLength(42);
     expect(component['calendarDays']().some((day) => day.isSelected)).toBe(true);
     expect(component['monthItems']()).toHaveLength(12);
     expect(component['monthItems']().some((month) => month.isSelected)).toBe(true);
@@ -373,15 +405,96 @@ describe('DatepickerFormfieldComponent with NgControl', () => {
   it('should set the control as touched when a date is selected', () => {
     const boundComponent = getBoundComponent();
 
-    boundComponent['selectDay']({
-      date: new Date(2024, 0, 5),
-      isCurrentMonth: true,
-      isToday: false,
-      isSelected: false,
-    });
+    boundComponent['selectDay'](calendarDay(new Date(2024, 0, 5)));
     hostFixture.detectChanges();
 
     expect(host.form.controls.birthDate.touched).toBe(true);
     expect(host.form.controls.birthDate.value).toBe('2024-01-05');
+  });
+});
+
+describe('DatepickerFormfieldComponent with range directive', () => {
+  let fixture: ComponentFixture<RangeHostComponent>;
+  let host: RangeHostComponent;
+  let component: DatepickerFormfieldComponent;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [RangeHostComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(RangeHostComponent);
+    host = fixture.componentInstance;
+    component = fixture.debugElement.query(By.directive(DatepickerFormfieldComponent))
+      .componentInstance as DatepickerFormfieldComponent;
+    fixture.detectChanges();
+  });
+
+  it('should display a written date range', () => {
+    host.rangeControl.setValue({ start: '2026-08-01', end: '2026-08-10' });
+    fixture.detectChanges();
+
+    expect(component['isRangeMode']()).toBe(true);
+    expect(component['selectedRangeStart']()?.getDate()).toBe(1);
+    expect(component['selectedRangeEnd']()?.getDate()).toBe(10);
+    expect(component['displayValue']()).toContain('01/08/2026');
+    expect(component['displayValue']()).toContain('10/08/2026');
+  });
+
+  it('should select a range in chronological order and close after the end date', () => {
+    component['toggle']();
+    component['selectDay'](calendarDay(new Date(2026, 7, 10)));
+
+    expect(host.rangeControl.value).toBe('2026-08-10');
+    expect(component['selectedRangeStart']()?.getDate()).toBe(10);
+    expect(component['selectedRangeEnd']()).toBeNull();
+    expect(component['isOpen']()).toBe(true);
+
+    component['selectDay'](calendarDay(new Date(2026, 7, 5)));
+    fixture.detectChanges();
+
+    expect(host.rangeControl.value).toEqual({ start: '2026-08-05', end: '2026-08-10' });
+    expect(component['selectedRangeStart']()?.getDate()).toBe(5);
+    expect(component['selectedRangeEnd']()?.getDate()).toBe(10);
+    expect(component['isOpen']()).toBe(false);
+  });
+
+  it('should start a new range when selecting after a complete range', () => {
+    host.rangeControl.setValue({ start: '2026-08-01', end: '2026-08-10' });
+    fixture.detectChanges();
+
+    component['selectDay'](calendarDay(new Date(2026, 7, 20)));
+
+    expect(host.rangeControl.value).toBe('2026-08-20');
+    expect(component['selectedRangeStart']()?.getDate()).toBe(20);
+    expect(component['selectedRangeEnd']()).toBeNull();
+  });
+
+  it('should display a written single date as a range start', () => {
+    host.rangeControl.setValue('2026-08-15');
+    fixture.detectChanges();
+
+    expect(component['selectedDate']()).toBeNull();
+    expect(component['selectedRangeStart']()?.getDate()).toBe(15);
+    expect(component['selectedRangeEnd']()).toBeNull();
+    expect(component['displayValue']()).toContain('15/08/2026');
+  });
+
+  it('should mark calendar days inside the selected range', () => {
+    host.rangeControl.setValue({ start: '2026-08-01', end: '2026-08-03' });
+    component['viewDate'].set(new Date(2026, 7, 1));
+    fixture.detectChanges();
+
+    const days = component['calendarDays']();
+
+    expect(days.find((day) => day.date.getDate() === 1 && day.isCurrentMonth)?.isRangeStart).toBe(
+      true,
+    );
+    expect(days.find((day) => day.date.getDate() === 2 && day.isCurrentMonth)?.isInRange).toBe(
+      true,
+    );
+    expect(days.find((day) => day.date.getDate() === 3 && day.isCurrentMonth)?.isRangeEnd).toBe(
+      true,
+    );
   });
 });
